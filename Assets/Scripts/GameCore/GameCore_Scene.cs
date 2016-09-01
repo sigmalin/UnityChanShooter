@@ -24,7 +24,9 @@ public partial class GameCore
 				_.allowSceneActivation = true;
 			})
 			.SelectMany (_ => Observable.FromCoroutine<Unit> ((observer, cancellationToken) => MemoryManagement (observer, cancellationToken)))
-			.Do(_ => LoadCache(mLoadList))
+			.Do(_ => DownLoadCache(mLoadList))
+			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.DOWN_LOAD_CACHE_COMPLETED).First())
+			.Do(_ => ReadCache(mLoadList))
 			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.LOAD_CACHE_COMPLETED).First())
 			.SelectMany (_ => Observable.FromCoroutine<AsyncOperation> ((observer, cancellationToken) => LoadScene (_scene, observer, cancellationToken)))
 			.Subscribe (
@@ -88,7 +90,7 @@ public partial class GameCore
 		}
 	}
 
-	void LoadCache(string[] _loadList)
+	void DownLoadCache(string[] _loadList)
 	{
 		if (_loadList != null) 
 		{
@@ -96,12 +98,28 @@ public partial class GameCore
 			{
 				if (string.IsNullOrEmpty (_loadList [Indx]) == false) 
 				{
-					SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, _loadList [Indx]);
+					SendCommand (CommandGroup.GROUP_CACHE, CacheInst.DOWN_LOAD_CACHE, _loadList [Indx]);
 				}
 			}
 		}
 
-		SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_LOAD_STATE);
+		SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_DOWN_LOAD_STATE);
+	}
+
+	void ReadCache(string[] _loadList)
+	{
+		if (_loadList != null) 
+		{
+			for (int Indx = 0; Indx < _loadList.Length; ++Indx) 
+			{
+				if (string.IsNullOrEmpty (_loadList [Indx]) == false) 
+				{
+					SendCommand (CommandGroup.GROUP_CACHE, CacheInst.READ_CACHE, _loadList [Indx]);
+				}
+			}
+		}
+
+		SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_READ_STATE);
 	}
 
 	static public void ChangeScene(string _scene, string[] _loadList = null)

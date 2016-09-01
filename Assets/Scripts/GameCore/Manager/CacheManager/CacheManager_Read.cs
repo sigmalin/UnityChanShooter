@@ -17,37 +17,33 @@ public partial class CacheManager
 		}
 	}
 
-	ObservableQueue<LoadRequest> mRequest = null;
+	MutexObservableQueue<LoadRequest> mReadRequest = null;
 
-	bool mIsLoading = false;
-
-	void InitialLoadRequest()
+	void InitialReadRequest()
 	{
-		ReleaselLoadRequest ();
+		ReleaselReadRequest ();
 
-		mRequest = new ObservableQueue<LoadRequest> ();
+		mReadRequest = new MutexObservableQueue<LoadRequest> ();
 
-		mRequest.Initial (LateUpdateObservable.Where(_ => mIsLoading == false), _ => BatchLoadList (_.ToArray ()));
+		mReadRequest.Initial (LateUpdateObservable, (_request, _callback) => BatchLoadList (_request.ToArray (), _callback));
 	}
 
-	void ReleaselLoadRequest()
+	void ReleaselReadRequest()
 	{
-		if (mRequest != null) 
+		if (mReadRequest != null) 
 		{
-			mRequest.Release ();
+			mReadRequest.Release ();
 
-			mRequest = null;
+			mReadRequest = null;
 		}
-
-		mIsLoading = false;
 	}
 
-	void AddLoad(string _key)
+	void AddReadLoad(string _key)
 	{
 		if (IsCacheLoad (_key) == true)
 			return;
 		
-		mRequest.Enqueue (new LoadRequest (_key));
+		mReadRequest.Enqueue (new LoadRequest (_key));
 	}
 
 	string GetCachePath(string _key)
@@ -55,11 +51,11 @@ public partial class CacheManager
 		return string.Format ("{0}//{1}{2}", Application.persistentDataPath, _key, ASSET_BUNDLE_EXTENSION);
 	}
 
-	void ReportLoadState(bool _isSuccess)
+	void ReportReadState(bool _isSuccess)
 	{
 		if (_isSuccess) 
 		{
-			if (mRequest.IsEmpty (true))
+			if (mReadRequest.IsIdle ())
 				GameCore.SendFlowEvent (FlowEvent.LOAD_CACHE_COMPLETED);
 			else
 				GameCore.SendFlowEvent (FlowEvent.LOAD_CACHE_UNDONE);
@@ -70,10 +66,8 @@ public partial class CacheManager
 		}
 	}
 
-	void BatchLoadList(LoadRequest[] _list)
+	void BatchLoadList(LoadRequest[] _list, System.Action _callbackUnLock)
 	{
-		mIsLoading = true;
-
 		_list.Select (_ => _.Path)
 			.Distinct ()
 			.Where (_ => IsCacheLoad(_) == false)
@@ -82,15 +76,15 @@ public partial class CacheManager
 			.Subscribe (
 				_ => 
 				{
-					mIsLoading = false;
+					_callbackUnLock();
 
-					ReportLoadState(true);
+					ReportReadState(true);
 				},
 				_ex =>
 				{
-					mIsLoading = false;
+					_callbackUnLock();
 
-					ReportLoadState(false);
+					ReportReadState(false);
 				}
 			);
 	}

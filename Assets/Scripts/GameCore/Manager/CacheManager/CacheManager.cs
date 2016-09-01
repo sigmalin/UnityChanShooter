@@ -17,16 +17,24 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 
 		InitialRequestQueue ();
 
+		InitialVersionTable ();
+
 		InitialCatalogueData ();
 
-		InitialLoadRequest ();
+		InitialReadRequest ();
+
+		InitialDownLoadRequest ();
 	}
 
 	public void OnUnRegister ()
 	{
-		ReleaselLoadRequest ();
+		ReleaseDownLoadRequest ();
+
+		ReleaselReadRequest ();
 
 		ReleaseCatalogueData ();
+
+		ReleaseVersionTable ();
 
 		ReleaseRequestQueue ();
 
@@ -50,16 +58,24 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 			ReleaseAllCacheData ();
 			break;
 
-		case CacheInst.LOAD_CACHE:
-			AddLoad ((string)_params[0]);
+		case CacheInst.READ_CACHE:
+			AddReadLoad ((string)_params[0]);
 			break;
 
 		case CacheInst.RELEASE_CACHE:
 			ReleaseCache ((string)_params[0]);
 			break;
 
-		case CacheInst.REPORT_LOAD_STATE:
-			ReportLoadState (true);
+		case CacheInst.REPORT_READ_STATE:
+			ReportReadState (true);
+			break;
+
+		case CacheInst.REPORT_DOWN_LOAD_STATE:
+			ReportDownLoadState (true);
+			break;
+
+		case CacheInst.DOWN_LOAD_CACHE:
+			AddDownLoad ((string)_params[0]);
 			break;
 		}
 

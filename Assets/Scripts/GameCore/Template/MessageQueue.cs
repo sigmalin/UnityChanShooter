@@ -62,13 +62,13 @@ public class RequestQueue<T> where T : struct
 			Dequeue ();
 	}
 
-	public bool IsEmpty(bool _recursive = false)
+	public int TotalCount()
 	{
-		int count = mMsgQueueOUT.Count;
+		return mMsgQueueOUT.Count + mMsgQueueIN.Count;
+	}
 
-		if (_recursive == true)
-			count += mMsgQueueIN.Count;
-		
-		return count == 0;
+	public bool IsEmpty()
+	{		
+		return mMsgQueueOUT.Count == 0;
 	}
 }

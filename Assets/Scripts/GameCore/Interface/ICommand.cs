@@ -80,10 +80,13 @@ public class CacheInst
 	public const uint VERSION_VERIFY = 0;
 	public const uint RELEASE_ALL_CACHE = 1;
 
-	public const uint LOAD_CACHE = 2;
+	public const uint READ_CACHE = 2;
 	public const uint RELEASE_CACHE = 3;
 
-	public const uint REPORT_LOAD_STATE = 4;
+	public const uint REPORT_READ_STATE = 4;
+	public const uint REPORT_DOWN_LOAD_STATE = 5;
+
+	public const uint DOWN_LOAD_CACHE = 6;
 }
 
 public interface ICommand 

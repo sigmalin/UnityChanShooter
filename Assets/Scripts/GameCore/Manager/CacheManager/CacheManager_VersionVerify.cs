@@ -8,8 +8,27 @@ using UniRx.Triggers;
 
 public partial class CacheManager 
 {
-	void LoadVersionList()
+	Dictionary<string, int> mVersionTable = null;
+
+	void InitialVersionTable()
 	{
+		ReleaseVersionTable ();
+
+		mVersionTable = new Dictionary<string, int> ();
+	}
+
+	void ReleaseVersionTable()
+	{
+		if (mVersionTable != null) 
+		{
+			mVersionTable.Clear ();
+
+			mVersionTable = null;
+		}
+	}
+
+	void LoadVersionList()
+	{		
 		ScheduledNotifier<float> progressNotifier = new ScheduledNotifier<float>();
 		progressNotifier.Subscribe(x => Debug.Log(x));
 
@@ -17,7 +36,7 @@ public partial class CacheManager
 			.Subscribe 
 			(
 				_ => VersionVerify(_),
-				_ex => Debug.LogError(_ex)
+				_ex => GameCore.SendFlowEvent(FlowEvent.CONNECT_FAILURED)
 			);
 	}
 
@@ -27,12 +46,16 @@ public partial class CacheManager
 
 		if (Compatibility (data.Version) == true) 
 		{
+			UpdateVersionTable (data);
+
 			UpdateCacheCatalogue (data);
 
 			VersionRepository.VersionInfo[] downloadList = GetDownLoadList (data);
 
 			if (downloadList.Length != 0)
-				DownLoadAndWrite2Stream (downloadList);
+				DownLoadAndWrite2Stream (downloadList, 
+					() => GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_COMPLETED),
+					_ex => GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_FAILURE));
 			else
 				GameCore.SendFlowEvent (FlowEvent.VERSION_VERFITY_COMPLETED);
 		} 
@@ -61,16 +84,42 @@ public partial class CacheManager
 			{
 				string path = string.Format (catalogue.PathIndex, catalogue.List[Indx].DataPath);
 
-				int curVersion = PlayerPrefs.GetInt (path, 0);
+				bool localCacheExist = IsLocalCacheExist (path);
 
-				if (curVersion != catalogue.List[Indx].Version || IsLocalCacheExist (path) == false) 
+				if (catalogue.List [Indx].IsForceDownLoad == true || localCacheExist == true) 
 				{
-					downloadList.Add (new VersionRepository.VersionInfo(path, catalogue.List[Indx].Version));
+					int curVersion = PlayerPrefs.GetInt (path, 0);
+
+					if (curVersion != catalogue.List[Indx].Version || localCacheExist == false) 
+					{
+						downloadList.Add (new VersionRepository.VersionInfo(path, catalogue.List[Indx].Version));
+					}
 				}
 			}
 		}
 
 		return downloadList.ToArray();
+	}
+
+	void UpdateVersionTable(VersionRepository _data)
+	{
+		if (mVersionTable == null)
+			return;
+
+		for (int catalogueIndx = 0; catalogueIndx < _data.CacheCatalogue.Length; ++catalogueIndx) 
+		{
+			VersionRepository.Catalogue catalogue = _data.CacheCatalogue [catalogueIndx];
+
+			for (int Indx = 0; Indx < catalogue.List.Length; ++Indx) 
+			{
+				string path = string.Format (catalogue.PathIndex, catalogue.List [Indx].DataPath);
+
+				if (mVersionTable.ContainsKey (path) == true)
+					mVersionTable.Remove (path);
+
+				mVersionTable.Add (path, catalogue.List [Indx].Version);
+			}
+		}
 	}
 
 	void UpdateCacheCatalogue(VersionRepository _data)
@@ -79,6 +128,14 @@ public partial class CacheManager
 		{
 			AddCacheCatalogue (_data.CacheCatalogue [Indx].Key, _data.CacheCatalogue [Indx].PathIndex, _data.CacheCatalogue [Indx].AssetIndex);
 		}
+	}
+
+	int GetLastestVersion(string _path)
+	{
+		if (mVersionTable == null)
+			return 0;
+
+		return mVersionTable.ContainsKey (_path) ? mVersionTable[_path] : 0;
 	}
 
 	string GetDownLoadPath(string _path)
@@ -100,7 +157,7 @@ public partial class CacheManager
 		return res;
 	}
 
-	void DownLoadAndWrite2StreamAsync(VersionRepository.VersionInfo[] _list)
+	void DownLoadAndWrite2StreamAsync(VersionRepository.VersionInfo[] _list, System.Action _onCompleted, System.Action<System.Exception> _onError)
 	{
 		ScheduledNotifier<float> progressNotifier = new ScheduledNotifier<float>();
 		progressNotifier.Subscribe(x => Debug.Log(x));
@@ -122,16 +179,16 @@ public partial class CacheManager
 						WriteStreamAndUpdate(_list[Indx], _ [Indx]);
 					}
 
-					GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_COMPLETED);
+					_onCompleted();
 				},
 				ex => {
 					Debug.Log ("Failure = " + ex.ToString ());
-					GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_FAILURE);
+					_onError(ex);
 				}
 			);
 	}
 
-	void DownLoadAndWrite2Stream(VersionRepository.VersionInfo[] _list)
+	void DownLoadAndWrite2Stream(VersionRepository.VersionInfo[] _list, System.Action _onCompleted, System.Action<System.Exception> _onError)
 	{
 		ScheduledNotifier<float> progressNotifier = new ScheduledNotifier<float>();
 		progressNotifier.Subscribe(x => Debug.Log(x));
@@ -146,11 +203,9 @@ public partial class CacheManager
 				}
 			)
 			.Aggregate ((pre, cur) => pre.SelectMany (cur))
-			.Subscribe (_ => GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_COMPLETED),
-				ex => {
-					Debug.Log ("Failure = " + ex.ToString ());
-					GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_FAILURE);
-				});
+			.Subscribe (
+				_ => _onCompleted(),
+				ex => _onError(ex));
 	}
 
 	void WriteStreamAndUpdate(VersionRepository.VersionInfo _info, byte[] _bytes)

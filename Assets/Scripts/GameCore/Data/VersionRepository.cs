@@ -16,12 +16,15 @@ public class VersionRepository : ScriptableObject
 	{
 		public string DataPath;
 		public int Version;
+		public bool IsForceDownLoad;
 
 		public VersionInfo(string _path, int _ver)
 		{
 			DataPath = _path;
 
 			Version = _ver;
+
+			IsForceDownLoad = false;
 		}
 	}
 
