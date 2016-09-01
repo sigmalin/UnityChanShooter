@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class GameCore
 {
@@ -21,6 +22,14 @@ public partial class GameCore
 			return;
 
 		mCmdDict[_group].ExecCommand (_inst, _params);
+	}
+
+	ICommand[] GetAllCommand()
+	{
+		if (mCmdDict == null)
+			return null;
+
+		return mCmdDict.Values.ToArray ();
 	}
 
 	static public void RegisterCommand(uint _group, ICommand _cmd)

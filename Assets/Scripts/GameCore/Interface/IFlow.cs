@@ -10,6 +10,7 @@ public class FlowEvent
 
 	public const uint LOAD_CACHE_COMPLETED = 3;
 	public const uint LOAD_CACHE_FAILURE = 4;
+	public const uint LOAD_CACHE_UNDONE = 5;
 }
 
 public interface IFlow 

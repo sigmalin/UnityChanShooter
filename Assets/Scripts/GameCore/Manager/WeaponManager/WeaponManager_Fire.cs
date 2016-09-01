@@ -25,11 +25,13 @@ public sealed partial class WeaponManager
 
 	ObservableQueue<FireRequest> mRequest = null;
 
-	void InitialFire()
+	void InitialFireRequest()
 	{
+		ReleaseFireRequest ();
+
 		mRequest = new ObservableQueue<FireRequest> ();
 
-		mRequest.Initial (this.LateUpdateAsObservable (), _ => BatchFireRequest (_));
+		mRequest.Initial (LateUpdateObservable, _ => BatchFireRequest (_));
 	}
 
 	void AddFireRequest(uint _id, IArm _arm)

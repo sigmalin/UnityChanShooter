@@ -11,11 +11,25 @@ public partial class Flow_GamePlay
 	// Use this for initialization
 	void InitialInput ()
 	{
-		mOnHandleInputSubject.Where (_ => Input.GetKeyUp (KeyCode.Escape))
+		ReleaseInput ();
+
+		mOnHandleInputSubject = new Subject<Unit>();
+			
+		mOnHandleInputSubject.AsObservable().Where (_ => Input.GetKeyUp (KeyCode.Escape))
 			.BatchFrame(0, FrameCountType.EndOfFrame)
 			.Subscribe ( _ => GameCore.SetFlow(null) );
 
 		GameCore.PushInput (this);
+	}
+
+	void ReleaseInput()
+	{
+		if (mOnHandleInputSubject != null) 
+		{
+			mOnHandleInputSubject.Dispose ();
+
+			mOnHandleInputSubject = null;
+		}
 	}
 
 	// Update is called once per frame

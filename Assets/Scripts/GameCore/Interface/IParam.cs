@@ -44,13 +44,6 @@ public class ResourceParam
 	public const uint BULLET = 15;
 
 	public const uint INSTANT_RESOURCE_INPUT = 99;
-
-	public const uint GET_CHARACTER_PATH = 1001;
-	public const uint GET_CONTAINER_PATH = 1002;
-	public const uint GET_WEAPON_DATA_PATH = 1003;
-	public const uint GET_WEAPON_PATH = 1004;
-	public const uint GET_BULLET_PATH = 1005;
-	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 1099;
 }
 
 public class WeaponParam
@@ -61,6 +54,23 @@ public class WeaponParam
 public class CacheParam
 {
 	public const uint GET_CACHE = 1;
+
+	public const uint GET_SCENE_PATH = 10;
+	public const uint GET_CHARACTER_PATH = 11;
+	public const uint GET_CONTAINER_PATH = 12;
+	public const uint GET_WEAPON_DATA_PATH = 13;
+	public const uint GET_WEAPON_PATH = 14;
+	public const uint GET_BULLET_PATH = 15;
+
+	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 99;
+
+	public const uint GET_CHARACTER = 111;
+	public const uint GET_CONTAINER = 112;
+	public const uint GET_WEAPON_DATA = 113;
+	public const uint GET_WEAPON = 114;
+	public const uint GET_BULLET = 115;
+
+	public const uint GET_INSTANT_RESOURCE_INPUT = 199;
 }
 
 public interface IParam 

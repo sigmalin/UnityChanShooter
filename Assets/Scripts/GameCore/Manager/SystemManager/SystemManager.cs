@@ -3,19 +3,17 @@ using System.Collections;
 
 public sealed class SystemManager : CommandBehaviour, IRegister
 {
-	// Use this for initialization
-	void Start ()
-	{
-		InitialRequestQueue ();
-	}
-
 	public void OnRegister ()
 	{
 		GameCore.RegisterCommand (CommandGroup.GROUP_SYSTEM, this);
+
+		InitialRequestQueue ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleaseRequestQueue ();
+
 		GameCore.UnRegisterCommand (CommandGroup.GROUP_SYSTEM);
 	}
 

@@ -48,7 +48,7 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput
 	{
 		base.Enter ();
 
-		LoadCache ();
+		RunFlowStep ();
 	}
 
 	public override void Exit ()
@@ -57,7 +57,7 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput
 
 		base.Exit ();
 
-		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(1);
+		GameCore.ChangeScene ("Scene/Lobby");
 	}
 
 	public override void Event (uint _eventID)
@@ -65,7 +65,6 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput
 		switch(_eventID)
 		{
 		case FlowEvent.LOAD_CACHE_COMPLETED:
-			RunFlowStep ();
 			break;
 
 		case FlowEvent.LOAD_CACHE_FAILURE:
@@ -160,19 +159,6 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput
 	void LoadGameData()
 	{
 		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.LOAD_DATA, GameCore.GetParameter (CommandGroup.GROUP_RESOURCE, ResourceParam.WEAPON_DATA));
-	}
-	#endregion
-
-	#region Cache
-	void LoadCache()
-	{
-		GameCore.SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, (string)GameCore.GetParameter(ParamGroup.GROUP_RESOURCE, ResourceParam.GET_BULLET_PATH, (uint)1));
-		GameCore.SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, (string)GameCore.GetParameter(ParamGroup.GROUP_RESOURCE, ResourceParam.GET_CHARACTER_PATH, (uint)100));
-		GameCore.SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, (string)GameCore.GetParameter(ParamGroup.GROUP_RESOURCE, ResourceParam.GET_CHARACTER_PATH, (uint)101));
-		GameCore.SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, (string)GameCore.GetParameter(ParamGroup.GROUP_RESOURCE, ResourceParam.GET_CONTAINER_PATH, (uint)1));
-		GameCore.SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, (string)GameCore.GetParameter(ParamGroup.GROUP_RESOURCE, ResourceParam.GET_WEAPON_DATA_PATH));
-		GameCore.SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, (string)GameCore.GetParameter(ParamGroup.GROUP_RESOURCE, ResourceParam.GET_INSTANT_RESOURCE_INPUT_PATH));
-		GameCore.SendCommand (CommandGroup.GROUP_CACHE, CacheInst.LOAD_CACHE, (string)GameCore.GetParameter(ParamGroup.GROUP_RESOURCE, ResourceParam.GET_WEAPON_PATH, (uint)1));
 	}
 	#endregion
 }

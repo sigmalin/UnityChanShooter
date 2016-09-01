@@ -20,6 +20,12 @@ public class CommandBehaviour : MonoBehaviour, ICommand
 
 	ObservableQueue<InstructionSet> mRequest = null;
 
+	Subject<float> mUpdateSubject = null;
+	protected IObservable<float> UpdateObservable { get { return mUpdateSubject == null ? null : mUpdateSubject.AsObservable(); } }
+
+	Subject<float> mLateUpdateSubject = null;
+	protected IObservable<float> LateUpdateObservable { get { return mLateUpdateSubject == null ? null : mLateUpdateSubject.AsObservable(); } }
+
 	public virtual void OnDestroy()
 	{
 		ReleaseRequestQueue ();
@@ -27,18 +33,38 @@ public class CommandBehaviour : MonoBehaviour, ICommand
 
 	protected void InitialRequestQueue()
 	{
+		ReleaseRequestQueue ();
+
 		mRequest = new ObservableQueue<InstructionSet> ();	
 
-		mRequest.Initial (this.UpdateAsObservable (), _ => BatchRequest (_));
+		mUpdateSubject = new Subject<float> ();
+
+		mLateUpdateSubject = new Subject<float> ();
+
+		mRequest.Initial (UpdateObservable, _ => BatchRequest (_));
 	}
 
 	protected void ReleaseRequestQueue()
 	{
 		if (mRequest != null) 
 		{
-			mRequest.Clear ();
+			mRequest.Release ();
 
 			mRequest = null;
+		}
+
+		if (mUpdateSubject != null) 
+		{
+			mUpdateSubject.Dispose ();
+
+			mUpdateSubject = null;
+		}
+
+		if (mLateUpdateSubject != null) 
+		{
+			mLateUpdateSubject.Dispose ();
+
+			mLateUpdateSubject = null;
 		}
 	}
 
@@ -46,6 +72,18 @@ public class CommandBehaviour : MonoBehaviour, ICommand
 	{
 		if(mRequest != null)
 			mRequest.Enqueue (new InstructionSet (_inst, _params));
+	}
+
+	public void BatchUpdate (float _delta)
+	{
+		if (mUpdateSubject != null)
+			mUpdateSubject.OnNext (_delta);
+	}
+
+	public void BatchLateUpdate (float _delta)
+	{
+		if (mLateUpdateSubject != null)
+			mLateUpdateSubject.OnNext (_delta);
 	}
 
 	protected void BatchRequest(RequestQueue<InstructionSet> _request)

@@ -28,13 +28,9 @@ public partial class GameCore : MonoBehaviour
 		if (mInstance == this) 
 		{
 			mInstance = null;
+
+			Release ();
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		HandleInput ();	
 	}
 
 	void Initialize()
@@ -48,5 +44,14 @@ public partial class GameCore : MonoBehaviour
 		InitialCommand ();
 
 		InitialParam ();
+
+		InitialBatch ();
+
+		InitialFlow ();
+	}
+
+	void Release()
+	{
+		ReleaseFlow ();
 	}
 }

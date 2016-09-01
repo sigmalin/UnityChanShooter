@@ -66,7 +66,7 @@ public class RequestQueue<T> where T : struct
 	{
 		int count = mMsgQueueOUT.Count;
 
-		if (_recursive = true)
+		if (_recursive == true)
 			count += mMsgQueueIN.Count;
 		
 		return count == 0;

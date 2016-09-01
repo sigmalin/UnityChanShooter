@@ -16,7 +16,7 @@ public sealed class Flow_Logo : FlowBehaviour
 
 	public override void Exit ()
 	{
-		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync (1);
+		GameCore.ChangeScene ("Scene/Lobby");
 	}
 
 	public override void Event (uint _eventID)

@@ -61,8 +61,6 @@ public class ResourceInst
 	public const uint RECYCLE_CONTAINER = 12;
 	public const uint RECYCLE_WEAPON_MODEL = 13;
 	public const uint RECYCLE_BULLET = 14;
-
-	public const uint RELEASE_WEAPON_DATA = 100;
 }
 
 public class WeaponInst
@@ -84,9 +82,15 @@ public class CacheInst
 
 	public const uint LOAD_CACHE = 2;
 	public const uint RELEASE_CACHE = 3;
+
+	public const uint REPORT_LOAD_STATE = 4;
 }
 
 public interface ICommand 
 {
 	void ExecCommand (uint _inst, params System.Object[] _params);
+
+	void BatchUpdate (float _delta);
+
+	void BatchLateUpdate (float _delta);
 }

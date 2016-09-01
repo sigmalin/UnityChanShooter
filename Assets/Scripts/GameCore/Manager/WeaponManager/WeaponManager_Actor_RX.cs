@@ -5,9 +5,13 @@ using UniRx.Triggers;
 
 public sealed partial class WeaponManager
 {
+	System.IDisposable mActorDisposable = null;
+
 	void InitialActorObservable()
 	{
-		this.UpdateAsObservable ()
+		ReleaseActorObservable ();
+
+		mActorDisposable = UpdateObservable
 			.Subscribe (_ => 
 				{
 					uint[] actorIDs = mActorTable.Keys.ToArray ();
@@ -31,5 +35,14 @@ public sealed partial class WeaponManager
 						}
 					}
 				});
+	}
+
+	void ReleaseActorObservable()
+	{
+		if (mActorDisposable != null) 
+		{
+			mActorDisposable.Dispose ();
+			mActorDisposable = null;
+		}
 	}
 }

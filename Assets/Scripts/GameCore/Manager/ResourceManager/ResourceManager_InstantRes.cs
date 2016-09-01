@@ -10,14 +10,14 @@ public partial class ResourceManager
 		if (string.IsNullOrEmpty(_key) == true)
 			return res;
 
-		res = (System.Object)LoadInstantRes (_key, GetInstantResInputPath(), GetInstantResInputAsset(_key));
+		res = (System.Object)LoadInstantRes (_key);
 
 		return res;
 	}
 
-	GameObject LoadInstantRes(string _key, string _path, string _asset)
+	GameObject LoadInstantRes(string _key)
 	{
-		GameObject output = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CACHE, _path, _asset, true);
+		GameObject output = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_INPUT, _key, true);
 		if (output == null)
 			return null;
 

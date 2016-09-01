@@ -7,8 +7,7 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 
 	// Use this for initialization
 	void Start () 
-	{
-		InitialRequestQueue ();
+	{		
 		InitialPlayerData ();
 	}
 
@@ -17,10 +16,14 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 		GameCore.RegisterCommand (CommandGroup.GROUP_PLAYER, this);	
 
 		GameCore.RegisterParam (ParamGroup.GROUP_PLAYER, this);
+
+		InitialRequestQueue ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleaseRequestQueue ();
+
 		BroadcastCommand (PlayerInst.REMOVE_PLAYER);
 
 		ClearPlayerData ();

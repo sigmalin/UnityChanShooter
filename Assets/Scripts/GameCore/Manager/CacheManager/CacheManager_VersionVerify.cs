@@ -27,16 +27,18 @@ public partial class CacheManager
 
 		if (Compatibility (data.Version) == true) 
 		{
+			UpdateCacheCatalogue (data);
+
 			VersionRepository.VersionInfo[] downloadList = GetDownLoadList (data);
 
 			if (downloadList.Length != 0)
 				DownLoadAndWrite2Stream (downloadList);
 			else
-				GameCore.FlowEvent (FlowEvent.VERSION_VERFITY_COMPLETED);
+				GameCore.SendFlowEvent (FlowEvent.VERSION_VERFITY_COMPLETED);
 		} 
 		else 
 		{
-			GameCore.FlowEvent (FlowEvent.VERSION_INCOMPATIBLE);
+			GameCore.SendFlowEvent (FlowEvent.VERSION_INCOMPATIBLE);
 		}
 
 		_version.assetBundle.Unload (false);
@@ -51,32 +53,47 @@ public partial class CacheManager
 	{
 		List<VersionRepository.VersionInfo> downloadList = new List<VersionRepository.VersionInfo> ();
 
-		for (int Indx = 0; Indx < _data.VersionInfoList.Length; ++Indx) 
+		for (int catalogueIndx = 0; catalogueIndx < _data.CacheCatalogue.Length; ++catalogueIndx) 
 		{
-			int curVersion = PlayerPrefs.GetInt (_data.VersionInfoList [Indx].DataPath, 0);
+			VersionRepository.Catalogue catalogue = _data.CacheCatalogue[catalogueIndx];
 
-			if (curVersion != _data.VersionInfoList [Indx].Version || IsLocalCacheExist (_data.VersionInfoList [Indx]) == false) 
+			for (int Indx = 0; Indx < catalogue.List.Length; ++Indx) 
 			{
-				downloadList.Add (_data.VersionInfoList [Indx]);
+				string path = string.Format (catalogue.PathIndex, catalogue.List[Indx].DataPath);
+
+				int curVersion = PlayerPrefs.GetInt (path, 0);
+
+				if (curVersion != catalogue.List[Indx].Version || IsLocalCacheExist (path) == false) 
+				{
+					downloadList.Add (new VersionRepository.VersionInfo(path, catalogue.List[Indx].Version));
+				}
 			}
 		}
 
 		return downloadList.ToArray();
 	}
 
-	string GetDownLoadPath(VersionRepository.VersionInfo _info)
+	void UpdateCacheCatalogue(VersionRepository _data)
 	{
-		return string.Format ("{0}{1}{2}", SERVER_PATH, _info.DataPath, ASSET_BUNDLE_EXTENSION);
+		for (int Indx = 0; Indx < _data.CacheCatalogue.Length; ++Indx) 
+		{
+			AddCacheCatalogue (_data.CacheCatalogue [Indx].Key, _data.CacheCatalogue [Indx].PathIndex, _data.CacheCatalogue [Indx].AssetIndex);
+		}
 	}
 
-	string GetWritePath(VersionRepository.VersionInfo _info)
+	string GetDownLoadPath(string _path)
 	{
-		return GetCachePath (_info.DataPath);
+		return string.Format ("{0}{1}{2}", SERVER_PATH, _path, ASSET_BUNDLE_EXTENSION);
 	}
 
-	bool IsLocalCacheExist(VersionRepository.VersionInfo _info)
+	string GetWritePath(string _path)
 	{
-		string localpath = GetWritePath(_info);
+		return GetCachePath (_path);
+	}
+
+	bool IsLocalCacheExist(string _path)
+	{
+		string localpath = GetWritePath(_path);
 		bool res = File.Exists (localpath);
 
 		Debug.Log (string.Format("{0}:{1}",localpath,res));
@@ -92,7 +109,7 @@ public partial class CacheManager
 
 		for (int Indx = 0; Indx < _list.Length; ++Indx) 
 		{
-			downloads [Indx] = ObservableWWW.GetAndGetBytes (GetDownLoadPath(_list[Indx]), progress: progressNotifier);
+			downloads [Indx] = ObservableWWW.GetAndGetBytes (GetDownLoadPath(_list[Indx].DataPath), progress: progressNotifier);
 		}
 
 		Observable.WhenAll (downloads)
@@ -105,11 +122,11 @@ public partial class CacheManager
 						WriteStreamAndUpdate(_list[Indx], _ [Indx]);
 					}
 
-					GameCore.FlowEvent(FlowEvent.VERSION_VERFITY_COMPLETED);
+					GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_COMPLETED);
 				},
 				ex => {
 					Debug.Log ("Failure = " + ex.ToString ());
-					GameCore.FlowEvent(FlowEvent.VERSION_VERFITY_FAILURE);
+					GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_FAILURE);
 				}
 			);
 	}
@@ -124,21 +141,21 @@ public partial class CacheManager
 			(
 				loadfile =>
 				{
-					return Observable.Defer<byte[]> (() => ObservableWWW.GetAndGetBytes (GetDownLoadPath(loadfile), progress: progressNotifier))
+					return Observable.Defer<byte[]> (() => ObservableWWW.GetAndGetBytes (GetDownLoadPath(loadfile.DataPath), progress: progressNotifier))
 						.Do<byte[]>(bytes => WriteStreamAndUpdate(loadfile, bytes));
 				}
 			)
 			.Aggregate ((pre, cur) => pre.SelectMany (cur))
-			.Subscribe (_ => GameCore.FlowEvent(FlowEvent.VERSION_VERFITY_COMPLETED),
+			.Subscribe (_ => GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_COMPLETED),
 				ex => {
 					Debug.Log ("Failure = " + ex.ToString ());
-					GameCore.FlowEvent(FlowEvent.VERSION_VERFITY_FAILURE);
+					GameCore.SendFlowEvent(FlowEvent.VERSION_VERFITY_FAILURE);
 				});
 	}
 
 	void WriteStreamAndUpdate(VersionRepository.VersionInfo _info, byte[] _bytes)
 	{
-		string path = GetWritePath(_info);
+		string path = GetWritePath(_info.DataPath);
 
 		Debug.Log ("Write File = " + path);
 

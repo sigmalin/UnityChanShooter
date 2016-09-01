@@ -6,11 +6,8 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 	// Use this for initialization
 	void Start () 
 	{
-		InitialRequestQueue ();
-
 		InitialWeaponData ();	
 		InitialWeaponActor ();
-		InitialFire ();
 	}
 	
 	public void OnRegister ()
@@ -18,11 +15,21 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 		GameCore.RegisterCommand (CommandGroup.GROUP_WEAPON, this);	
 
 		GameCore.RegisterParam (ParamGroup.GROUP_WEAPON, this);
+
+		InitialRequestQueue ();
+
+		InitialActorObservable ();
+
+		InitialFireRequest ();
 	}
 
 	public void OnUnRegister ()
 	{
 		ReleaseFireRequest ();
+
+		ReleaseActorObservable ();
+
+		ReleaseRequestQueue ();
 
 		RemoveAllActor ();
 

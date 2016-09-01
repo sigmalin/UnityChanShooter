@@ -58,7 +58,7 @@ public partial class ResourceManager
 
 	GameObject LoadContainer(uint _key)
 	{
-		GameObject container = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CACHE, GetContainerPath(_key), GetContainerAsset(_key), true);
+		GameObject container = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER, _key, true);
 		if (container == null)
 			return null;
 

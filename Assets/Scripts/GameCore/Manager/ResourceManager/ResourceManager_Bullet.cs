@@ -58,7 +58,7 @@ public partial class ResourceManager
 
 	GameObject LoadBullet(uint _key)
 	{
-		GameObject bullet = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CACHE, GetBulletPath(_key), GetBulletAsset(_key), true);
+		GameObject bullet = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET, _key, true);
 		if (bullet == null)
 			return null;
 

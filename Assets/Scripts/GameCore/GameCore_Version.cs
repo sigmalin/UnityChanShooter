@@ -7,5 +7,5 @@ public partial class GameCore
 
 	public const int SUB_VERSION = 1;
 
-	public const int DETAIL_VERSION = 1;
+	public const int DETAIL_VERSION = 2;
 }

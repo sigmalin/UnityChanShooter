@@ -16,14 +16,33 @@ public class VersionRepository : ScriptableObject
 	{
 		public string DataPath;
 		public int Version;
+
+		public VersionInfo(string _path, int _ver)
+		{
+			DataPath = _path;
+
+			Version = _ver;
+		}
+	}
+
+	[System.Serializable]
+	public struct Catalogue
+	{
+		public uint Key;
+
+		public string PathIndex;
+
+		public string AssetIndex;
+
+		public VersionInfo[] List;
 	}
 
 	[SerializeField]
 	GameVersion mGameVersion;
 
 	[SerializeField]
-	VersionInfo[] mVersionInfoList;
+	Catalogue[] mCatalogue;
 
 	public GameVersion Version { get { return mGameVersion; } }
-	public VersionInfo[] VersionInfoList { get { return mVersionInfoList; } }
+	public Catalogue[] CacheCatalogue { get { return mCatalogue; } }
 }

@@ -6,11 +6,8 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 	// Use this for initialization
 	void Start () 
 	{
-		InitialRequestQueue ();
-
 		InitialCharacterData ();
 		InitialContainerData ();
-		InitialGameData ();
 		InitialWeaponData ();
 		InitialBulletData ();
 	}
@@ -20,10 +17,14 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 		GameCore.RegisterCommand (CommandGroup.GROUP_RESOURCE, this);	
 
 		GameCore.RegisterParam (ParamGroup.GROUP_RESOURCE, this);
+
+		InitialRequestQueue ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleaseRequestQueue ();
+
 		ReleaseAllResource ();
 
 		GameCore.UnRegisterCommand (CommandGroup.GROUP_RESOURCE);
@@ -71,10 +72,6 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 		case ResourceInst.RECYCLE_BULLET:
 			RecycleBullet ((uint)_params[0], (GameObject)_params[1]);
 			break;
-
-		case ResourceInst.RELEASE_WEAPON_DATA:
-			ReleaseGameData (WEAPON_DATA);
-			break;
 		}
 	
 	}
@@ -94,7 +91,7 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 			break;
 
 		case ResourceParam.WEAPON_DATA:
-			output = GetGameData (WEAPON_DATA);
+			output = GetWeaponData ();
 			break;
 
 		case ResourceParam.WEAPON_MODEL:
@@ -108,30 +105,6 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 		case ResourceParam.INSTANT_RESOURCE_INPUT:
 			output = GetInstantResInput ((string)_params[0]);
 			break;
-
-		case ResourceParam.GET_CHARACTER_PATH:
-			output = (System.Object)GetCharacterPath ((uint)_params[0]);
-			break;
-
-		case ResourceParam.GET_CONTAINER_PATH:
-			output = (System.Object)GetContainerPath ((uint)_params[0]);
-			break;
-
-		case ResourceParam.GET_WEAPON_DATA_PATH:
-			output = (System.Object)GetDataPath (WEAPON_DATA);
-			break;
-
-		case ResourceParam.GET_WEAPON_PATH:
-			output = (System.Object)GetWeaponPath ((uint)_params[0]);
-			break;
-
-		case ResourceParam.GET_BULLET_PATH:
-			output = (System.Object)GetBulletPath ((uint)_params[0]);
-			break;
-
-		case ResourceParam.GET_INSTANT_RESOURCE_INPUT_PATH:
-			output = (System.Object)GetInstantResInputPath ();
-			break;
 		}
 
 		return output;
@@ -141,7 +114,6 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 	{
 		ReleaseCharacterData ();
 		ReleaseContainerData ();
-		ReleaseAllGameData ();
 		ReleaseWeaponData ();
 		ReleaseBulletData ();
 	}

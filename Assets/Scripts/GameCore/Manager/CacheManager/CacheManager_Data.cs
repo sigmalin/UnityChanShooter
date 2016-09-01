@@ -51,13 +51,13 @@ public partial class CacheManager
 	}
 
 	System.Object GetCache(string _key, string _assetPath, bool _instantiate)
-	{Debug.Log ("GetCache _key = " + _key);
+	{
 		if (mCacheTable.ContainsKey (_key) == false)
 			return null;
 
 		if (mCacheTable [_key] == null)
 			return null;
-		Debug.Log ("GetCache _assetPath = " + _assetPath);
+
 		System.Object asset = mCacheTable [_key].LoadAsset (ASSET_PATH + _assetPath);
 		if (asset == null)
 			return null;
@@ -65,7 +65,7 @@ public partial class CacheManager
 		return _instantiate ? UnityEngine.Object.Instantiate ((UnityEngine.Object)asset) : asset;
 	}
 
-	bool IsCacheExist(string _key)
+	bool IsCacheLoad(string _key)
 	{
 		if (mCacheTable == null)
 			return false;

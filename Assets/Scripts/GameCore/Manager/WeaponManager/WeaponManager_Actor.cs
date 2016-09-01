@@ -31,8 +31,6 @@ public sealed partial class WeaponManager
 	void InitialWeaponActor()
 	{
 		mActorTable = new Dictionary<uint, WeaponActor> ();
-
-		InitialActorObservable ();
 	}
 
 	void RegisterActor(uint _actorID, uint _weaponID)

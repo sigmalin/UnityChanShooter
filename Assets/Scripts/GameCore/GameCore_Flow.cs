@@ -1,9 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public partial class GameCore 
 {
 	IFlow mFlow = null;
+
+	Subject<uint> mFlowSubject = null;
+	protected IObservable<uint> FlowObservable { get { return mFlowSubject == null ? null : mFlowSubject.AsObservable(); } }
+
+	void InitialFlow()
+	{
+		ReleaseFlow ();
+
+		mFlowSubject = new Subject<uint> ();
+
+		FlowObservable
+			.Where (_ => mFlow != null)
+			.Subscribe (_ => mFlow.Event(_));
+	}
+
+	void ReleaseFlow()
+	{
+		mFlow = null;
+
+		if (mFlowSubject != null) 
+		{
+			mFlowSubject.Dispose ();
+
+			mFlowSubject = null;
+		}
+	}
 
 	static public void SetFlow(IFlow _flow)
 	{
@@ -19,12 +46,11 @@ public partial class GameCore
 			Instance.mFlow.Enter ();
 	}
 
-	static public void FlowEvent(uint _eventID)
+	static public void SendFlowEvent(uint _eventID)
 	{
-		if (Instance == null)
+		if (Instance == null || Instance.mFlowSubject == null)
 			return;
 
-		if (Instance.mFlow != null)
-			Instance.mFlow.Event (_eventID);
+		Instance.mFlowSubject.OnNext (_eventID);
 	}
 }

@@ -58,7 +58,7 @@ public partial class ResourceManager
 
 	GameObject LoadWeapon(uint _key)
 	{
-		GameObject weapon = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CACHE, GetWeaponPath(_key), GetWeaponAsset(_key), true);
+		GameObject weapon = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON, _key, true);
 		if (weapon == null) 
 			return null;
 

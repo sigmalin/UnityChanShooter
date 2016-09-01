@@ -20,10 +20,24 @@ public sealed class Flow_Lobby : FlowBehaviour
 	{
 		base.Exit ();
 
-		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(2);
+		GameCore.ChangeScene ("GamePlay", GetLoadList());
 	}
 
 	public override void Event (uint _eventID)
 	{
+	}
+
+	string[] GetLoadList()
+	{
+		return new string[] { 
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SCENE_PATH, "GamePlay"),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH, (uint)1),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_PATH, (uint)100),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_PATH, (uint)101),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH, (uint)1),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_DATA_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_PATH, (uint)1)
+							};
 	}
 }

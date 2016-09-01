@@ -6,11 +6,7 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 	// Use this for initialization
 	void Start () 
 	{
-		InitialRequestQueue ();
-
 		InitialCacheData ();
-
-		InitialLoadRequest ();
 	}
 
 	public void OnRegister ()
@@ -18,10 +14,22 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 		GameCore.RegisterCommand (CommandGroup.GROUP_CACHE, this);	
 
 		GameCore.RegisterParam (ParamGroup.GROUP_CACHE, this);
+
+		InitialRequestQueue ();
+
+		InitialCatalogueData ();
+
+		InitialLoadRequest ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleaselLoadRequest ();
+
+		ReleaseCatalogueData ();
+
+		ReleaseRequestQueue ();
+
 		ReleaseAllCacheData ();
 
 		GameCore.UnRegisterCommand (CommandGroup.GROUP_CACHE);
@@ -49,6 +57,10 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 		case CacheInst.RELEASE_CACHE:
 			ReleaseCache ((string)_params[0]);
 			break;
+
+		case CacheInst.REPORT_LOAD_STATE:
+			ReportLoadState (true);
+			break;
 		}
 
 	}
@@ -61,6 +73,97 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 		{
 		case CacheParam.GET_CACHE:
 			output = GetCache ((string)_params[0], (string)_params[1], (bool)_params[2]);
+			break;
+
+		case CacheParam.GET_SCENE_PATH:
+			output = (System.Object)GetCachePath (_inst, (string)_params [0]);
+			break;
+
+		case CacheParam.GET_CHARACTER_PATH:
+			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			break;
+
+		case CacheParam.GET_CONTAINER_PATH:
+			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			break;
+
+		case CacheParam.GET_WEAPON_DATA_PATH:
+			output = (System.Object)GetCachePath (_inst, string.Empty);
+			break;
+
+		case CacheParam.GET_WEAPON_PATH:
+			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			break;
+
+		case CacheParam.GET_BULLET_PATH:
+			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			break;
+
+		case CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH:
+			output = (System.Object)GetCachePath (_inst, string.Empty);
+			break;
+
+		case CacheParam.GET_CHARACTER:
+			{
+				uint characterKey = (uint)_params [0];
+
+				output = GetCache (
+					GetCachePath (CacheParam.GET_CHARACTER_PATH, characterKey.ToString()), 
+					GetCacheAsset (CacheParam.GET_CHARACTER_PATH, characterKey.ToString()), 
+					(bool)_params [1]);
+			}
+			break;
+
+		case CacheParam.GET_CONTAINER:
+			{
+				uint containerKey = (uint)_params [0];
+
+				output = GetCache (
+					GetCachePath (CacheParam.GET_CONTAINER_PATH, containerKey.ToString()), 
+					GetCacheAsset (CacheParam.GET_CONTAINER_PATH, containerKey.ToString()), 
+					(bool)_params [1]);
+			}
+			break;
+
+		case CacheParam.GET_WEAPON_DATA:
+
+			output = GetCache (
+				GetCachePath (CacheParam.GET_WEAPON_DATA_PATH, string.Empty), 
+				GetCacheAsset (CacheParam.GET_WEAPON_DATA_PATH, string.Empty), 
+				(bool)_params [0]);
+			break;
+
+		case CacheParam.GET_WEAPON:
+			{
+				uint weaponKey = (uint)_params [0];
+
+				output = GetCache (
+					GetCachePath (CacheParam.GET_WEAPON_PATH, weaponKey.ToString()), 
+					GetCacheAsset (CacheParam.GET_WEAPON_PATH, weaponKey.ToString()), 
+					(bool)_params [1]);
+			}
+			break;
+
+		case CacheParam.GET_BULLET:
+			{
+				uint bulletKey = (uint)_params [0];
+
+				output = GetCache (
+					GetCachePath (CacheParam.GET_BULLET_PATH, bulletKey.ToString()), 
+					GetCacheAsset (CacheParam.GET_BULLET_PATH, bulletKey.ToString()), 
+					(bool)_params [1]);
+			}
+			break;
+
+		case CacheParam.GET_INSTANT_RESOURCE_INPUT:
+			{
+				string inputKey = (string)_params [0];
+
+				output = GetCache (
+					GetCachePath (CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH, inputKey.ToString()), 
+					GetCacheAsset (CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH, inputKey.ToString()), 
+					(bool)_params [1]);
+			}
 			break;
 		}
 

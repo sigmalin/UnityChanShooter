@@ -8,7 +8,6 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 	// Use this for initialization
 	void Start () 
 	{
-		InitialRequestQueue ();
 		InitialCameraData ();
 	}
 
@@ -17,10 +16,14 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 		GameCore.RegisterCommand (CommandGroup.GROUP_CAMERA, this);		
 
 		GameCore.RegisterParam (ParamGroup.GROUP_CAMERA, this);
+
+		InitialRequestQueue ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleaseRequestQueue ();
+
 		BroadcastCommand (CameraInst.CAMERA_UNREGISTER);
 
 		ClearCameraData ();
@@ -29,8 +32,7 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 
 		GameCore.UnRegisterParam (ParamGroup.GROUP_CAMERA);
 	}
-
-	//public void ExecCommand (uint _inst, params System.Object[] _params)
+		
 	protected override void BatchCommand (uint _inst, params System.Object[] _params)
 	{
 		switch (_inst) 

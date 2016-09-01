@@ -6,7 +6,7 @@ public class ObservableQueue<T> : RequestQueue<T> where T : struct
 {
 	System.IDisposable mRequestDisposable = null;
 
-	public void Initial(IObservable<Unit> _observable, System.Action<RequestQueue<T>> _OnCompleted)
+	public void Initial(IObservable<float> _observable, System.Action<RequestQueue<T>> _OnCompleted)
 	{
 		Release ();
 

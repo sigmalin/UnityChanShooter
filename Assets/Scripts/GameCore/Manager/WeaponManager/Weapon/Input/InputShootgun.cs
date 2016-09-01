@@ -108,11 +108,18 @@ public class InputShootgun : MonoBehaviour, IInput
 		// Lock Mouse
 		_inputStream
 			.Where (_ => Cursor.lockState != CursorLockMode.Locked)
-			.Subscribe (_ =>
+			.Subscribe (
+				_ =>
 				{
 					Cursor.lockState = CursorLockMode.Locked;
 					Cursor.visible = false;
-				});
+				},
+				() => 
+				{
+					Cursor.lockState = CursorLockMode.None;
+					Cursor.visible = true;
+				}
+			);
 		
 		// Move CrossHair
 		_cameraStream
