@@ -2,7 +2,7 @@
 using System.Collections;
 using UniRx;
 
-public class InputShootgun : MonoBehaviour, IInput 
+public class InputShootgun : MonoBehaviour, IInput, IUserInterface 
 {
 	Transform mGameCamera = null;
 	Transform GameCamera
@@ -18,7 +18,7 @@ public class InputShootgun : MonoBehaviour, IInput
 		}
 	}
 
-	public IUserInterface UserInterface { get { return null; } }
+	public IInput Operator { get { return this; } }
 
 	#region uniRx
 	Subject<Unit> mOnHandleInputSubject = new Subject<Unit>();
@@ -38,6 +38,20 @@ public class InputShootgun : MonoBehaviour, IInput
 		ControlCamera (
 			inputStream.Select (_ => (uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA)).Publish ().RefCount(),
 			inputStream);
+	}
+
+	public void Show(Transform _root)
+	{
+	}
+
+	public void Hide()
+	{
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
+	}
+
+	public void SendCommand(uint _inst, params System.Object[] _params)
+	{
 	}
 	
 	// Update is called once per frame

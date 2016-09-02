@@ -51,6 +51,11 @@ public partial class PlayerManager
 		return mPlayerTable[_playerID];
 	}
 
+	uint[] GetAllPlayerID()
+	{
+		return mPlayerTable.Keys.ToArray ();
+	}
+
 	PlayerData[] GetAllPlayerData()
 	{
 		return mPlayerTable.Values.ToArray ();

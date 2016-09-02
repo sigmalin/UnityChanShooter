@@ -11,12 +11,36 @@ public class DevelopTestCode : MonoBehaviour
 
 	System.IDisposable mDisposable = null;
 
+	int[] test = new int[]{1,2,3,4,5};
+
+	Dictionary<int, int> mActorTable = null;
+
 	// Use this for initialization
 	void Start () 
 	{
-		Debug.Log (string.Format("res = {0}", Application.CanStreamedLevelBeLoaded("GamePlay")));
-		//ResetObservable ();
-		//Observable.Timer (System.TimeSpan.FromSeconds (15)).Subscribe (_ => ResetObservable() );
+		mActorTable = test.Select (_ => new {key = _, value = 10 + _})
+			.ToDictionary (_ => _.key, _ => _.value);
+
+		IObservable<int> obser = mSubject.AsObservable ()
+			.Select (_ => mActorTable.Keys)
+			.SelectMany (_ => _.ToObservable ())
+			.Select (_ => mActorTable [_])
+			.Do(_ => Debug.Log("pre"))
+			.Publish().RefCount();
+
+		mDisposable = obser.Where (_ => 13 < _)
+			.Subscribe (_ => Debug.Log("post1 = " + _));
+
+		obser.Where (_ => _ < 13)
+			.Subscribe (_ => Debug.Log("post2 = " + _));
+
+
+		Observable.Timer (System.TimeSpan.FromSeconds (3F)).Subscribe (
+			_ =>
+			{
+				Debug.Log("Dispose");
+				mDisposable.Dispose();
+			});
 	}
 
 	void Update()
@@ -33,24 +57,5 @@ public class DevelopTestCode : MonoBehaviour
 			mDisposable.Dispose ();
 			mDisposable = null;
 		}
-
-		mDisposable = Observable.Start (() => 1F)
-			.SelectMany (
-			mSubject.AsObservable ()
-				.Scan ((_pre, _cur) => _pre + _cur)
-				.Do(res => Debug.Log("Step1 res = " + res))
-				.Where (res => 5F <= res)
-				.Do(res => Debug.Log("step1 Completed"))
-				.First()
-			)
-			.SelectMany(
-				mSubject.AsObservable ()
-				.Scan ((_pre, _cur) => _pre + _cur)
-				.Do(res => Debug.Log("Step2 res = " + res))
-				.Where (res => 5F <= res)
-				.Do(res => Debug.Log("Step2 Completed"))
-				.First()
-			)
-			.Subscribe (_ => { Debug.Log ("Call Subscribe"); } );
 	}
 }

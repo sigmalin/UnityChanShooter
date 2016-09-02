@@ -2,7 +2,7 @@
 using System.Collections;
 using UniRx;
 
-public sealed partial class Flow_GamePlay : FlowBehaviour, IInput 
+public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterface
 {
 	#region Spawn
 	[SerializeField]
@@ -53,7 +53,7 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput
 
 	public override void Exit ()
 	{
-		GameCore.PopInputUntil (this);
+		ReleaseInput ();
 
 		base.Exit ();
 

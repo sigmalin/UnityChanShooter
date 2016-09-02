@@ -49,18 +49,18 @@ public partial class WeaponLauncher : DisplayBehaviour
 		}
 	}
 
-	IInput mInputDevice;
-	public IInput InputDevice 
+	IUserInterface mWeaponInterface;
+	public IUserInterface WeaponInterface 
 	{
 		get 
 		{ 
-			if (mInputDevice == null) 
+			if (mWeaponInterface == null) 
 			{
 				GameObject device = (GameObject	)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.INSTANT_RESOURCE_INPUT, GetInputDevicePath ());
-				if (device != null) mInputDevice = device.GetComponent<IInput> ();
+				if (device != null) mWeaponInterface = device.GetComponent<IUserInterface> ();
 			}
 
-			return mInputDevice;
+			return mWeaponInterface;
 		} 
 	}
 

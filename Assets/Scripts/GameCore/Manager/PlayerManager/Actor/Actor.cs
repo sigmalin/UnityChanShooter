@@ -44,14 +44,6 @@ public class Actor : DisplayBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () 
-	{
-		if (mActorController == null)
-			return;
-
-		mActorController.OnUpdate ();
-	}
-
 	void OnAnimatorMove()
 	{
 		if (mActorController == null)
@@ -66,6 +58,14 @@ public class Actor : DisplayBehaviour
 			return;
 
 		mActorController.OnAnimIK ();
+	}
+
+	public void FrameMove () 
+	{
+		if (mActorController == null)
+			return;
+
+		mActorController.OnUpdate ();
 	}
 
 	void SetActorController(ActorController _actorCtrl)
@@ -88,7 +88,12 @@ public class Actor : DisplayBehaviour
 		case PlayerInst.MAIN_PLAYER:
 			if (mLauncher != null) 
 			{
-				GameCore.PushInput (mLauncher.InputDevice);
+				bool isMainPlayer = (bool)_params[0];
+
+				if (isMainPlayer)
+					GameCore.PushInterface (mLauncher.WeaponInterface);
+				else
+					GameCore.PopPopInterface (mLauncher.WeaponInterface);
 			}
 			break;
 

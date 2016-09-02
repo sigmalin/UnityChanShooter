@@ -18,10 +18,14 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 		GameCore.RegisterParam (ParamGroup.GROUP_PLAYER, this);
 
 		InitialRequestQueue ();
+
+		InitialActorUpdate ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleaseActorUpdate ();
+
 		ReleaseRequestQueue ();
 
 		BroadcastCommand (PlayerInst.REMOVE_PLAYER);
@@ -48,8 +52,9 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case PlayerInst.MAIN_PLAYER:
+			TransCommand (mMainPlayer, _inst, false);
 			mMainPlayer = (uint)_params[0];
-			TransCommand (mMainPlayer, _inst);
+			TransCommand (mMainPlayer, _inst, true);
 			break;
 
 		default:

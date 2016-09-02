@@ -4,7 +4,7 @@ using UniRx;
 
 public partial class Flow_GamePlay
 {
-	public IUserInterface UserInterface { get { return null; } }
+	public IInput Operator { get { return this; } }
 
 	Subject<Unit> mOnHandleInputSubject = new Subject<Unit>();
 
@@ -16,10 +16,13 @@ public partial class Flow_GamePlay
 		mOnHandleInputSubject = new Subject<Unit>();
 			
 		mOnHandleInputSubject.AsObservable().Where (_ => Input.GetKeyUp (KeyCode.Escape))
-			.BatchFrame(0, FrameCountType.EndOfFrame)
-			.Subscribe ( _ => GameCore.SetFlow(null) );
+			.Subscribe ( _ => 
+				{
+					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.MAIN_PLAYER, (uint)0);
+					GameCore.SetNextFlow(null);
+				});
 
-		GameCore.PushInput (this);
+		GameCore.PushInterface (this);
 	}
 
 	void ReleaseInput()
@@ -29,6 +32,8 @@ public partial class Flow_GamePlay
 			mOnHandleInputSubject.Dispose ();
 
 			mOnHandleInputSubject = null;
+
+			GameCore.PopPopInterface (this);
 		}
 	}
 
@@ -38,5 +43,17 @@ public partial class Flow_GamePlay
 		mOnHandleInputSubject.OnNext (Unit.Default);
 
 		return true;
+	}
+
+	public void Show(Transform _root)
+	{
+	}
+
+	public void Hide()
+	{
+	}
+
+	public void SendCommand(uint _inst, params System.Object[] _params)
+	{
 	}
 }

@@ -5,44 +5,47 @@ using UniRx.Triggers;
 
 public sealed partial class WeaponManager
 {
-	System.IDisposable mActorDisposable = null;
+	System.IDisposable mShootFreqDisposable = null;
+
+	System.IDisposable mReloadDisposable = null;
 
 	void InitialActorObservable()
 	{
 		ReleaseActorObservable ();
 
-		mActorDisposable = UpdateObservable
-			.Subscribe (_ => 
+		IObservable<WeaponActor> actorObserver = UpdateObservable
+			.SelectMany (_ => GetAllActorID ().ToObservable ())
+			.Select (_ => GetWeaponActor (_))
+			.Where (_ => _ != null).Publish().RefCount();
+
+		mShootFreqDisposable = actorObserver
+			.Where (_ => 0F < _.ShootFreq)
+			.Subscribe (_ => _.ShootFreq = Mathf.Clamp (_.ShootFreq - Time.deltaTime, 0F, _.ShootFreq));
+
+		mReloadDisposable = actorObserver
+			.Where (_ => _.AmmoCount < _.MaxAmmoCount)
+			.Do (_ => _.ReloadTime -= Time.deltaTime)
+			.Where (_ => _.ReloadTime <= 0F)
+			.Subscribe (
+				_ => 
 				{
-					uint[] actorIDs = mActorTable.Keys.ToArray ();
-
-					for(int Indx = 0; Indx < actorIDs.Length; ++Indx)
-					{
-						WeaponActor actor = GetWeaponActor(actorIDs[Indx]);
-						if (actor == null) continue;
-
-						actor.ShootFreq = actor.ShootFreq - Time.deltaTime;
-						if (actor.ShootFreq < 0F) actor.ShootFreq = 0F;
-
-						if (actor.AmmoCount < actor.MaxAmmoCount)
-						{
-							actor.ReloadTime -= Time.deltaTime;
-							if (actor.ReloadTime <= 0F)
-							{
-								actor.ReloadTime = actor.MaxReloadTime;
-								++actor.AmmoCount;
-							}
-						}
-					}
+					_.ReloadTime = _.MaxReloadTime;
+					++_.AmmoCount;
 				});
 	}
 
 	void ReleaseActorObservable()
 	{
-		if (mActorDisposable != null) 
+		if (mShootFreqDisposable != null) 
 		{
-			mActorDisposable.Dispose ();
-			mActorDisposable = null;
+			mShootFreqDisposable.Dispose ();
+			mShootFreqDisposable = null;
+		}
+
+		if (mReloadDisposable != null) 
+		{
+			mReloadDisposable.Dispose ();
+			mReloadDisposable = null;
 		}
 	}
 }

@@ -24,7 +24,7 @@ public sealed class Flow_Logo : FlowBehaviour
 		switch (_eventID) 
 		{
 		case FlowEvent.VERSION_VERFITY_COMPLETED:
-			GameCore.SetFlow (null);
+			GameCore.SetNextFlow (null);
 			break;
 		}
 	}

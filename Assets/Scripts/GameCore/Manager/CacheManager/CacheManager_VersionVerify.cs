@@ -30,12 +30,18 @@ public partial class CacheManager
 	void LoadVersionList()
 	{		
 		ScheduledNotifier<float> progressNotifier = new ScheduledNotifier<float>();
-		progressNotifier.Subscribe(x => Debug.Log(x));
+		progressNotifier.Subscribe(_ => UpdateLoadingProgress(_));
+
+		ShowLoadingProgress ();
 
 		ObservableWWW.GetWWW (SERVER_PATH + VERSION_LIST_BUNDLE + ASSET_BUNDLE_EXTENSION, progress: progressNotifier)
 			.Subscribe 
 			(
-				_ => VersionVerify(_),
+				_ => 
+				{
+					HideLoadingProgress();
+					VersionVerify(_);
+				},
 				_ex => GameCore.SendFlowEvent(FlowEvent.CONNECT_FAILURED)
 			);
 	}
@@ -191,7 +197,9 @@ public partial class CacheManager
 	void DownLoadAndWrite2Stream(VersionRepository.VersionInfo[] _list, System.Action _onCompleted, System.Action<System.Exception> _onError)
 	{
 		ScheduledNotifier<float> progressNotifier = new ScheduledNotifier<float>();
-		progressNotifier.Subscribe(x => Debug.Log(x));
+		progressNotifier.Subscribe(x => UpdateLoadingProgress(x));
+
+		ShowLoadingProgress ();
 
 		_list
 			.Select 
@@ -204,7 +212,10 @@ public partial class CacheManager
 			)
 			.Aggregate ((pre, cur) => pre.SelectMany (cur))
 			.Subscribe (
-				_ => _onCompleted(),
+				_ => {
+					HideLoadingProgress();
+					_onCompleted();
+				},
 				ex => _onError(ex));
 	}
 

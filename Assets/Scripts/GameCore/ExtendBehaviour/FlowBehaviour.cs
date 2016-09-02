@@ -9,7 +9,7 @@ public class FlowBehaviour : MonoBehaviour, IFlow
 	// Use this for initialization
 	void Start () 
 	{
-		GameCore.SetFlow (this);
+		GameCore.SetNextFlow (this);
 	}
 
 	public virtual void Enter()

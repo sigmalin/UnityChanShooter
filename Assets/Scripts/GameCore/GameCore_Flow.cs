@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UniRx;
 
 public partial class GameCore 
 {
 	IFlow mFlow = null;
+
+	Queue<IFlow> mFlowQueue = null;
 
 	Subject<uint> mFlowSubject = null;
 	protected IObservable<uint> FlowObservable { get { return mFlowSubject == null ? null : mFlowSubject.AsObservable(); } }
@@ -12,6 +15,8 @@ public partial class GameCore
 	void InitialFlow()
 	{
 		ReleaseFlow ();
+
+		mFlowQueue = new Queue<IFlow> ();
 
 		mFlowSubject = new Subject<uint> ();
 
@@ -24,6 +29,13 @@ public partial class GameCore
 	{
 		mFlow = null;
 
+		if (mFlowQueue != null) 
+		{
+			mFlowQueue.Clear ();
+
+			mFlowQueue = null;
+		}
+
 		if (mFlowSubject != null) 
 		{
 			mFlowSubject.Dispose ();
@@ -32,18 +44,29 @@ public partial class GameCore
 		}
 	}
 
-	static public void SetFlow(IFlow _flow)
+	void LateUpdateFlow()
+	{
+		if (mFlowQueue == null)
+			return;
+
+		if (mFlowQueue.Count == 0)
+			return;
+
+		if (mFlow != null)
+			mFlow.Exit ();
+
+		mFlow = mFlowQueue.Dequeue();
+
+		if (mFlow != null)
+			mFlow.Enter ();
+	}
+
+	static public void SetNextFlow(IFlow _flow)
 	{
 		if (Instance == null)
 			return;
 
-		if (Instance.mFlow != null)
-			Instance.mFlow.Exit ();
-
-		Instance.mFlow = _flow;
-
-		if (Instance.mFlow != null)
-			Instance.mFlow.Enter ();
+		Instance.mFlowQueue.Enqueue(_flow);
 	}
 
 	static public void SendFlowEvent(uint _eventID)

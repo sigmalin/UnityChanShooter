@@ -13,7 +13,7 @@ public sealed class Flow_Lobby : FlowBehaviour
 
 		stream.Where(_ => Input.GetMouseButtonDown(0))
 			.Zip(stream.Where(_ => Input.GetMouseButtonUp(0)), (down, up) => Unit.Default)
-			.Subscribe ( _ => GameCore.SetFlow(null) );	
+			.Subscribe ( _ => GameCore.SetNextFlow(null) );	
 	}
 
 	public override void Exit ()

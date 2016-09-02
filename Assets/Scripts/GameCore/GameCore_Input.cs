@@ -4,97 +4,89 @@ using System.Collections.Generic;
 
 public partial class GameCore
 {
-	Stack<IInput> mInputStack = null; 
+	Stack<IUserInterface> mInterfaceStack = null; 
 
 	void InitialInput()
 	{
-		if (mInputStack == null)
-			mInputStack = new Stack<IInput> ();
+		if (mInterfaceStack == null)
+			mInterfaceStack = new Stack<IUserInterface> ();
 
-		mInputStack.Clear ();
+		mInterfaceStack.Clear ();
 	}
 
 	void HandleInput()
 	{
-		if (mInputStack == null)
+		if (mInterfaceStack == null)
 			return;
 
-		if (mInputStack.Count == 0)
+		if (mInterfaceStack.Count == 0)
 			return;
 
-		IInput input = mInputStack.Pop ();
+		IUserInterface userInterface = mInterfaceStack.Pop ();
 
-		if (input == null) 
+		if (userInterface == null) 
 		{
 			HandleInput ();
 		} 
 		else 
 		{
-			if (input.HandleInput () == false) 
+			if (userInterface.Operator == null || userInterface.Operator.HandleInput() == false) 
+			{
 				HandleInput ();
+			}				
 
-			mInputStack.Push (input);
+			mInterfaceStack.Push (userInterface);
 		}
 	}
 
-	void ExecPushInput(IInput _input)
+	void ExecPushInterface(IUserInterface _interface)
 	{
-		if (mInputStack == null)
-			return;
-		
-		if (_input == null)
+		if (mInterfaceStack == null)
 			return;
 
-		mInputStack.Push (_input);
+		if (mInterfaceStack.Contains (_interface) == true)
+			return;
 
-		if (_input.UserInterface != null)
-			_input.UserInterface.Show ();
+		mInterfaceStack.Push (_interface);
+
+		_interface.Show (mCanvas);
 	}
 
-	IInput ExecPopInput()
+	void ExecPopInterface(IUserInterface _interface)
 	{
-		if (mInputStack == null)
-			return null;
+		if (mInterfaceStack == null)
+			return;
 
-		if (mInputStack.Count == 0)
-			return null;
+		if (mInterfaceStack.Count == 0)
+			return;
 
-		IInput input = mInputStack.Pop ();
+		IUserInterface userInterface = mInterfaceStack.Pop ();
 
-		if (input.UserInterface != null)
-			input.UserInterface.Hide ();
+		if (_interface == userInterface) 
+		{
+			userInterface.Hide ();
+		} 
+		else 
+		{
+			ExecPopInterface (_interface);
 
-		return input;
+			mInterfaceStack.Push (_interface);
+		}
 	}
 
-	static public void PushInput(IInput _input)
+	static public void PushInterface(IUserInterface _interface)
 	{
-		if (_input == null)
+		if (Instance == null || _interface == null)
 			return;
 
-		if (Instance == null)
-			return;
-
-		Instance.ExecPushInput (_input);
+		Instance.ExecPushInterface (_interface);
 	}
 
-	static public void PopInput()
+	static public void PopPopInterface(IUserInterface _interface)
 	{
-		if (Instance == null)
+		if (Instance == null || _interface == null)
 			return;
 
-		Instance.ExecPopInput ();
-	}
-
-	static public void PopInputUntil(IInput _input)
-	{
-		if (Instance == null)
-			return;
-
-		IInput result = null;
-
-		do {
-			result = Instance.ExecPopInput ();
-		} while (result != null && result != _input);
+		Instance.ExecPopInterface (_interface);
 	}
 }

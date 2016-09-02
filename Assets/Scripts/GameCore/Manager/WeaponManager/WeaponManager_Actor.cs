@@ -82,9 +82,14 @@ public sealed partial class WeaponManager
 		if (mActorTable == null)
 			return;
 		
-		uint[] actorIDs = mActorTable.Keys.ToArray ();
+		uint[] actorIDs = GetAllActorID ();
 
 		for (int Indx = 0; Indx < actorIDs.Length; ++Indx)
 			RemoveActor (actorIDs[Indx]);
+	}
+
+	uint[] GetAllActorID()
+	{
+		return mActorTable.Keys.ToArray ();
 	}
 }

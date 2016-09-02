@@ -18,6 +18,8 @@ public partial class GameCore
 		IObservable<float> batchLateUpdate = this.LateUpdateAsObservable ().Select (_ => Time.deltaTime).Publish ().RefCount ();
 
 		batchLateUpdate.Subscribe (_ => BatchLateUpdate (_));
+
+		batchLateUpdate.Subscribe (_ => LateUpdateFlow ());
 	}
 
 	void BatchUpdate(float _delta)
