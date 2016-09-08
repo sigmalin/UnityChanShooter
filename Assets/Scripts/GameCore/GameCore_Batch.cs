@@ -20,6 +20,8 @@ public partial class GameCore
 		batchLateUpdate.Subscribe (_ => BatchLateUpdate (_));
 
 		batchLateUpdate.Subscribe (_ => LateUpdateFlow ());
+
+		batchLateUpdate.Subscribe (_ => ExecGL());
 	}
 
 	void BatchUpdate(float _delta)

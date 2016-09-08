@@ -9,6 +9,7 @@ public class ParamGroup
 	public const uint GROUP_RESOURCE = 3;
 	public const uint GROUP_WEAPON   = 4;
 	public const uint GROUP_CACHE    = 5;
+	public const uint GROUP_LOBBY    = 6;
 }
 
 public class SystemParam
@@ -71,6 +72,10 @@ public class CacheParam
 	public const uint GET_BULLET = 115;
 
 	public const uint GET_INSTANT_RESOURCE_INPUT = 199;
+}
+
+public class LobbyParam
+{
 }
 
 public interface IParam 

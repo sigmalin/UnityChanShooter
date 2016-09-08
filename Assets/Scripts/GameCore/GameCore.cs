@@ -35,6 +35,8 @@ public partial class GameCore : MonoBehaviour
 
 	void Initialize()
 	{
+		InitialProfile ();
+
 		InitialAnimID ();
 
 		InitialLayer ();
@@ -45,6 +47,8 @@ public partial class GameCore : MonoBehaviour
 
 		InitialParam ();
 
+		InitialGL ();
+
 		InitialBatch ();
 
 		InitialFlow ();
@@ -53,5 +57,9 @@ public partial class GameCore : MonoBehaviour
 	void Release()
 	{
 		ReleaseFlow ();
+
+		ReleaseGL ();
+
+		ReleaseInput ();
 	}
 }

@@ -15,6 +15,9 @@ public partial class GameCore
 	int mAnimID_fJumpForce = 0;
 	static public int AnimID_fJumpForce { get { return mInstance != null ? mInstance.mAnimID_fJumpForce : 0; } }
 
+	int mAnimID_iLobbyState = 0;
+	static public int AnimID_iLobbyState { get { return mInstance != null ? mInstance.mAnimID_iLobbyState : 0; } }
+
 	// Use this for initialization
 	void InitialAnimID () 
 	{
@@ -25,5 +28,7 @@ public partial class GameCore
 		mAnimID_fSpeed = Animator.StringToHash ("fSpeed");
 
 		mAnimID_fJumpForce = Animator.StringToHash ("fJumpForce");
+
+		mAnimID_iLobbyState = Animator.StringToHash ("iLobbyState");
 	}
 }

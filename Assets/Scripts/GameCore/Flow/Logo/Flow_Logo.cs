@@ -34,7 +34,10 @@ public sealed class Flow_Logo : FlowBehaviour
 		IObservable<Unit> stream = this.UpdateAsObservable ();
 
 		stream.Where(_ => Input.GetMouseButtonDown(0))
-			.TakeUntil(stream.Where(_ => Input.GetMouseButtonUp(0)))
+			.First()
+			.SelectMany(stream.Where(_ => Input.GetMouseButtonUp(0)))
+			.First()
+			//.RepeatUntilDestroy(this.gameObject)
 			.Subscribe 
 			( 
 				_ => {},

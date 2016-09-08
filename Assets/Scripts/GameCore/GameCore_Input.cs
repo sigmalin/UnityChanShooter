@@ -8,10 +8,19 @@ public partial class GameCore
 
 	void InitialInput()
 	{
-		if (mInterfaceStack == null)
-			mInterfaceStack = new Stack<IUserInterface> ();
+		ReleaseInput ();
 
-		mInterfaceStack.Clear ();
+		mInterfaceStack = new Stack<IUserInterface> ();
+	}
+
+	void ReleaseInput()
+	{
+		if (mInterfaceStack != null) 
+		{
+			mInterfaceStack.Clear ();
+
+			mInterfaceStack = null;
+		}
 	}
 
 	void HandleInput()

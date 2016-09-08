@@ -1,14 +1,15 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Art Datas\InGame\Progress\LoadingProgress.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Develop\DevelopTestCode.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\PlayerManager_ActorUpdate.cs" Line="1" Column="1" />
-      <File FileName="Assets\Art Datas\InGame\Progress\LoadingProgress.cs" Line="18" Column="3" />
-      <File FileName="Assets\Scripts\GameCore\Manager\CacheManager\CacheManager_DownLoad.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GameCore\Manager\CacheManager\CacheManager_Interface.cs" Line="36" Column="71" />
-      <File FileName="Assets\Scripts\GameCore\GameCore_Input.cs" Line="42" Column="19" />
-      <File FileName="Assets\Scripts\GameCore\Manager\CacheManager\CacheManager_Read.cs" Line="78" Column="6" />
-      <File FileName="Assets\Art Datas\InGame\Progress\Progress.cs" Line="45" Column="99" />
+      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\UI\Page_Character.cs" Line="11" Column="16" />
+      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\LobbyManager_PageCharacter.cs" Line="21" Column="1" />
+      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\LobbyManager.cs" Line="42" Column="15" />
+      <File FileName="Assets\Scripts\GameCore\GameCore_Profile.cs" Line="16" Column="42" />
+      <File FileName="Assets\Scripts\GameCore\GameCore_Flow.cs" Line="6" Column="1" />
+      <File FileName="Assets\Scripts\GameCore\Data\WeaponDataRepository.cs" Line="7" Column="22" />
+      <File FileName="Assets\Scripts\GameCore\GameCore.cs" Line="39" Column="3" />
+      <File FileName="Assets\Develop\DevelopTestCode.cs" Line="56" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

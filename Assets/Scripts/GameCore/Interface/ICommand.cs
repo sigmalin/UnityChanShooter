@@ -9,6 +9,7 @@ public class CommandGroup
 	public const uint GROUP_RESOURCE = 3;
 	public const uint GROUP_WEAPON   = 4;
 	public const uint GROUP_CACHE    = 5;
+	public const uint GROUP_LOBBY    = 6;
 }
 
 public class SystemInst
@@ -87,6 +88,12 @@ public class CacheInst
 	public const uint REPORT_DOWN_LOAD_STATE = 5;
 
 	public const uint DOWN_LOAD_CACHE = 6;
+}
+
+public class LobbyInst
+{
+	public const uint ENTER_PAGE_CHARACTER = 0;
+	public const uint EXIT_PAGE_CHARACTER = 1;
 }
 
 public interface ICommand 
