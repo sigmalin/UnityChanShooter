@@ -92,51 +92,51 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case CacheParam.GET_SCENE_PATH:
-			output = (System.Object)GetCachePath (_inst, (string)_params [0]);
+			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_CHARACTER_PATH:
-			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_CONTAINER_PATH:
-			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_WEAPON_DATA_PATH:
-			output = (System.Object)GetCachePath (_inst, string.Empty);
+			output = (System.Object)GetCachePath (_inst);
 			break;
 
 		case CacheParam.GET_WEAPON_PATH:
-			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_BULLET_PATH:
-			output = (System.Object)GetCachePath (_inst, ((uint)_params [0]).ToString());
+			output = (System.Object)GetCachePath (_inst, _params);
+			break;
+
+		case CacheParam.GET_PORTRAIT_PATH:
+			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH:
-			output = (System.Object)GetCachePath (_inst, string.Empty);
+			output = (System.Object)GetCachePath (_inst);
 			break;
 
 		case CacheParam.GET_CHARACTER:
 			{
-				uint characterKey = (uint)_params [0];
-
 				output = GetCache (
-					GetCachePath (CacheParam.GET_CHARACTER_PATH, characterKey.ToString()), 
-					GetCacheAsset (CacheParam.GET_CHARACTER_PATH, characterKey.ToString()), 
+					GetCachePath (CacheParam.GET_CHARACTER_PATH, _params), 
+					GetCacheAsset (CacheParam.GET_CHARACTER_PATH, _params), 
 					(bool)_params [1]);
 			}
 			break;
 
 		case CacheParam.GET_CONTAINER:
 			{
-				uint containerKey = (uint)_params [0];
-
 				output = GetCache (
-					GetCachePath (CacheParam.GET_CONTAINER_PATH, containerKey.ToString()), 
-					GetCacheAsset (CacheParam.GET_CONTAINER_PATH, containerKey.ToString()), 
+					GetCachePath (CacheParam.GET_CONTAINER_PATH, _params), 
+					GetCacheAsset (CacheParam.GET_CONTAINER_PATH, _params), 
 					(bool)_params [1]);
 			}
 			break;
@@ -144,40 +144,42 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 		case CacheParam.GET_WEAPON_DATA:
 
 			output = GetCache (
-				GetCachePath (CacheParam.GET_WEAPON_DATA_PATH, string.Empty), 
-				GetCacheAsset (CacheParam.GET_WEAPON_DATA_PATH, string.Empty), 
+				GetCachePath (CacheParam.GET_WEAPON_DATA_PATH), 
+				GetCacheAsset (CacheParam.GET_WEAPON_DATA_PATH), 
 				(bool)_params [0]);
 			break;
 
 		case CacheParam.GET_WEAPON:
 			{
-				uint weaponKey = (uint)_params [0];
-
 				output = GetCache (
-					GetCachePath (CacheParam.GET_WEAPON_PATH, weaponKey.ToString()), 
-					GetCacheAsset (CacheParam.GET_WEAPON_PATH, weaponKey.ToString()), 
+					GetCachePath (CacheParam.GET_WEAPON_PATH, _params), 
+					GetCacheAsset (CacheParam.GET_WEAPON_PATH, _params), 
 					(bool)_params [1]);
 			}
 			break;
 
 		case CacheParam.GET_BULLET:
 			{
-				uint bulletKey = (uint)_params [0];
-
 				output = GetCache (
-					GetCachePath (CacheParam.GET_BULLET_PATH, bulletKey.ToString()), 
-					GetCacheAsset (CacheParam.GET_BULLET_PATH, bulletKey.ToString()), 
+					GetCachePath (CacheParam.GET_BULLET_PATH, _params), 
+					GetCacheAsset (CacheParam.GET_BULLET_PATH, _params), 
 					(bool)_params [1]);
 			}
 			break;
 
+		case CacheParam.GET_PORTRAIT:
+
+			output = GetCache (
+				GetCachePath (CacheParam.GET_PORTRAIT_PATH, _params), 
+				GetCacheAsset (CacheParam.GET_PORTRAIT_PATH, _params), 
+				(bool)_params [2]);
+			break;
+
 		case CacheParam.GET_INSTANT_RESOURCE_INPUT:
 			{
-				string inputKey = (string)_params [0];
-
 				output = GetCache (
-					GetCachePath (CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH, inputKey.ToString()), 
-					GetCacheAsset (CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH, inputKey.ToString()), 
+					GetCachePath (CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH, _params), 
+					GetCacheAsset (CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH, _params), 
 					(bool)_params [1]);
 			}
 			break;

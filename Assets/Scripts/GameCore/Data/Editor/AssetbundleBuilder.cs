@@ -8,7 +8,7 @@ public class AssetbundleBuilder
 {
 	const string ASSET_FILTER_ALL = "t:Texture2D t:AudioClip t:TextAsset t:AnimationClip t:Material";
 	const string ASSET_FILTER_PREFAB = "t:Prefab";
-	const string ASSET_FILTER_GAMECORE = "t:Prefab t:ScriptableObject t:SceneAsset";
+	const string ASSET_FILTER_GAMECORE = "t:Prefab t:ScriptableObject t:SceneAsset t:Texture2D";
 
 	const string ASSET_SOURCE_PATH = "Assets/OutputAsset/Editor/";
 	const string ASSET_OUTPUT_PATH = "../../GameCoreAssetBundles/";

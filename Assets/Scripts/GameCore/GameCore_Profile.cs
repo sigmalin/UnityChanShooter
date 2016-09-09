@@ -13,12 +13,12 @@ public partial class GameCore
 		{
 			MainCharacterID = 101u;
 
-			HoldCharacterList = new uint[] {101u};
+			HoldCharacterList = new uint[] {101u, 102u, 103u};
 		}
 	}
 
 	Profile mProfile;
-	public Profile UserProfile { get { return mProfile; } }
+	public static Profile UserProfile { get { return mInstance == null ? null : mInstance.mProfile; } }
 
 	void InitialProfile()
 	{

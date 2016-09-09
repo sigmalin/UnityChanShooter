@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UniRx;
 using UniRx.Triggers;
 
@@ -16,7 +17,7 @@ public sealed class Flow_Logo : FlowBehaviour
 
 	public override void Exit ()
 	{
-		GameCore.ChangeScene ("Scene/Lobby");
+		GameCore.ChangeScene ("Scene/Lobby", GetLoadList());
 	}
 
 	public override void Event (uint _eventID)
@@ -44,5 +45,14 @@ public sealed class Flow_Logo : FlowBehaviour
 				_ex => Debug.Log(_ex),
 				() => GameCore.SendCommand(CommandGroup.GROUP_CACHE, CacheInst.VERSION_VERIFY)//LoadVersionList()
 			);	
+	}
+
+	string[] GetLoadList()
+	{
+		string[] listPortrait = GameCore.UserProfile.HoldCharacterList
+			.Select (_ => (string)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT_PATH, _))
+			.ToArray ();
+
+		return listPortrait;
 	}
 }

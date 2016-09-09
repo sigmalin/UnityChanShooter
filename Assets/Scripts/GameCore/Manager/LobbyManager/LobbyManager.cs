@@ -37,13 +37,26 @@ public sealed partial class LobbyManager : CommandBehaviour, IParam, IRegister
 	{
 		switch(_inst)
 		{
-		case LobbyInst.ENTER_PAGE_CHARACTER:
+		case LobbyInst.UPDATE_MAIN_CHARACTER:
+			UpdateLobbyBasePortrait ();
+			break;
+
+		case LobbyInst.ENTER_PAGE_CHARACTER_LIST:
 			SetLobbyBaseStateCharacter ();
+			ShowPageCharacterList ();
+			break;
+
+		case LobbyInst.EXIT_PAGE_CHARACTER_LIST:
+			SetLobbyBaseStateNormal ();
+			HidePageCharacterList ();
+			break;
+
+		case LobbyInst.ENTER_PAGE_CHARACTER:
+			UpdateLobbyBasePortrait ();
 			ShowPageCharacter ();
 			break;
 
 		case LobbyInst.EXIT_PAGE_CHARACTER:
-			SetLobbyBaseStateNormal ();
 			HidePageCharacter ();
 			break;
 		}

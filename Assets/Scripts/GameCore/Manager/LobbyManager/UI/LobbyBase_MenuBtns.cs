@@ -26,7 +26,7 @@ public sealed partial class LobbyBase
 		if (mMenuBtns.Character != null) 
 		{
 			mMenuBtns.Character.OnClickAsObservable ()
-				.Subscribe (_ => GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.ENTER_PAGE_CHARACTER));
+				.Subscribe (_ => GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.ENTER_PAGE_CHARACTER_LIST));
 		}
 	}
 }

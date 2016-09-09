@@ -21,12 +21,15 @@ public class DevelopTestCode : MonoBehaviour
 
 	public Material mMat;
 
+	public GameObject[] mList;
+
 	// Use this for initialization
 	void Start () 
 	{
 		//button.OnClickAsObservable ()
 		//	.Subscribe (_ => Debug.Log ("yaya"));
 
+		/*
 		mTex = RenderTexture.GetTemporary (128,128);
 
 		mSubject.AsObservable ()
@@ -34,6 +37,12 @@ public class DevelopTestCode : MonoBehaviour
 			.SelectMany (mSubject.AsObservable ()
 				.Where (_ => Input.GetMouseButtonUp (0)).First ())
 			.Subscribe (_ => DrawGraph (mTex, new float[]{1,1,1,1,1}));
+			*/
+
+		mList.ToObservable ()
+			.Do(_ => Debug.Log("Destroy = " + _.name))
+			.Subscribe (_ => GameObject.Destroy (_));
+		Debug.Log ("complete");
 	}
 
 	void OnDestroy()
@@ -102,7 +111,7 @@ public class DevelopTestCode : MonoBehaviour
 
 		GL.LoadOrtho ();
 
-		//mMat.SetPass(0);
+		mMat.SetPass(0);
 
 
 		GL.Begin (GL.TRIANGLES);

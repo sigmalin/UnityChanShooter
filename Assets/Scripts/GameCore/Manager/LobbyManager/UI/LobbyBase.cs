@@ -6,9 +6,11 @@ public sealed partial class LobbyBase : LobbyBehaviour
 {
 	public class InstSet
 	{
-		public const uint SET_STATE_NORMAL = 0;
+		public const uint UPDATE_PORTRAIT = 0;
 
-		public const uint SET_STATE_CHARACTER = 1;
+		public const uint SET_STATE_NORMAL = 1;
+
+		public const uint SET_STATE_CHARACTER = 2;
 	}
 
 	// Use this for initialization
@@ -26,6 +28,10 @@ public sealed partial class LobbyBase : LobbyBehaviour
 	{
 		switch(_inst)
 		{
+		case InstSet.UPDATE_PORTRAIT:
+			UpdatePortrait ();
+			break;
+
 		case InstSet.SET_STATE_NORMAL:
 			SetLobbyState (LOBBY_STATE_NORMAL);
 			break;

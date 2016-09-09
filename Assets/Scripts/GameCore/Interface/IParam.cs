@@ -62,6 +62,7 @@ public class CacheParam
 	public const uint GET_WEAPON_DATA_PATH = 13;
 	public const uint GET_WEAPON_PATH = 14;
 	public const uint GET_BULLET_PATH = 15;
+	public const uint GET_PORTRAIT_PATH = 16;
 
 	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 99;
 
@@ -70,6 +71,7 @@ public class CacheParam
 	public const uint GET_WEAPON_DATA = 113;
 	public const uint GET_WEAPON = 114;
 	public const uint GET_BULLET = 115;
+	public const uint GET_PORTRAIT = 116;
 
 	public const uint GET_INSTANT_RESOURCE_INPUT = 199;
 }

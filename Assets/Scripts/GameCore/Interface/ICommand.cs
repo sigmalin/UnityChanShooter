@@ -92,8 +92,14 @@ public class CacheInst
 
 public class LobbyInst
 {
-	public const uint ENTER_PAGE_CHARACTER = 0;
-	public const uint EXIT_PAGE_CHARACTER = 1;
+	public const uint UPDATE_MAIN_CHARACTER = 0;
+	public const uint UPDATE_ALL_CHARACTER = 1;
+
+	public const uint ENTER_PAGE_CHARACTER_LIST = 2;
+	public const uint EXIT_PAGE_CHARACTER_LIST = 3;
+
+	public const uint ENTER_PAGE_CHARACTER = 4;
+	public const uint EXIT_PAGE_CHARACTER = 5;
 }
 
 public interface ICommand 

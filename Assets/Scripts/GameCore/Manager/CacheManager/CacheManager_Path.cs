@@ -48,25 +48,25 @@ public partial class CacheManager
 		mCatalogueTable.Add (_type, new CacheCatalogue (_path, _asset));
 	}
 
-	string GetCachePath(uint _type, string _key)
+	string GetCachePath(uint _type, params System.Object[] _params)
 	{
 		if (mCatalogueTable == null)
 			return string.Empty;
 
 		if (mCatalogueTable.ContainsKey (_type) == false)
 			return string.Empty;
-
-		return string.Format (mCatalogueTable[_type].PathIndex, _key);
+		
+		return string.Format (mCatalogueTable[_type].PathIndex, _params);
 	}
 
-	string GetCacheAsset(uint _type, string _key)
+	string GetCacheAsset(uint _type, params System.Object[] _params)
 	{
 		if (mCatalogueTable == null)
 			return string.Empty;
 
 		if (mCatalogueTable.ContainsKey (_type) == false)
 			return string.Empty;
-
-		return string.Format (mCatalogueTable[_type].AssetIndex, _key);
+		
+		return string.Format (mCatalogueTable[_type].AssetIndex, _params);
 	}
 }

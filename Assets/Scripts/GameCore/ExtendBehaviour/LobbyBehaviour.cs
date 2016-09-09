@@ -12,7 +12,7 @@ public class LobbyBehaviour : MonoBehaviour, IInput, IUserInterface
 		return true;
 	}
 
-	public void Show(Transform _root)
+	public virtual void Show(Transform _root)
 	{
 		this.transform.SetParent(_root);
 
@@ -30,7 +30,7 @@ public class LobbyBehaviour : MonoBehaviour, IInput, IUserInterface
 		this.gameObject.SetActive (true);
 	}
 
-	public void Hide()
+	public virtual void Hide()
 	{
 		this.gameObject.SetActive (false);
 
