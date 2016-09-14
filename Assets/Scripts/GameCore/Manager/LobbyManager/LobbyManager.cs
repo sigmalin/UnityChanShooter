@@ -3,15 +3,19 @@ using System.Collections;
 
 public sealed partial class LobbyManager : CommandBehaviour, IParam, IRegister
 {
-	// Use this for initialization
-	void Start () 
+	public override void OnDestroy ()
 	{
-	
-	}
+		base.OnDestroy ();
+
+		DestroyLobbyBase ();
+		DestroyPageCharacter ();
+	} 
 
 	public void OnRegister ()
 	{
 		InitialRequestQueue ();
+
+		InitialStack ();
 
 		ShowLobbyBase ();
 
@@ -24,7 +28,7 @@ public sealed partial class LobbyManager : CommandBehaviour, IParam, IRegister
 	{
 		HideLobbyBase ();
 
-		HideLobbyBase ();
+		ReleaseStack ();
 
 		ReleaseRequestQueue ();
 
@@ -41,23 +45,38 @@ public sealed partial class LobbyManager : CommandBehaviour, IParam, IRegister
 			UpdateLobbyBasePortrait ();
 			break;
 
-		case LobbyInst.ENTER_PAGE_CHARACTER_LIST:
-			SetLobbyBaseStateCharacter ();
-			ShowPageCharacterList ();
+		case LobbyInst.SHOW_LOBBY_DIALOG:
+			ShowDialog ();
+			BatchOperation (_inst, _params);
 			break;
 
-		case LobbyInst.EXIT_PAGE_CHARACTER_LIST:
-			SetLobbyBaseStateNormal ();
-			HidePageCharacterList ();
+		case LobbyInst.HIDE_LOBBY_DIALOG:
+			HideDialog ();
 			break;
+
 
 		case LobbyInst.ENTER_PAGE_CHARACTER:
-			UpdateLobbyBasePortrait ();
 			ShowPageCharacter ();
+			SetLobbyBaseStateCharacter ();
 			break;
 
 		case LobbyInst.EXIT_PAGE_CHARACTER:
 			HidePageCharacter ();
+			SetLobbyBaseStateNormal ();
+			break;
+
+		case LobbyInst.ENTER_PAGE_SINGLE:
+			ShowPageSingle ();
+			SetLobbyBaseStateCharacter ();
+			break;
+
+		case LobbyInst.EXIT_PAGE_SINGLE:
+			HidePageSingle ();
+			SetLobbyBaseStateNormal ();
+			break;
+
+		default:
+			BatchOperation (_inst, _params);
 			break;
 		}
 	}
@@ -66,9 +85,9 @@ public sealed partial class LobbyManager : CommandBehaviour, IParam, IRegister
 	{
 		System.Object output = default(System.Object);
 
-		switch (_inst) 
-		{
-		}
+		//switch (_inst) 
+		//{
+		//}
 
 		return output;
 	}

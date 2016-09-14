@@ -9,6 +9,14 @@ public sealed partial class Flow_Lobby : FlowBehaviour
 	{
 		base.Enter ();
 
+		GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+			RepositoryInst.LOAD_CHARACTER_DATA, 
+			(CharacterRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_DATA, false));
+
+		GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+			RepositoryInst.LOAD_LOCALIZATION, 
+			(LocalizationRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_LOCALIZATION, "Tc", false));
+
 		/*
 		IObservable<Unit> stream = this.UpdateAsObservable ();
 

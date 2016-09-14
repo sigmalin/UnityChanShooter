@@ -17,7 +17,7 @@ public sealed class Flow_Logo : FlowBehaviour
 
 	public override void Exit ()
 	{
-		GameCore.ChangeScene ("Scene/Lobby", GetLoadList());
+		GameCore.ChangeScene ("Scene/Lobby", GetLoadList(), false);
 	}
 
 	public override void Event (uint _eventID)
@@ -53,6 +53,13 @@ public sealed class Flow_Logo : FlowBehaviour
 			.Select (_ => (string)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT_PATH, _))
 			.ToArray ();
 
-		return listPortrait;
+		string[] listDataRepository = new string[] { 
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_LOCALIZATION_PATH, "Tc"),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_DATA_PATH)
+		};
+
+		string[] listDown = listPortrait.Concat (listDataRepository).ToArray();
+
+		return listDown;
 	}
 }

@@ -4,7 +4,12 @@ using System.IO;
 
 public class ScriptableObjectUtility
 {
-	public static void CreateAsset<T>() where T : ScriptableObject
+	public static T CreateAsset<T>() where T : ScriptableObject
+	{
+		return CreateAsset<T>(typeof(T).ToString());
+	}
+
+	public static T CreateAsset<T>(string _filename) where T : ScriptableObject
 	{
 		T asset = ScriptableObject.CreateInstance<T> ();
 
@@ -18,14 +23,15 @@ public class ScriptableObjectUtility
 			path = path.Replace (Path.GetFileName (AssetDatabase.GetAssetPath (Selection.activeObject)), "");
 		}
 
-		string assetPath = AssetDatabase.GenerateUniqueAssetPath (path + "/ New " + typeof(T).ToString() + ".asset");
+		string assetPath = AssetDatabase.GenerateUniqueAssetPath (path + "/" + _filename + ".asset");
 
 		AssetDatabase.CreateAsset (asset, assetPath);
 
 		AssetDatabase.SaveAssets ();
 		AssetDatabase.Refresh ();
-		EditorUtility.FocusProjectWindow ();
+		//EditorUtility.FocusProjectWindow ();
 
-		Selection.activeObject = asset;
+		//Selection.activeObject = asset;
+		return asset;
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 
 public partial class GameCore
 {
@@ -28,6 +29,20 @@ public partial class GameCore
 		if (mInterfaceStack == null)
 			return;
 
+		IUserInterface[] interfaceList = mInterfaceStack.ToArray ();
+
+		bool needRepack = false;
+
+		interfaceList.ToObservable()
+			.Do(_ => { if(_ == null) needRepack = true; }) 
+			.Where(_ => _ != null)
+			.TakeWhile(_ => _.Operator == null || _.Operator.HandleInput() == false)
+			.Subscribe(_ => {});
+
+		if (needRepack == true)
+			RepackInterfaceStack ();
+
+		/*
 		if (mInterfaceStack.Count == 0)
 			return;
 
@@ -46,6 +61,27 @@ public partial class GameCore
 
 			mInterfaceStack.Push (userInterface);
 		}
+		*/
+	}
+
+	void RepackInterfaceStack()
+	{
+		if (mInterfaceStack == null)
+			return;
+
+		Stack<IUserInterface> temp = new Stack<IUserInterface> ();
+
+		while (mInterfaceStack.Count != 0) 
+		{
+			IUserInterface ui = mInterfaceStack.Pop ();
+			if(ui != null) temp.Push (ui);
+		}
+
+		while (temp.Count != 0) 
+		{
+			IUserInterface ui = temp.Pop ();
+			if(ui != null) mInterfaceStack.Push (ui);
+		}
 	}
 
 	void ExecPushInterface(IUserInterface _interface)
@@ -57,6 +93,8 @@ public partial class GameCore
 			return;
 
 		mInterfaceStack.Push (_interface);
+
+		_interface.Localization ();
 
 		_interface.Show (mCanvas);
 	}
@@ -83,6 +121,18 @@ public partial class GameCore
 		}
 	}
 
+	void ExecLocalization()
+	{
+		if (mInterfaceStack == null)
+			return;
+
+		IUserInterface[] interfaceList = mInterfaceStack.ToArray ();
+
+		interfaceList.ToObservable ()
+			.Where (_ => _ != null)
+			.Subscribe (_ => _.Localization ());
+	}
+
 	static public void PushInterface(IUserInterface _interface)
 	{
 		if (Instance == null || _interface == null)
@@ -91,11 +141,19 @@ public partial class GameCore
 		Instance.ExecPushInterface (_interface);
 	}
 
-	static public void PopPopInterface(IUserInterface _interface)
+	static public void PopInterface(IUserInterface _interface)
 	{
 		if (Instance == null || _interface == null)
 			return;
 
 		Instance.ExecPopInterface (_interface);
+	}
+
+	static public void Localization()
+	{
+		if (Instance == null)
+			return;
+
+		Instance.ExecLocalization ();
 	}
 }

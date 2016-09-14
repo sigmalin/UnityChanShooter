@@ -93,7 +93,7 @@ public class Actor : DisplayBehaviour
 				if (isMainPlayer)
 					GameCore.PushInterface (mLauncher.WeaponInterface);
 				else
-					GameCore.PopPopInterface (mLauncher.WeaponInterface);
+					GameCore.PopInterface (mLauncher.WeaponInterface);
 			}
 			break;
 

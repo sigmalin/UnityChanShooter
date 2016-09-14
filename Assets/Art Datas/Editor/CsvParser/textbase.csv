@@ -1,0 +1,57 @@
+Group,Key,Tc,En,Jp
+Name,101,Kohaku,Kohaku,
+Name,102,Misaki,Misaki,
+Name,103,Yuko,Yuko,
+,,,,
+Ui,1,角色清單,Member,
+Ui,2,單人關卡,Single Play,
+Ui,3,多人連線,Multi-Play,
+Ui,4,環境設定,Config,
+Ui,5,素材來源,Special Thanks,
+Ui,6,姓名,Name,
+Ui,7,武器,Weapon,
+Ui,8,技能,Ability,
+Ui,9,必殺技,Skill,
+,,,,
+Weapon,1,散彈槍,Shutgun,
+Weapon,2,火箭炮,Rocket launcher,
+Weapon,3,雙刀,Dual Edge,
+,,,,
+Ability,1001,移形換影,Teleport,
+Ability,1002,能量吸收,Energy absorption,
+Ability,1003,量子分解,Quantum decomposition,
+Ability,1004,1004,1004,
+Ability,1005,1005,1005,
+Ability,1006,1006,1006,
+Ability,1007,1007,1007,
+Ability,1008,1008,1008,
+Ability,1009,1009,1009,
+,,,,
+Skill,1,絕對火力,Absolute force,
+Skill,2,2,,
+Skill,3,3,,
+,,,,
+Dialog-Ability,1001,"與隨機一名敵人位置互換
+
+冷卻時間:30秒",,
+Dialog-Ability,1002,"不分敵我，當有角色死亡時，
+會在原地產生能量殘渣，
+靠近時可回復少許能量
+
+常駐技能",,
+Dialog-Ability,1003,"將身體分解成量子單位，
+可閃避所有攻擊，
+
+持續時間10秒
+冷卻時間60秒",,
+Dialog-Ability,1004,,,
+Dialog-Ability,1005,,,
+Dialog-Ability,1006,,,
+Dialog-Ability,1007,,,
+Dialog-Ability,1008,,,
+Dialog-Ability,1009,,,
+,,,,
+Dialog-Skill,1,"向周圍發動多次強力射擊，
+產生的子彈最多可進行5次反彈",,
+Dialog-Skill,2,,,
+Dialog-Skill,3,,,

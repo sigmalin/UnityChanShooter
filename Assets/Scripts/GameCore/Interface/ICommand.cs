@@ -3,13 +3,14 @@ using System.Collections;
 
 public class CommandGroup
 {
-	public const uint GROUP_SYSTEM   = 0;
-	public const uint GROUP_PLAYER   = 1;
-	public const uint GROUP_CAMERA   = 2;
-	public const uint GROUP_RESOURCE = 3;
-	public const uint GROUP_WEAPON   = 4;
-	public const uint GROUP_CACHE    = 5;
-	public const uint GROUP_LOBBY    = 6;
+	public const uint GROUP_SYSTEM   		= 0;
+	public const uint GROUP_PLAYER   		= 1;
+	public const uint GROUP_CAMERA   		= 2;
+	public const uint GROUP_RESOURCE 		= 3;
+	public const uint GROUP_WEAPON   		= 4;
+	public const uint GROUP_CACHE    		= 5;
+	public const uint GROUP_LOBBY    		= 6;
+	public const uint GROUP_REPOSITORY      = 7;
 }
 
 public class SystemInst
@@ -93,13 +94,23 @@ public class CacheInst
 public class LobbyInst
 {
 	public const uint UPDATE_MAIN_CHARACTER = 0;
-	public const uint UPDATE_ALL_CHARACTER = 1;
 
-	public const uint ENTER_PAGE_CHARACTER_LIST = 2;
-	public const uint EXIT_PAGE_CHARACTER_LIST = 3;
+	public const uint SHOW_LOBBY_DIALOG = 1;
+	public const uint HIDE_LOBBY_DIALOG = 2;
 
-	public const uint ENTER_PAGE_CHARACTER = 4;
-	public const uint EXIT_PAGE_CHARACTER = 5;
+	public const uint ENTER_PAGE_CHARACTER = 11;
+	public const uint SWITCH_TO_PAGE_CHARACTER_LIST = 12;
+	public const uint SWITCH_TO_PAGE_CHARACTER_STATE = 13;
+	public const uint EXIT_PAGE_CHARACTER = 14;
+
+	public const uint ENTER_PAGE_SINGLE = 15;
+	public const uint EXIT_PAGE_SINGLE = 16;
+}
+
+public class RepositoryInst
+{
+	public const uint LOAD_LOCALIZATION = 0;
+	public const uint LOAD_CHARACTER_DATA = 1;
 }
 
 public interface ICommand 

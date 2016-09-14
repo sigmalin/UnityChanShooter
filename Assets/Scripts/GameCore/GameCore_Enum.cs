@@ -18,6 +18,9 @@ public partial class GameCore
 	int mAnimID_iLobbyState = 0;
 	static public int AnimID_iLobbyState { get { return mInstance != null ? mInstance.mAnimID_iLobbyState : 0; } }
 
+	int mAnimID_triggerExit = 0;
+	static public int AnimID_triggerExit { get { return mInstance != null ? mInstance.mAnimID_triggerExit : 0; } }
+
 	// Use this for initialization
 	void InitialAnimID () 
 	{
@@ -30,5 +33,7 @@ public partial class GameCore
 		mAnimID_fJumpForce = Animator.StringToHash ("fJumpForce");
 
 		mAnimID_iLobbyState = Animator.StringToHash ("iLobbyState");
+
+		mAnimID_triggerExit = Animator.StringToHash ("triggerExit");
 	}
 }

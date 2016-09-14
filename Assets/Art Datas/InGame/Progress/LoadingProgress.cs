@@ -41,7 +41,15 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 		this.transform.SetParent(mHideRoot);
 	}
 
-	public void SendCommand(uint _inst, params System.Object[] _params)
+	public void Localization()
+	{
+	}
+
+	public void Clear()
+	{
+	}
+
+	public void Operation(uint _inst, params System.Object[] _params)
 	{
 		switch(_inst)
 		{

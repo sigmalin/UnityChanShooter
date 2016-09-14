@@ -4,20 +4,28 @@ using System.Collections;
 public sealed partial class LobbyManager
 {
 	[SerializeField]
-	GameObject mLobbyBase;
+	LobbyBehaviour mLobbyBase;
+	public LobbyBehaviour NormalizationUI { get { return mLobbyBase; } }
+
+	void DestroyLobbyBase()
+	{
+		if (mLobbyBase != null) 
+		{
+			GameObject.Destroy (mLobbyBase.gameObject);
+			mLobbyBase = null;
+		}
+	}
 
 	void ShowLobbyBase()
 	{
-		if (mLobbyBase != null && mLobbyBase.activeSelf == false)
-			GameCore.PushInterface (mLobbyBase.GetComponent<IUserInterface> ());
+		OpenInterface(mLobbyBase);
 
 		UpdateLobbyBasePortrait ();
 	}
 
 	void HideLobbyBase()
 	{
-		if (mLobbyBase != null && mLobbyBase.activeSelf == true)
-			GameCore.PopPopInterface (mLobbyBase.GetComponent<IUserInterface> ());
+		CloseInterface (mLobbyBase);
 	}
 
 	void UpdateLobbyBasePortrait()
@@ -25,9 +33,7 @@ public sealed partial class LobbyManager
 		if (mLobbyBase == null)
 			return;
 
-		IUserInterface ui = mLobbyBase.GetComponent<IUserInterface> ();
-		if (ui != null)
-			ui.SendCommand (LobbyBase.InstSet.UPDATE_PORTRAIT);
+		mLobbyBase.LobbyOrder (LobbyBase.OrderList.UPDATE_PORTRAIT);
 	}
 
 	void SetLobbyBaseStateNormal()
@@ -35,9 +41,7 @@ public sealed partial class LobbyManager
 		if (mLobbyBase == null)
 			return;
 
-		IUserInterface ui = mLobbyBase.GetComponent<IUserInterface> ();
-		if (ui != null)
-			ui.SendCommand (LobbyBase.InstSet.SET_STATE_NORMAL);
+		mLobbyBase.LobbyOrder (LobbyBase.OrderList.SET_STATE_NORMAL);
 	}
 
 	void SetLobbyBaseStateCharacter()
@@ -45,8 +49,14 @@ public sealed partial class LobbyManager
 		if (mLobbyBase == null)
 			return;
 		
-		IUserInterface ui = mLobbyBase.GetComponent<IUserInterface> ();
-		if (ui != null)
-			ui.SendCommand (LobbyBase.InstSet.SET_STATE_CHARACTER);
+		mLobbyBase.LobbyOrder (LobbyBase.OrderList.SET_STATE_CHARACTER);
+	}
+
+	void SetLobbyBaseStateSingle()
+	{
+		if (mLobbyBase == null)
+			return;
+
+		mLobbyBase.LobbyOrder (LobbyBase.OrderList.SET_STATE_SINGLE);
 	}
 }

@@ -50,7 +50,15 @@ public class InputShootgun : MonoBehaviour, IInput, IUserInterface
 		Cursor.visible = true;
 	}
 
-	public void SendCommand(uint _inst, params System.Object[] _params)
+	public void Localization()
+	{
+	}
+
+	public void Clear()
+	{
+	}
+
+	public void Operation(uint _inst, params System.Object[] _params)
 	{
 	}
 	

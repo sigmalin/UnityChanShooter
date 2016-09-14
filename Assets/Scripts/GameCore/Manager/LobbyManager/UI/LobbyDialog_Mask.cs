@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UniRx;
+using UniRx.Triggers;
 
-public sealed partial class Page_CharacterList 
+public sealed partial class LobbyDialog 
 {
 	[SerializeField]
 	UnityEngine.UI.Button mMask;
 
-	void InitialMask()
+	void InitialDialogMask()
 	{
 		if (mMask != null) 
 		{
 			mMask.OnClickAsObservable()
-				.Subscribe(_ => GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.EXIT_PAGE_CHARACTER_LIST));
+				.Subscribe(_ => RemoveDialogData());
 		}
 	}
 }

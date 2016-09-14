@@ -4,28 +4,28 @@ using System.Collections;
 public sealed partial class LobbyManager
 {
 	[SerializeField]
-	GameObject mPageCharacter;
+	LobbyBehaviour mPageCharacter;
+
+	void DestroyPageCharacter()
+	{
+		if (mPageCharacter != null) 
+		{
+			GameObject.Destroy (mPageCharacter.gameObject);
+			mPageCharacter = null;
+		}
+	}
 
 	void ShowPageCharacter()
 	{
-		if (mPageCharacter != null && mPageCharacter.activeSelf == false)
-			GameCore.PushInterface (mPageCharacter.GetComponent<IUserInterface> ());
+		NormalizationLobbyUI ();
 
-		UpdatePageCharacter ();
+		OpenInterface (mPageCharacter);
+
+		mPageCharacter.LobbyOrder (Page_Character.OrderList.UPDATE_CHARACTER_LIST);
 	}
 
 	void HidePageCharacter()
 	{
-		if (mPageCharacter != null && mPageCharacter.activeSelf == true)
-			GameCore.PopPopInterface (mPageCharacter.GetComponent<IUserInterface> ());
-	}
-
-	void UpdatePageCharacter()
-	{
-		IUserInterface ui = mPageCharacter.GetComponent<IUserInterface> ();
-		if (ui == null)
-			return;
-
-		ui.SendCommand (Page_Character.InstSet.CREATE_ANALYSIS_GRAPHIC);
+		CloseInterface (mPageCharacter);
 	}
 }

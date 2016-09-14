@@ -33,7 +33,7 @@ public partial class Flow_GamePlay
 
 			mOnHandleInputSubject = null;
 
-			GameCore.PopPopInterface (this);
+			GameCore.PopInterface (this);
 		}
 	}
 
@@ -53,7 +53,15 @@ public partial class Flow_GamePlay
 	{
 	}
 
-	public void SendCommand(uint _inst, params System.Object[] _params)
+	public void Localization()
+	{
+	}
+
+	public void Clear()
+	{
+	}
+
+	public void Operation(uint _inst, params System.Object[] _params)
 	{
 	}
 }

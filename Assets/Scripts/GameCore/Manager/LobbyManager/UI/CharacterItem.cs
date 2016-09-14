@@ -19,7 +19,8 @@ public class CharacterItem : MonoBehaviour, IItem
 		mButton.OnClickAsObservable ()
 			.Subscribe (_ => {
 				GameCore.UserProfile.MainCharacterID = mCharacterID;
-				GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.ENTER_PAGE_CHARACTER);
+				GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.UPDATE_MAIN_CHARACTER);
+				GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.SWITCH_TO_PAGE_CHARACTER_STATE);
 			});
 	}
 
@@ -28,5 +29,8 @@ public class CharacterItem : MonoBehaviour, IItem
 		mCharacterID = (uint)_params[0];
 
 		mPortrait.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT, mCharacterID, 1, false);
+
+		if (mButton != null)
+			mButton.interactable = true;
 	}
 }

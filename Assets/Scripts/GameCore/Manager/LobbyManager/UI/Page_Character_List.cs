@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 
-public sealed partial class Page_CharacterList
+public sealed partial class Page_Character
 {
 	[SerializeField]
-	Transform mView;
+	Transform mList;
 
 	[SerializeField]
 	GameObject mItemTemplate;
@@ -46,7 +46,7 @@ public sealed partial class Page_CharacterList
 		}
 	}
 
-	void UpdateView()
+	void UpdateList()
 	{
 		RecycleItems ();
 
@@ -61,11 +61,13 @@ public sealed partial class Page_CharacterList
 
 		GameObject itemGO = mItemPool.Produce ();
 
-		itemGO.transform.SetParent (mView);
+		itemGO.transform.SetParent (mList);
 
 		IItem item = itemGO.GetComponent<IItem> ();
-		if (item != null)
+		if (item != null) 
+		{
 			item.Initial (_id);
+		}
 		
 		return itemGO;
 	}

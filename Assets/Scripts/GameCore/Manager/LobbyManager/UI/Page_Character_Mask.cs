@@ -7,12 +7,37 @@ public sealed partial class Page_Character
 	[SerializeField]
 	UnityEngine.UI.Button mMask;
 
-	void InitialMask()
+	System.IDisposable mMaskOnClickDisposable;
+
+	void ClearDisposable()
 	{
+		if (mMaskOnClickDisposable != null) 
+		{
+			mMaskOnClickDisposable.Dispose ();
+
+			mMaskOnClickDisposable = null;
+		}
+	}
+
+	void OnClickMaskWhenShowList()
+	{
+		ClearDisposable ();
+
 		if (mMask != null) 
 		{
-			mMask.OnClickAsObservable()
-				.Subscribe(_ => GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.EXIT_PAGE_CHARACTER));
+			mMaskOnClickDisposable = mMask.OnClickAsObservable()
+				.Subscribe(_ => PlayPageSceneOut());
+		}
+	}
+
+	void OnClickMaskWhenShowState()
+	{
+		ClearDisposable ();
+
+		if (mMask != null) 
+		{
+			mMaskOnClickDisposable = mMask.OnClickAsObservable()
+				.Subscribe(_ => GameCore.SendCommand(CommandGroup.GROUP_LOBBY, LobbyInst.SWITCH_TO_PAGE_CHARACTER_LIST));
 		}
 	}
 }

@@ -9,7 +9,7 @@ public partial class GameCore
 
 	System.IDisposable mSceneDisposable = null;
 
-	void SwitchScene(string _scene, string[] _loadList)
+	void SwitchScene(string _scene, string[] _loadList, bool _record)
 	{
 		if (mSceneDisposable != null) 
 		{
@@ -35,6 +35,9 @@ public partial class GameCore
 					_.allowSceneActivation = true; 
 					mSceneDisposable.Dispose(); 
 					mSceneDisposable = null; 
+
+					if (_record == false)
+						mLoadList = null;
 				},
 				_ex => Debug.LogError(_ex),
 				() => Debug.Log("Completed")
@@ -122,11 +125,11 @@ public partial class GameCore
 		SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_READ_STATE);
 	}
 
-	static public void ChangeScene(string _scene, string[] _loadList = null)
+	static public void ChangeScene(string _scene, string[] _loadList = null, bool _record = true)
 	{
 		if (Instance == null)
 			return;
 
-		Instance.SwitchScene (_scene, _loadList);
+		Instance.SwitchScene (_scene, _loadList, _record);
 	}
 }

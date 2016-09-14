@@ -3,13 +3,14 @@ using System.Collections;
 
 public class ParamGroup
 {
-	public const uint GROUP_SYSTEM   = 0;
-	public const uint GROUP_PLAYER   = 1;
-	public const uint GROUP_CAMERA   = 2;
-	public const uint GROUP_RESOURCE = 3;
-	public const uint GROUP_WEAPON   = 4;
-	public const uint GROUP_CACHE    = 5;
-	public const uint GROUP_LOBBY    = 6;
+	public const uint GROUP_SYSTEM   		= 0;
+	public const uint GROUP_PLAYER   		= 1;
+	public const uint GROUP_CAMERA   		= 2;
+	public const uint GROUP_RESOURCE 		= 3;
+	public const uint GROUP_WEAPON   		= 4;
+	public const uint GROUP_CACHE    		= 5;
+	public const uint GROUP_LOBBY    		= 6;
+	public const uint GROUP_REPOSITORY      = 7;
 }
 
 public class SystemParam
@@ -63,6 +64,8 @@ public class CacheParam
 	public const uint GET_WEAPON_PATH = 14;
 	public const uint GET_BULLET_PATH = 15;
 	public const uint GET_PORTRAIT_PATH = 16;
+	public const uint GET_LOCALIZATION_PATH = 17;
+	public const uint GET_CHARACTER_DATA_PATH = 18;
 
 	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 99;
 
@@ -72,12 +75,20 @@ public class CacheParam
 	public const uint GET_WEAPON = 114;
 	public const uint GET_BULLET = 115;
 	public const uint GET_PORTRAIT = 116;
+	public const uint GET_LOCALIZATION = 117;
+	public const uint GET_CHARACTER_DATA = 118;
 
 	public const uint GET_INSTANT_RESOURCE_INPUT = 199;
 }
 
 public class LobbyParam
 {
+}
+
+public class RepositoryParam
+{
+	public const uint GET_LOCALIZATION = 0;
+	public const uint GET_CHARACTER_DATA = 1;
 }
 
 public interface IParam 

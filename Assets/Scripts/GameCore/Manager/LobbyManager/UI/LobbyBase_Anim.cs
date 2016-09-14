@@ -7,6 +7,8 @@ public sealed partial class LobbyBase
 
 	const int LOBBY_STATE_CHARACTER = 1;
 
+	const int LOBBY_STATE_SINGLE = 2;
+
 	[SerializeField]
 	Animator mAnim = null;
 

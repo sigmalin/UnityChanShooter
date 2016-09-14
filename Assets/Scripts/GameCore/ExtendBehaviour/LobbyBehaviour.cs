@@ -1,11 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public class LobbyBehaviour : MonoBehaviour, IInput, IUserInterface 
 {
 	public Transform Owner;
 
 	public IInput Operator { get { return this; } }
+
+	public IUserInterface Ui { get { return this; } }
+
+	[System.Serializable]
+	public struct LobbyText
+	{
+		public string Group;
+		public int ID;
+		public UnityEngine.UI.Text Text;
+	}
+
+	[SerializeField]
+	LobbyText[] mLobbyText;
 
 	public virtual bool HandleInput ()
 	{
@@ -37,7 +51,25 @@ public class LobbyBehaviour : MonoBehaviour, IInput, IUserInterface
 		this.transform.SetParent(Owner);
 	}
 
-	public virtual void SendCommand(uint _inst, params System.Object[] _params)
+	public virtual void Localization()
+	{
+		if (mLobbyText == null)
+			return;
+
+		mLobbyText.ToObservable()
+			.Where(_ => _.Text != null)
+			.Subscribe(_ => _.Text.text = (string)GameCore.GetParameter(ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_LOCALIZATION, _.Group, _.ID));
+	}
+
+	public virtual void Clear()
+	{
+	}
+
+	public virtual void Operation(uint _inst, params System.Object[] _params)
+	{
+	}
+
+	public virtual void LobbyOrder(uint _order)
 	{
 	}
 }

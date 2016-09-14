@@ -23,6 +23,8 @@ public class DevelopTestCode : MonoBehaviour
 
 	public GameObject[] mList;
 
+	Stack<int> mStack;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -39,10 +41,20 @@ public class DevelopTestCode : MonoBehaviour
 			.Subscribe (_ => DrawGraph (mTex, new float[]{1,1,1,1,1}));
 			*/
 
-		mList.ToObservable ()
-			.Do(_ => Debug.Log("Destroy = " + _.name))
-			.Subscribe (_ => GameObject.Destroy (_));
-		Debug.Log ("complete");
+
+		int[] list = new int[] { 1,2,3,4,5 };
+
+		list.ToObservable ()
+			.Subscribe (_ => mStack.Push(_));
+
+
+		int[] outs = mStack.ToArray ();
+
+		outs.ToObservable ()
+			.TakeWhile(_ => _ != 6)
+			.Subscribe (_ => Debug.Log(_),
+				_ex => Debug.Log("Error"),
+				() => Debug.Log("Completed"));
 	}
 
 	void OnDestroy()

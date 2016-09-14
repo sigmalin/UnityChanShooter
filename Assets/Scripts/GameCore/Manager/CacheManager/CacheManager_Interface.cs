@@ -13,7 +13,7 @@ public partial class CacheManager
 
 		IUserInterface uiLoadingProgress = mLoadingProgress.GetComponent<IUserInterface> ();
 
-		uiLoadingProgress.SendCommand (LoadingProgress.InstSet.SET_PROGRESS_PERCENT, 0F);
+		uiLoadingProgress.Operation (LoadingProgress.InstSet.SET_PROGRESS_PERCENT, 0F);
 
 		GameCore.PushInterface (uiLoadingProgress);
 	}
@@ -23,7 +23,7 @@ public partial class CacheManager
 		if (mLoadingProgress == null)
 			return;
 
-		GameCore.PopPopInterface (mLoadingProgress.GetComponent<IUserInterface>());
+		GameCore.PopInterface (mLoadingProgress.GetComponent<IUserInterface>());
 	}
 
 	void UpdateLoadingProgress(float _percent)
@@ -33,6 +33,6 @@ public partial class CacheManager
 
 		IUserInterface uiLoadingProgress = mLoadingProgress.GetComponent<IUserInterface> ();
 
-		uiLoadingProgress.SendCommand (LoadingProgress.InstSet.SET_PROGRESS_PERCENT, _percent);
+		uiLoadingProgress.Operation (LoadingProgress.InstSet.SET_PROGRESS_PERCENT, _percent);
 	}
 }

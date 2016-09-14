@@ -4,13 +4,15 @@ using UniRx;
 
 public sealed partial class LobbyBase : LobbyBehaviour
 {
-	public class InstSet
+	public class OrderList
 	{
 		public const uint UPDATE_PORTRAIT = 0;
 
 		public const uint SET_STATE_NORMAL = 1;
 
 		public const uint SET_STATE_CHARACTER = 2;
+
+		public const uint SET_STATE_SINGLE = 3;
 	}
 
 	// Use this for initialization
@@ -19,25 +21,24 @@ public sealed partial class LobbyBase : LobbyBehaviour
 		InitialMenuBtns ();
 	}
 
-	public override bool HandleInput ()
+	public override void LobbyOrder(uint _order)
 	{
-		return true;
-	}
-
-	public override void SendCommand(uint _inst, params System.Object[] _params)
-	{
-		switch(_inst)
+		switch(_order)
 		{
-		case InstSet.UPDATE_PORTRAIT:
+		case OrderList.UPDATE_PORTRAIT:
 			UpdatePortrait ();
 			break;
 
-		case InstSet.SET_STATE_NORMAL:
+		case OrderList.SET_STATE_NORMAL:
 			SetLobbyState (LOBBY_STATE_NORMAL);
 			break;
 
-		case InstSet.SET_STATE_CHARACTER:
+		case OrderList.SET_STATE_CHARACTER:
 			SetLobbyState (LOBBY_STATE_CHARACTER);
+			break;
+
+		case OrderList.SET_STATE_SINGLE:
+			SetLobbyState (LOBBY_STATE_SINGLE);
 			break;
 		}
 	}

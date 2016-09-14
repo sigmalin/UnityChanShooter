@@ -9,5 +9,9 @@ public interface IUserInterface
 
 	void Hide();
 
-	void SendCommand(uint _inst, params System.Object[] _params);
+	void Localization();
+
+	void Clear();
+
+	void Operation(uint _inst, params System.Object[] _params);
 }
