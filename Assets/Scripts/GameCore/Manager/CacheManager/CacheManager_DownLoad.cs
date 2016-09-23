@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +7,23 @@ using UniRx.Triggers;
 
 public partial class CacheManager
 {
-	MutexObservableQueue<LoadRequest> mDownLoadRequest = null;
+	MutexObservableQueue<CacheRequest> mDownLoadRequest = null;
+
+	CacheState mDownLoadState = null;
 
 	void InitialDownLoadRequest()
 	{
 		ReleaseDownLoadRequest ();
 
-		mDownLoadRequest = new MutexObservableQueue<LoadRequest> ();
+		mDownLoadRequest = new MutexObservableQueue<CacheRequest> ();
 
 		mDownLoadRequest.Initial (LateUpdateObservable, (_request, _callback) => DownLoadCache (_request.ToArray (), _callback));
+
+		mDownLoadState = new CacheState ();
+
+		mDownLoadState.Disposable = LateUpdateObservable
+			.Where (_ => mDownLoadState != null && mDownLoadState.NeedReport == true)
+			.Subscribe (_ => SendDownLoadEvent ());
 	}
 
 	void ReleaseDownLoadRequest()
@@ -26,32 +34,68 @@ public partial class CacheManager
 
 			mDownLoadRequest = null;
 		}
+
+		if (mDownLoadState != null) 
+		{
+			if (mDownLoadState.Disposable != null) 
+			{
+				mDownLoadState.Disposable.Dispose ();
+				mDownLoadState.Disposable = null;
+			}
+
+			mDownLoadState = null;
+		}
 	}
 
 	void AddDownLoad(string _key)
 	{
 		if (IsLocalCacheExist (_key) == false) 
 		{
-			mDownLoadRequest.Enqueue (new LoadRequest (_key));
+			mDownLoadRequest.Enqueue (new CacheRequest (_key));
 		}
+
+		ReportDownLoadState ();
 	}
 
-	void ReportDownLoadState(bool _isSuccess)
+	void ReportDownLoadState()
 	{
-		if (_isSuccess) 
+		if (mDownLoadState == null)
+			return;
+
+		mDownLoadState.NeedReport = true;
+	}
+
+	void SetDownLoadStateFailure()
+	{
+		if (mDownLoadState == null)
+			return;
+
+		mDownLoadState.NeedReport = true;
+		mDownLoadState.HasFailure = true;		
+	}
+
+	void SendDownLoadEvent()
+	{
+		if (mDownLoadState == null)
+			return;
+
+		if (mDownLoadState.HasFailure == true) 
+		{
+			GameCore.SendFlowEvent (FlowEvent.DOWN_LOAD_CACHE_FAILURE);
+		} 
+		else 
 		{
 			if (mDownLoadRequest.IsIdle ())
 				GameCore.SendFlowEvent (FlowEvent.DOWN_LOAD_CACHE_COMPLETED);
 			else
 				GameCore.SendFlowEvent (FlowEvent.DOWN_LOAD_CACHE_UNDONE);
-		} 
-		else 
-		{
-			GameCore.SendFlowEvent(FlowEvent.DOWN_LOAD_CACHE_FAILURE);
 		}
+
+		mDownLoadState.NeedReport = false;
+		mDownLoadState.HasFailure = false;
 	}
 
-	void DownLoadCache(LoadRequest[] _list, System.Action _callbackUnlock)
+	void DownLoadCache(CacheRequest[] _list, System.Action _callbackUnlock)
 	{
 		VersionRepository.VersionInfo[] versions = _list
 													.Select(_ => _.Path)
@@ -62,11 +106,15 @@ public partial class CacheManager
 		DownLoadAndWrite2Stream (versions, 
 			() => {
 				_callbackUnlock ();
-				ReportDownLoadState (true);
+
+				ReportDownLoadState();
 			},
 			ex => {
+				Debug.LogError (ex);
+
 				_callbackUnlock ();
-				ReportDownLoadState (false);
+
+				SetDownLoadStateFailure();
 			});
 	}
 }

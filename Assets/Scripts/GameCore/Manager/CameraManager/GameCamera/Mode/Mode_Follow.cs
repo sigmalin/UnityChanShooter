@@ -9,6 +9,12 @@ public sealed class Mode_Follow : IMode
 
 	float mDistance = -1.2F;
 
+	float mHeightScale = 1F;
+
+
+	const float CAMERA_HEIGHT_MAX = 2.4F;
+	const float CAMERA_HEIGHT_MIN = 0F;
+
 	public void EnterMode(CameraManager.CameraData _cameraData)
 	{
 		if (_cameraData.RefCamera == null)
@@ -18,7 +24,9 @@ public sealed class Mode_Follow : IMode
 
 		mHeight = 1.2F;
 
-		mDistance = -1.2F;
+		mDistance = -2F;
+
+		mHeightScale = (CAMERA_HEIGHT_MAX - CAMERA_HEIGHT_MIN) / (Screen.height);
 	}
 
 	public void LeaveMode(CameraManager.CameraData _cameraData)
@@ -52,7 +60,8 @@ public sealed class Mode_Follow : IMode
 		{
 		case CameraInst.CAMERA_MOVEMENT:
 			mAngle += (float)_params [0];
-			mHeight = Mathf.Clamp (mHeight + (float)_params [1], 0F, 2.4F);
+			float varHeight = ((float)_params [1]) * mHeightScale;
+			mHeight = Mathf.Clamp (mHeight + varHeight, CAMERA_HEIGHT_MIN, CAMERA_HEIGHT_MAX);
 			mDistance = Mathf.Clamp (mDistance + (float)_params [2], -2.4F, -1.2F);
 			break;
 		}

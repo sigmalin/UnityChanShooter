@@ -3,8 +3,34 @@ using System.Collections;
 
 public class WeaponDataRepository : ScriptableObject
 {
-	[SerializeField]
-	WeaponManager.WeaponData[] mWeaponDataList;
+	public enum Behavior
+	{
+		None,
+		Shootgun,
+		Zombie,
+	}
 
-	public WeaponManager.WeaponData[] WeaponDataList { get { return mWeaponDataList; } }
+	[System.Serializable]
+	public struct WeaponData
+	{
+		public uint WeaponID;
+		public uint ModelID;
+		public uint BulletID;
+
+		public Behavior WeaponBehavior;
+
+		public uint ShootRayCount;
+		public uint AmmoCount;
+
+		public uint HP;
+		public uint ATK;
+
+		public float ReloadTime;
+		public float ShootFreq;
+	}
+
+	[SerializeField]
+	WeaponData[] mWeaponDataList;
+
+	public WeaponData[] WeaponDataList { get { return mWeaponDataList; } }
 }

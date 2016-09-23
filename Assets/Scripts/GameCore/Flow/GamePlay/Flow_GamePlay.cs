@@ -4,45 +4,49 @@ using UniRx;
 
 public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterface
 {
-	#region Spawn
-	[SerializeField]
-	Transform[] mSpawnPtList;
-	#endregion
-
-	#region Actor
-	public enum ArmType
+	#region Camp
+	[System.Serializable]
+	public struct Services
 	{
-		Shotgun = 1,
+		public uint PlayerID;
+		public uint CharacterID;
 	}
 
 	[System.Serializable]
-	public class ActorData
+	public struct Camp
 	{
-		public uint ID;
-		public ArmType Arm;
-	}
-
-	[System.Serializable]
-	public class ActorList
-	{
-		public uint MainPlayerID = 1;
-		public ActorData[] ActorDataList;
+		public Transform[] SpawnPtList;
+		public Services[] ServicesList;
 	}
 
 	[SerializeField]
-	ActorList mActorList;
+	Camp mFriendly;
+
+	[SerializeField]
+	Camp mEnemy;
 	#endregion
 
 	#region Camera
 	[System.Serializable]
-	public class CameraList
+	public struct CameraUnit
 	{
-		public GameCamera MainCamera;
+		public GameCamera CameraOB;
+		public uint CameraID;
+	}
+
+	[System.Serializable]
+	public struct CameraList
+	{
+		public CameraUnit MainCamera;
 	}
 
 	[SerializeField]
 	CameraList mCameraList;
 	#endregion
+
+	const uint MAIN_PLAYER_ID = 1;
+
+	const uint NORMAL_CONTAINER = 1;
 
 	public override void Enter()
 	{
@@ -64,11 +68,11 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 	{
 		switch(_eventID)
 		{
-		case FlowEvent.LOAD_CACHE_COMPLETED:
+		case FlowEvent.READ_CACHE_COMPLETED:
 			break;
 
-		case FlowEvent.LOAD_CACHE_FAILURE:
-			Debug.Log ("LOAD_CACHE_FAILURE");
+		case FlowEvent.READ_CACHE_FAILURE:
+			Debug.Log ("READ_CACHE_FAILURE");
 			break;
 		}
 	}
@@ -78,87 +82,62 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 		InitialInput ();
 
 		Observable.NextFrame (FrameCountType.Update)
-			.Do (_ => LoadGameData ())
-			.SelectMany(Observable.NextFrame (FrameCountType.Update))
-			.Do (_ => RegisterActor ())
-			.SelectMany(Observable.NextFrame (FrameCountType.Update))
-			.Do (_ => RegisterCamera ())
+			.Do (_ => {
+				RegisterCamera ();
+				RegisterAllPlayer ();
+			})
 			.SelectMany(Observable.NextFrame (FrameCountType.Update))
 			.Subscribe (_ => 
 				{
+					GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.MAIN_ACTOR, MAIN_PLAYER_ID);
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.GAME_START);
 				});
 	}
 
-	#region Spawn
-	Transform GetRandonSpawn()
+	#region Player
+	void RegisterAllPlayer()
 	{
-		return mSpawnPtList [Random.Range (0, mSpawnPtList.Length)];
-	}
-	#endregion
+		// register mine
+		RegisterPlayer (MAIN_PLAYER_ID, GameCore.UserProfile.MainCharacterID, false, mFriendly.SpawnPtList);
 
-	#region Actor
-	void RegisterActor()
-	{
-		for (int Indx = 0; Indx < mActorList.ActorDataList.Length; ++Indx) 
+		// register enemy
+		if (mEnemy.ServicesList.Length != 0) 
 		{
-			GameObject container = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CONTAINER, (uint)1);
-			Transform spawn = GetRandonSpawn ();
-			container.transform.position = spawn.position;
-			container.transform.rotation = spawn.rotation;
-
-			GameObject character = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CHARACTER_MODEL, (uint)100);
-			Actor actor = character.GetComponent<Actor> ();
-			if (actor == null)
-				continue;
-			
-			GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.CREATE_PLAYER, mActorList.ActorDataList[Indx].ID, actor);
-			GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_CONTAINER, mActorList.ActorDataList[Indx].ID, container);
-
-			GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.REGISTER_ACTOR, mActorList.ActorDataList[Indx].ID, GetWeaponID (mActorList.ActorDataList[Indx].Arm));
-
-			uint modelID = (uint)GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.MODEL_ID, GetWeaponID (mActorList.ActorDataList[Indx].Arm));
-			GameObject weapon = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.WEAPON_MODEL, modelID);
-			if (weapon != null)
-				GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_WEAPON, mActorList.ActorDataList[Indx].ID, weapon);
+			mEnemy.ServicesList.ToObservable()
+				.Subscribe(_ => RegisterPlayer(_.PlayerID, _.CharacterID, true, mEnemy.SpawnPtList));
 		}
-
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.MAIN_PLAYER, mActorList.MainPlayerID);
 	}
 
-	uint GetWeaponID(ArmType _type)
+	void RegisterPlayer(uint _playerID, uint _characterID, bool _isEnemy, Transform[] _spawn)
 	{
-		uint weaponID = 0;
+		GameObject character = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CHARACTER_MODEL, _characterID);
 
-		switch(_type)
-		{
-		case ArmType.Shotgun:
-			weaponID = 1;
-			break;
-		}
+		Transform spawn = _spawn [Random.Range (0, _spawn.Length)];
 
-		return weaponID;
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.CREATE_PLAYER, _playerID, NORMAL_CONTAINER);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_POSITION, _playerID, spawn.position);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_DIRECTION, _playerID, spawn.rotation);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_LAYER, _playerID, _isEnemy ? GameCore.LAYER_ENEMY : GameCore.LAYER_PLAYER);
+
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_MODEL, _playerID, character);
+
+		uint weaponID = GetWeaponID (_characterID);
+
+		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.REGISTER_ACTOR, _playerID, weaponID);
+	}
+
+	uint GetWeaponID(uint _characterID)
+	{
+		CharacterRepository.CharacterData character = (CharacterRepository.CharacterData)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_CHARACTER_DATA, _characterID);
+		return character.weaponID;
 	}
 	#endregion
 
 	#region Camera
 	void RegisterCamera()
 	{
-		uint mainCameraID = 1;
-
-		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_REGISTER, mainCameraID, mCameraList.MainCamera);
-		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.MAIN_CAMERA, mainCameraID);
-
-		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_TARGET, mainCameraID, mActorList.MainPlayerID);
-
-		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.SET_CAMERA_MODE_FOLLOW, mainCameraID);
-	}
-	#endregion
-
-	#region GameData
-	void LoadGameData()
-	{
-		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.LOAD_DATA, GameCore.GetParameter (CommandGroup.GROUP_RESOURCE, ResourceParam.WEAPON_DATA));
+		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_REGISTER, mCameraList.MainCamera.CameraID, mCameraList.MainCamera.CameraOB);
+		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.MAIN_CAMERA, mCameraList.MainCamera.CameraID);
 	}
 	#endregion
 }

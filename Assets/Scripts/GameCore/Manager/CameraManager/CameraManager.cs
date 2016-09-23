@@ -52,10 +52,6 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 				camera.TargetID = (uint)_params [1];
 			break;
 
-		case CameraInst.SET_CAMERA_MODE_FOLLOW:
-			TransCommand((uint)_params[0], CameraInst.SET_CAMERA_MODE, new Mode_Follow());
-			break;
-
 		default:
 			System.Object[] objects = new System.Object[_params.Length - 1];
 			System.Array.Copy (_params, 1, objects, 0, _params.Length - 1);
@@ -74,12 +70,8 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 			output = (System.Object)mMainCamera;
 			break;
 
-		case CameraParam.CAMERA_DATA:
-			output = (System.Object)GetCameraData ((uint)_params[0]);
-			break;
-
-		case CameraParam.MAIN_CAMERA_DATA:
-			output = (System.Object)GetCameraData (mMainCamera);
+		case CameraParam.CAMERA_OBJECT:
+			output = (System.Object)GetCameraObject ((uint)_params[0]);
 			break;
 		}
 

@@ -3,44 +3,44 @@ using System.Collections;
 
 public sealed class Motion_Standard : IMotion 
 {
-	public void EnterMotion(PlayerManager.PlayerData _playerData)
+	public void EnterMotion(PlayerActor _owner)
 	{
 	}
 
-	public void LeaveMotion(PlayerManager.PlayerData _playerData)
+	public void LeaveMotion(PlayerActor _owner)
 	{
 	}
 
-	public void UpdateMotion(PlayerManager.PlayerData _playerData)
+	public void UpdateMotion(PlayerActor _owner)
 	{
-		float speed = _playerData.RefActor.Actordata.Anim.GetFloat(GameCore.AnimID_fSpeed);
+		float speed = _owner.Actordata.Anim.GetFloat(GameCore.AnimID_fSpeed);
 
-		speed = Mathf.Lerp (speed, _playerData.Speed, Time.deltaTime * 5F);
+		speed = Mathf.Lerp (speed, _owner.MotionData.Speed, Time.deltaTime * 5F);
 
-		_playerData.RefActor.Actordata.Anim.SetFloat(GameCore.AnimID_fSpeed, speed);
+		_owner.Actordata.Anim.SetFloat(GameCore.AnimID_fSpeed, speed);
 	}
 
-	public void AnimMoveMotion(PlayerManager.PlayerData _playerData)
+	public void AnimMoveMotion(PlayerActor _owner)
 	{
-		Movement (_playerData);
+		Movement (_owner);
 
-		_playerData.RefActor.Actordata.Anim.SetFloat (GameCore.AnimID_fJumpForce, _playerData.RefActor.Actordata.Rigid.velocity.y);
-		_playerData.RefActor.Actordata.Anim.SetBool (GameCore.AnimID_isGroundID, _playerData.RefActor.Actordata.Col.IsGround());
+		_owner.Actordata.Anim.SetFloat (GameCore.AnimID_fJumpForce, _owner.Actordata.Rigid.velocity.y);
+		_owner.Actordata.Anim.SetBool (GameCore.AnimID_isGroundID, _owner.Actordata.Col.IsGround());
 	}
 
-	public void AnimIKMotion(PlayerManager.PlayerData _playerData)
+	public void AnimIKMotion(PlayerActor _owner)
 	{		
-		_playerData.RefActor.Actordata.Anim.SetLookAtWeight (1F, 	// weight 
-															0.3F,	// body
-															0.4F,	// head
-															0.2F,	// eye
-															0.5F);	// clamp
+		_owner.Actordata.Anim.SetLookAtWeight ( 1F, 	// weight 
+												0.3F,	// body
+												0.4F,	// head
+												0.2F,	// eye
+												0.5F);	// clamp
 
-		_playerData.RefActor.Actordata.Anim.SetLookAtPosition (_playerData.LookAt);
+		_owner.Actordata.Anim.SetLookAtPosition (_owner.MotionData.LookAt);
 	}
 
-	void Movement(PlayerManager.PlayerData _playerData)
+	void Movement(PlayerActor _owner)
 	{
-		_playerData.RefActor.Actordata.Rigid.velocity = new Vector3 (_playerData.Move.x * _playerData.Speed, _playerData.RefActor.Actordata.Rigid.velocity.y, _playerData.Move.z * _playerData.Speed);
+		_owner.Actordata.Rigid.velocity = new Vector3 (_owner.MotionData.Move.x * _owner.MotionData.Speed, _owner.Actordata.Rigid.velocity.y, _owner.MotionData.Move.z * _owner.MotionData.Speed);
 	}
 }

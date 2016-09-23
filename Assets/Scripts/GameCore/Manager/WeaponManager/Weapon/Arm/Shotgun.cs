@@ -30,7 +30,10 @@ public class Shotgun : MonoBehaviour, IArm
 		Ray ray = new Ray (muzzle.position + forward * -0.5F, forward);
 		RaycastHit hit;
 
-		if (Physics.Raycast (ray, out hit, 100F, GameCore.LAYER_BULLET) == true) 
+		int layer = GameCore.GetRaycastLayer (GameCore.LAYER_DEFAULT) |
+			GameCore.GetRaycastLayer (GameCore.LAYER_ENEMY);
+
+		if (Physics.Raycast (ray, out hit, 100F, layer) == true) 
 		{
 			shoot.BeamEnd = hit.point;
 		} 

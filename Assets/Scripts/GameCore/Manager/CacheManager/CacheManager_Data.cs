@@ -61,7 +61,7 @@ public partial class CacheManager
 		System.Object asset = mCacheTable [_key].LoadAsset (ASSET_PATH + _assetPath);
 		if (asset == null)
 			return null;
-		
+
 		return _instantiate ? UnityEngine.Object.Instantiate ((UnityEngine.Object)asset) : asset;
 	}
 

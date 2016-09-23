@@ -13,8 +13,8 @@ public partial class PlayerManager
 		mActorDisposable = UpdateObservable.Select (_ => GetAllPlayerID ())
 			.SelectMany (_ => _.ToObservable ())
 			.Select(_ => GetPlayerData(_))
-			.Where(_ => _ != null && _.RefActor != null)
-			.Subscribe (_ => _.RefActor.FrameMove ());
+			.Where(_ => _ != null)
+			.Subscribe (_ => _.FrameMove ());
 	}
 
 	void ReleaseActorUpdate()

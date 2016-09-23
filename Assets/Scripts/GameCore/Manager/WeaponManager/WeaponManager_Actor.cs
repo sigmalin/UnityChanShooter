@@ -17,7 +17,7 @@ public sealed partial class WeaponManager
 
 		public float ShootFreq { get; set; }
 
-		public WeaponData RefWeaponData { get; set; }
+		public WeaponDataRepository.WeaponData RefWeaponData { get; set; }
 		public uint BulletID { get { return RefWeaponData.BulletID; } }
 		public uint ShootATK { get { return RefWeaponData.ATK; } }
 		public uint MaxAmmoCount { get { return RefWeaponData.AmmoCount; } }
@@ -53,6 +53,10 @@ public sealed partial class WeaponManager
 		actor.ShootFreq = 0F;
 
 		mActorTable.Add (_actorID, actor);
+
+
+		SetActorController (ref actor);
+		SetWeaponModel (ref actor);
 	}
 
 	WeaponActor GetWeaponActor(uint _actorID)

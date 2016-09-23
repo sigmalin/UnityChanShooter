@@ -117,7 +117,7 @@ public partial class GameCore
 		{
 			ExecPopInterface (_interface);
 
-			mInterfaceStack.Push (_interface);
+			mInterfaceStack.Push (userInterface);
 		}
 	}
 

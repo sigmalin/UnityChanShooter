@@ -3,14 +3,6 @@ using System.Collections;
 
 public partial class WeaponLauncher : DisplayBehaviour 
 {
-	public enum LauncherType
-	{
-		Shootgum,
-	}
-
-	[SerializeField]
-	LauncherType mLauncherType;
-
 	[System.Serializable]
 	public class Equipment
 	{
@@ -47,48 +39,5 @@ public partial class WeaponLauncher : DisplayBehaviour
 			
 			return mLeftArm;
 		}
-	}
-
-	IUserInterface mWeaponInterface;
-	public IUserInterface WeaponInterface 
-	{
-		get 
-		{ 
-			if (mWeaponInterface == null) 
-			{
-				GameObject device = (GameObject	)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.INSTANT_RESOURCE_INPUT, GetInputDevicePath ());
-				if (device != null) mWeaponInterface = device.GetComponent<IUserInterface> ();
-			}
-
-			return mWeaponInterface;
-		} 
-	}
-
-	public ActorController GetController()
-	{
-		ActorController ctrl = null;
-
-		switch(mLauncherType)
-		{
-		case LauncherType.Shootgum:
-			ctrl = new Actor_UnityChan ();
-			break;
-		}
-
-		return ctrl;
-	}
-
-	string GetInputDevicePath()
-	{
-		string resPath = string.Empty;
-
-		switch(mLauncherType)
-		{
-		case LauncherType.Shootgum:
-			resPath = "Shootgun";
-			break;
-		}
-
-		return resPath;
 	}
 }

@@ -5,7 +5,6 @@ using System.Collections;
 public class GameCamera : MonoBehaviour 
 {
 	CameraManager.CameraData mRefCameraData = null;
-	public CameraManager.CameraData CameraData { get { return mRefCameraData; } }
 
 	IMode mCameraMode = null;
 
@@ -18,19 +17,19 @@ public class GameCamera : MonoBehaviour
 	// Update is called once per frame
 	void LateUpdate () 
 	{
-		if (mCameraMode != null && CameraData != null)
-			mCameraMode.UpdateMode (CameraData);	
+		if (mCameraMode != null && mRefCameraData != null)
+			mCameraMode.UpdateMode (mRefCameraData);	
 	}
 
 	void SetCameraMode (IMode _mode)
 	{
 		if (mCameraMode != null)
-			mCameraMode.LeaveMode (CameraData);
+			mCameraMode.LeaveMode (mRefCameraData);
 
 		mCameraMode = _mode;
 
 		if (mCameraMode != null)
-			mCameraMode.EnterMode (CameraData);
+			mCameraMode.EnterMode (mRefCameraData);
 	}
 
 	public void ExecCommand(uint _inst, params System.Object[] _params)

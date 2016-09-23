@@ -3,13 +3,13 @@ using System.Collections;
 
 public interface IMotion
 {
-	void EnterMotion(PlayerManager.PlayerData _playerData);
+	void EnterMotion(PlayerActor _owner);
 
-	void LeaveMotion(PlayerManager.PlayerData _playerData);
+	void LeaveMotion(PlayerActor _owner);
 
-	void UpdateMotion(PlayerManager.PlayerData _playerData);
+	void UpdateMotion(PlayerActor _owner);
 
-	void AnimMoveMotion(PlayerManager.PlayerData _playerData);
+	void AnimMoveMotion(PlayerActor _owner);
 
-	void AnimIKMotion(PlayerManager.PlayerData _playerData);
+	void AnimIKMotion(PlayerActor _owner);
 }

@@ -7,25 +7,23 @@ using UniRx.Triggers;
 
 public partial class CacheManager
 {
-	public struct LoadRequest
-	{
-		public string Path;
+	MutexObservableQueue<CacheRequest> mReadRequest = null;
 
-		public LoadRequest(string _Path)
-		{
-			Path = _Path;
-		}
-	}
-
-	MutexObservableQueue<LoadRequest> mReadRequest = null;
+	CacheState mReadState = null;
 
 	void InitialReadRequest()
 	{
 		ReleaselReadRequest ();
 
-		mReadRequest = new MutexObservableQueue<LoadRequest> ();
+		mReadRequest = new MutexObservableQueue<CacheRequest> ();
 
 		mReadRequest.Initial (LateUpdateObservable, (_request, _callback) => BatchLoadList (_request.ToArray (), _callback));
+
+		mReadState = new CacheState ();
+
+		mReadState.Disposable = LateUpdateObservable
+			.Where (_ => mReadState != null && mReadState.NeedReport == true)
+			.Subscribe (_ => SendReadEvent ());
 	}
 
 	void ReleaselReadRequest()
@@ -36,14 +34,27 @@ public partial class CacheManager
 
 			mReadRequest = null;
 		}
+
+		if (mReadState != null) 
+		{
+			if (mReadState.Disposable != null) 
+			{
+				mReadState.Disposable.Dispose ();
+				mReadState.Disposable = null;
+			}
+
+			mReadState = null;
+		}
 	}
 
 	void AddReadLoad(string _key)
 	{
-		if (IsCacheLoad (_key) == true)
-			return;
-		
-		mReadRequest.Enqueue (new LoadRequest (_key));
+		if (IsCacheLoad (_key) == false) 
+		{
+			mReadRequest.Enqueue (new CacheRequest (_key));
+		}
+
+		ReportReadState ();
 	}
 
 	string GetCachePath(string _key)
@@ -51,22 +62,45 @@ public partial class CacheManager
 		return string.Format ("{0}//{1}{2}", Application.persistentDataPath, _key, ASSET_BUNDLE_EXTENSION);
 	}
 
-	void ReportReadState(bool _isSuccess)
+	void ReportReadState()
 	{
-		if (_isSuccess) 
+		if (mReadState == null)
+			return;
+
+		mReadState.NeedReport = true;
+	}
+
+	void SetReadStateFailure()
+	{
+		if (mReadState == null)
+			return;
+
+		mReadState.NeedReport = true;
+		mReadState.HasFailure = true;		
+	}
+
+	void SendReadEvent()
+	{
+		if (mReadState == null)
+			return;
+
+		if (mReadState.HasFailure == true) 
 		{
-			if (mReadRequest.IsIdle ())
-				GameCore.SendFlowEvent (FlowEvent.LOAD_CACHE_COMPLETED);
-			else
-				GameCore.SendFlowEvent (FlowEvent.LOAD_CACHE_UNDONE);
+			GameCore.SendFlowEvent (FlowEvent.READ_CACHE_FAILURE);
 		} 
 		else 
 		{
-			GameCore.SendFlowEvent(FlowEvent.LOAD_CACHE_FAILURE);
+			if (mReadRequest.IsIdle ())
+				GameCore.SendFlowEvent (FlowEvent.READ_CACHE_COMPLETED);
+			else
+				GameCore.SendFlowEvent (FlowEvent.READ_CACHE_UNDONE);
 		}
+
+		mReadState.NeedReport = false;
+		mReadState.HasFailure = false;
 	}
 
-	void BatchLoadList(LoadRequest[] _list, System.Action _callbackUnLock)
+	void BatchLoadList(CacheRequest[] _list, System.Action _callbackUnLock)
 	{
 		_list.Select (_ => _.Path)
 			.Distinct ()
@@ -78,13 +112,13 @@ public partial class CacheManager
 				{
 					_callbackUnLock();
 
-					ReportReadState(true);
+					ReportReadState();
 				},
 				_ex =>
 				{
 					_callbackUnLock();
 
-					ReportReadState(false);
+					SetReadStateFailure();
 				}
 			);
 	}

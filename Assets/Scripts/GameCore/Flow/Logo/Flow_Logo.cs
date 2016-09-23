@@ -32,6 +32,15 @@ public sealed class Flow_Logo : FlowBehaviour
 
 	void WaitClick2LoadVersionList()
 	{
+		Observable.Timer(System.TimeSpan.FromSeconds(5))
+			.Subscribe(
+				_ => {},
+				_ex => Debug.Log(_ex),
+				() => GameCore.SendCommand(CommandGroup.GROUP_CACHE, CacheInst.VERSION_VERIFY)//LoadVersionList()
+			)
+			.AddTo(this);
+
+		/*
 		IObservable<Unit> stream = this.UpdateAsObservable ();
 
 		stream.Where(_ => Input.GetMouseButtonDown(0))
@@ -45,6 +54,7 @@ public sealed class Flow_Logo : FlowBehaviour
 				_ex => Debug.Log(_ex),
 				() => GameCore.SendCommand(CommandGroup.GROUP_CACHE, CacheInst.VERSION_VERIFY)//LoadVersionList()
 			);	
+			*/
 	}
 
 	string[] GetLoadList()
@@ -55,7 +65,9 @@ public sealed class Flow_Logo : FlowBehaviour
 
 		string[] listDataRepository = new string[] { 
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_LOCALIZATION_PATH, "Tc"),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_DATA_PATH)
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_DATA_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_DATA_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_DATA_PATH),
 		};
 
 		string[] listDown = listPortrait.Concat (listDataRepository).ToArray();

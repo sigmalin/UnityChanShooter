@@ -3,6 +3,23 @@ using System.Collections;
 
 public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 {
+	public struct CacheRequest
+	{
+		public string Path;
+
+		public CacheRequest(string _Path)
+		{
+			Path = _Path;
+		}
+	}
+
+	public class CacheState
+	{
+		public bool NeedReport { get; set; }
+		public bool HasFailure { get; set; }
+		public System.IDisposable Disposable { get; set; }
+	}
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -66,12 +83,12 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 			ReleaseCache ((string)_params[0]);
 			break;
 
-		case CacheInst.REPORT_READ_STATE:
-			ReportReadState (true);
+		case CacheInst.REPORT_LOAD_STATE:
+			ReportDownLoadState ();
 			break;
 
-		case CacheInst.REPORT_DOWN_LOAD_STATE:
-			ReportDownLoadState (true);
+		case CacheInst.REPORT_READ_STATE:
+			ReportReadState ();
 			break;
 
 		case CacheInst.DOWN_LOAD_CACHE:
@@ -108,11 +125,13 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case CacheParam.GET_WEAPON_PATH:
-			output = (System.Object)GetCachePath (_inst, _params);
+			if ((uint)_params [0] == 0u) output = (System.Object)(string.Empty);
+			else                         output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_BULLET_PATH:
-			output = (System.Object)GetCachePath (_inst, _params);
+			if ((uint)_params [0] == 0u) output = (System.Object)(string.Empty);
+			else                         output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_PORTRAIT_PATH:
@@ -124,6 +143,18 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case CacheParam.GET_CHARACTER_DATA_PATH:
+			output = (System.Object)GetCachePath (_inst, _params);
+			break;
+
+		case CacheParam.GET_CHAPTER_DATA_PATH:
+			output = (System.Object)GetCachePath (_inst, _params);
+			break;
+
+		case CacheParam.GET_CHAPTER_IMAGE_PATH:
+			output = (System.Object)GetCachePath (_inst, _params);
+			break;
+
+		case CacheParam.GET_STAGE_IMAGE_PATH:
 			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
@@ -195,6 +226,27 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 				GetCachePath (CacheParam.GET_CHARACTER_DATA_PATH, _params), 
 				GetCacheAsset (CacheParam.GET_CHARACTER_DATA_PATH, _params), 
 				(bool)_params [0]);
+			break;
+
+		case CacheParam.GET_CHAPTER_DATA:
+			output = GetCache (
+				GetCachePath (CacheParam.GET_CHAPTER_DATA_PATH, _params), 
+				GetCacheAsset (CacheParam.GET_CHAPTER_DATA_PATH, _params), 
+				(bool)_params [0]);
+			break;
+
+		case CacheParam.GET_CHAPTER_IMAGE:
+			output = GetCache (
+				GetCachePath (CacheParam.GET_CHAPTER_IMAGE_PATH, _params), 
+				GetCacheAsset (CacheParam.GET_CHAPTER_IMAGE_PATH, _params), 
+				(bool)_params [1]);
+			break;
+
+		case CacheParam.GET_STAGE_IMAGE:
+			output = GetCache (
+				GetCachePath (CacheParam.GET_STAGE_IMAGE_PATH, _params), 
+				GetCacheAsset (CacheParam.GET_STAGE_IMAGE_PATH, _params), 
+				(bool)_params [2]);
 			break;
 
 		case CacheParam.GET_INSTANT_RESOURCE_INPUT:

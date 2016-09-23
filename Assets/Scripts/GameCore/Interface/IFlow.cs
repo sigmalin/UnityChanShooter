@@ -8,9 +8,9 @@ public class FlowEvent
 
 	public const uint VERSION_INCOMPATIBLE = 2;
 
-	public const uint LOAD_CACHE_COMPLETED = 3;
-	public const uint LOAD_CACHE_FAILURE = 4;
-	public const uint LOAD_CACHE_UNDONE = 5;
+	public const uint READ_CACHE_COMPLETED = 3;
+	public const uint READ_CACHE_FAILURE = 4;
+	public const uint READ_CACHE_UNDONE = 5;
 
 	public const uint DOWN_LOAD_CACHE_COMPLETED = 6;
 	public const uint DOWN_LOAD_CACHE_FAILURE = 7;

@@ -27,7 +27,7 @@ public partial class GameCore
 			.Do(_ => DownLoadCache(mLoadList))
 			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.DOWN_LOAD_CACHE_COMPLETED).First())
 			.Do(_ => ReadCache(mLoadList))
-			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.LOAD_CACHE_COMPLETED).First())
+			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.READ_CACHE_COMPLETED).First())
 			.SelectMany (_ => Observable.FromCoroutine<AsyncOperation> ((observer, cancellationToken) => LoadScene (_scene, observer, cancellationToken)))
 			.Subscribe (
 				_ => 
@@ -104,9 +104,11 @@ public partial class GameCore
 					SendCommand (CommandGroup.GROUP_CACHE, CacheInst.DOWN_LOAD_CACHE, _loadList [Indx]);
 				}
 			}
+		} 
+		else 
+		{
+			SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_LOAD_STATE);
 		}
-
-		SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_DOWN_LOAD_STATE);
 	}
 
 	void ReadCache(string[] _loadList)
@@ -121,8 +123,42 @@ public partial class GameCore
 				}
 			}
 		}
+		else 
+		{
+			SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_READ_STATE);
+		}
+	}
 
-		SendCommand (CommandGroup.GROUP_CACHE, CacheInst.REPORT_READ_STATE);
+	void AddCache(string[] _loadList, System.Action _callbackCompleted, bool _record)
+	{
+		if (_loadList == null)
+			return;
+
+		if (_record == true)
+		{
+			if(mLoadList == null)
+				mLoadList = _loadList;
+			else
+				mLoadList = mLoadList.Concat(_loadList).Distinct().ToArray();
+		}
+
+		Observable.Start(() => DownLoadCache(_loadList))
+			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.DOWN_LOAD_CACHE_COMPLETED).First())
+			.Do(_ => ReadCache(_loadList))
+			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.READ_CACHE_COMPLETED).First())
+			.Subscribe(_ =>
+				{
+					if (_callbackCompleted != null)
+						_callbackCompleted();
+				}).AddTo(this);
+	}
+
+	static public void AdditionalLoad(string[] _loadList, System.Action _callbackCompleted = null, bool _record = true)
+	{
+		if (Instance == null)
+			return;
+
+		Instance.AddCache (_loadList, _callbackCompleted, _record);
 	}
 
 	static public void ChangeScene(string _scene, string[] _loadList = null, bool _record = true)

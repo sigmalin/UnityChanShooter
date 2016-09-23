@@ -12,6 +12,9 @@ Ui,6,姓名,Name,
 Ui,7,武器,Weapon,
 Ui,8,技能,Ability,
 Ui,9,必殺技,Skill,
+Ui,10,出擊,Mission Start,
+Ui,11,攻擊,Fire,
+Ui,12,跳躍,Jump,
 ,,,,
 Weapon,1,散彈槍,Shutgun,
 Weapon,2,火箭炮,Rocket launcher,
@@ -55,3 +58,12 @@ Dialog-Skill,1,"向周圍發動多次強力射擊，
 產生的子彈最多可進行5次反彈",,
 Dialog-Skill,2,,,
 Dialog-Skill,3,,,
+,,,,
+Chapter,1,大鳥重工,,
+,,,,
+Stage-1-1,1,北部地區,,
+Stage-1-1,2,殲滅作戰,,
+Stage-1-1,3,"在大鳥重工北部地區發現大量喪屍，
+放置時間越久，災情會繼續擴大。
+於指定時間內，
+將聚集在大鳥重工內的所有敵人全數消滅",,

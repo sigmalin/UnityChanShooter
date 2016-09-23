@@ -64,4 +64,13 @@ public partial class CameraManager
 
 		mCameraTable.Clear ();
 	}
+
+	GameObject GetCameraObject(uint _cameraID)
+	{
+		CameraData data = GetCameraData (_cameraID);
+		if (data == null)
+			return null;
+
+		return data.RefCamera.gameObject;
+	}
 }

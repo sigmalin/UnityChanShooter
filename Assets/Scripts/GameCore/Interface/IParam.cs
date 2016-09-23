@@ -19,22 +19,16 @@ public class SystemParam
 
 public class PlayerParam
 {
-	public const uint MAIN_PLAYER = 0;
-
 	public const uint PLAYER_DATA = 10;
 
 	public const uint PLAYER_TRANSFORM = 11;
-
-	public const uint MAIN_PLAYER_DATA = 20;
 }
 
 public class CameraParam
 {
 	public const uint MAIN_CAMERA = 0;
 
-	public const uint CAMERA_DATA = 10;
-
-	public const uint MAIN_CAMERA_DATA = 20;
+	public const uint CAMERA_OBJECT = 10;
 }
 
 public class ResourceParam
@@ -50,7 +44,6 @@ public class ResourceParam
 
 public class WeaponParam
 {
-	public const uint MODEL_ID = 1;
 }
 
 public class CacheParam
@@ -66,6 +59,9 @@ public class CacheParam
 	public const uint GET_PORTRAIT_PATH = 16;
 	public const uint GET_LOCALIZATION_PATH = 17;
 	public const uint GET_CHARACTER_DATA_PATH = 18;
+	public const uint GET_CHAPTER_DATA_PATH = 19;
+	public const uint GET_CHAPTER_IMAGE_PATH = 20;
+	public const uint GET_STAGE_IMAGE_PATH = 21;
 
 	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 99;
 
@@ -77,6 +73,9 @@ public class CacheParam
 	public const uint GET_PORTRAIT = 116;
 	public const uint GET_LOCALIZATION = 117;
 	public const uint GET_CHARACTER_DATA = 118;
+	public const uint GET_CHAPTER_DATA = 119;
+	public const uint GET_CHAPTER_IMAGE= 120;
+	public const uint GET_STAGE_IMAGE= 121;
 
 	public const uint GET_INSTANT_RESOURCE_INPUT = 199;
 }
@@ -87,8 +86,14 @@ public class LobbyParam
 
 public class RepositoryParam
 {
-	public const uint GET_LOCALIZATION = 0;
-	public const uint GET_CHARACTER_DATA = 1;
+	public const uint GET_LOCALIZATION = 1;
+
+	public const uint GET_CHARACTER_DATA = 11;
+
+	public const uint GET_CHAPTER_DATA = 21;
+	public const uint GET_ALL_CHAPTER_DATA = 22;
+
+	public const uint GET_WEAPON_DATA = 31;
 }
 
 public interface IParam 

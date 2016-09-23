@@ -1,14 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public sealed class Actor_UnityChan : ActorController 
 {
+	float mNextJumpWait = 0F;
+
+	IMotion mStandard;
+	IMotion mFire;
+
 	// Use this for initialization
-	public override void Initial (Actor _actor)
+	public override void Initial (PlayerActor _actor)
 	{
 		base.Initial (_actor);
+
+		mNextJumpWait = 0F;
+
+		mStandard = new Motion_Standard ();
+		mFire = new Motion_StandardFire ();
 	}
-	
+
+	public override void OnUpdate()
+	{
+		base.OnUpdate ();
+
+		if (IsGround () == true) 
+		{
+			if (0F < mNextJumpWait)
+				mNextJumpWait -= Time.deltaTime;
+		}
+		else
+			mNextJumpWait = 1F;
+	}
+
 	// Update is called once per frame
 	public override void ExecCommand (uint _inst, params System.Object[] _params) 
 	{
@@ -16,44 +40,44 @@ public sealed class Actor_UnityChan : ActorController
 		{
 		case PlayerInst.GAME_START:
 
-			SetMotion (new Motion_Standard());
+			SetMotion (mStandard);
 			break;
 
 		case PlayerInst.PLAYER_IDLE:
 			
-			Owner.PlayerData.Speed = 0F;
+			Owner.MotionData.Speed = 0F;
 			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, false);
 			break;
 
 		case PlayerInst.PLAYER_MOVE:
 
-			Owner.PlayerData.Move = (Vector3)_params [0];
-			Owner.PlayerData.Speed = 1F;
+			Owner.MotionData.Move = (Vector3)_params [0];
+			Owner.MotionData.Speed = 1F;
 			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, true);
 			break;
 
 		case PlayerInst.PLAYER_JUMP:
 
-			if (IsGround () == true) 
+			if (IsGround () == true && mNextJumpWait <= 0F) 
 				Owner.Actordata.Rigid.velocity = new Vector3 (Owner.Actordata.Rigid.velocity.x, 5F, Owner.Actordata.Rigid.velocity.z);			
 			break;
 
 		case PlayerInst.PLAYER_ROTATE:
 
-			Owner.Actordata.Root.transform.rotation = Quaternion.LookRotation ((Vector3)_params [0], Vector3.up);
+			Owner.transform.rotation = Quaternion.LookRotation ((Vector3)_params [0], Vector3.up);
 			break;
 
 		case PlayerInst.PLAYER_AIM:
 
 			bool isAim = (bool)_params [0];
 
-			if (isAim) SetMotion (new Motion_StandardFire ());
-			else       SetMotion (new Motion_Standard());			
+			if (isAim) SetMotion (mFire);
+			else       SetMotion (mStandard);			
 			break;
 
 		case PlayerInst.PLAYER_LOOKAT:
 
-			Owner.PlayerData.LookAt = (Vector3)_params [0];
+			Owner.MotionData.LookAt = (Vector3)_params [0];
 			break;
 		}	
 	}

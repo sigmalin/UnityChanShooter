@@ -17,40 +17,20 @@ public sealed partial class Flow_Lobby : FlowBehaviour
 			RepositoryInst.LOAD_LOCALIZATION, 
 			(LocalizationRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_LOCALIZATION, "Tc", false));
 
-		/*
-		IObservable<Unit> stream = this.UpdateAsObservable ();
+		GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+			RepositoryInst.LOAD_CHAPTER_DATA, 
+			(ChapterRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_DATA, false));
 
-		stream.Where(_ => Input.GetMouseButtonDown(0))
-			.First()
-			.SelectMany(stream.Where(_ => Input.GetMouseButtonUp(0)))
-			.First()
-			.RepeatUntilDestroy(this.gameObject)
-			.Subscribe ( _ => GameCore.SetNextFlow(null) );	
-		*/
-	}
+		GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+			RepositoryInst.LOAD_WEAPON_DATA, 
+			(WeaponDataRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_DATA, false));
 
-	public override void Exit ()
-	{
-		base.Exit ();
-
-		GameCore.ChangeScene ("GamePlay", GetLoadList());
+		//GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+		//	RepositoryInst.lo, 
+		//	(ChapterRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_DATA, false));
 	}
 
 	public override void Event (uint _eventID)
 	{
-	}
-
-	string[] GetLoadList()
-	{
-		return new string[] { 
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SCENE_PATH, "GamePlay"),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH, (uint)1),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_PATH, (uint)100),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_PATH, (uint)101),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH, (uint)1),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_DATA_PATH),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_PATH, (uint)1)
-							};
 	}
 }

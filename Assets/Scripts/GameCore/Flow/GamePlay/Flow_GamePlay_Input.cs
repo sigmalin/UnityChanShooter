@@ -18,7 +18,6 @@ public partial class Flow_GamePlay
 		mOnHandleInputSubject.AsObservable().Where (_ => Input.GetKeyUp (KeyCode.Escape))
 			.Subscribe ( _ => 
 				{
-					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.MAIN_PLAYER, (uint)0);
 					GameCore.SetNextFlow(null);
 				});
 

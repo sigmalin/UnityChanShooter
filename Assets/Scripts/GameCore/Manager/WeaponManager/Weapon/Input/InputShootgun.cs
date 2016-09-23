@@ -1,153 +1,108 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UniRx;
+using UniRx.Triggers;
 
-public class InputShootgun : MonoBehaviour, IInput, IUserInterface 
+public sealed class InputShootgun : WeaponUiBehavior
 {
-	Transform mGameCamera = null;
-	Transform GameCamera
+	public ReactiveProperty<bool> CameraOperState { get; private set; }
+
+	Transform mTransMainCamera;
+	public Transform TransMainCamera
 	{
 		get 
 		{
-			if (mGameCamera == null) 
+			if (mTransMainCamera == null) 
 			{
-				CameraManager.CameraData data = (CameraManager.CameraData)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA_DATA);
-				if (data.RefCamera != null) mGameCamera = data.RefCamera.transform;
+				uint mainCameraID = (uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA);;
+				GameObject mainCameraGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.CAMERA_OBJECT, mainCameraID);
+				mTransMainCamera = mainCameraGO.transform;
 			}
-			return mGameCamera;
+			return mTransMainCamera;
 		}
 	}
 
-	public IInput Operator { get { return this; } }
+	System.IDisposable mCameraOperDisposable;
 
-	#region uniRx
-	Subject<Unit> mOnHandleInputSubject = new Subject<Unit>();
-	#endregion
+	[SerializeField]
+	WeaponUiButton mBtnFire;
+
+	[SerializeField]
+	WeaponUiButton mBtnJump;
 
 	// Use this for initialization
-	void Start () 
+	public override void Start () 
 	{
-		IObservable<Unit> inputStream = mOnHandleInputSubject.AsObservable ();
+		base.Start ();
 
-		//IObservable<Unit> inputStream = mOnHandleInputSubject.Publish().RefCount();
-
-		ControlPlayer (
-			inputStream.Select (_ => (uint)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.MAIN_PLAYER)).Publish ().RefCount(),
-			inputStream);
-
-		ControlCamera (
-			inputStream.Select (_ => (uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA)).Publish ().RefCount(),
-			inputStream);
-	}
-
-	public void Show(Transform _root)
-	{
-	}
-
-	public void Hide()
-	{
-		Cursor.lockState = CursorLockMode.None;
-		Cursor.visible = true;
-	}
-
-	public void Localization()
-	{
-	}
-
-	public void Clear()
-	{
-	}
-
-	public void Operation(uint _inst, params System.Object[] _params)
-	{
-	}
-	
-	// Update is called once per frame
-	public bool HandleInput ()
-	{
-		mOnHandleInputSubject.OnNext (Unit.Default);
-
-		return false;
-	}
-
-	void ControlPlayer(IObservable<uint> _playerStream, IObservable<Unit> _inputStream)
-	{
 		// move
-		_inputStream
-			.Where (_ => Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.D))
-			.Select (_ => new Vector3 (Input.GetAxis ("Horizontal"), 0F, Input.GetAxis ("Vertical")))
-			.Where (_ => 0F < _.magnitude)
-			.Zip (_playerStream, (_mov, _id) => 
-				new {
-					mov = _mov.normalized, id = _id
-				})
-			.First ()
-			.Repeat ()
+		Device.Vec3JoyStickMoved
 			.Subscribe ( _ =>
 				{
-					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, _.id, _.mov);
-					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_ROTATE, _.id, _.mov);
+					Vector3 dir = TransMainCamera.TransformDirection(_);
+					dir = new Vector3(dir.x, 0f, dir.z);
+					dir = dir.normalized;
+					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, PlayerID, dir);
+					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_ROTATE, PlayerID, dir);
 				});
 
-		_inputStream
-			.Select(_ => Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.D))
-			.DistinctUntilChanged()
-			.Where(_ => !_)
-			.Zip (_playerStream, (_, _id) =>
-				new {
-					id = _id
-				})
-			.First ()
-			.Repeat ()
-			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_IDLE, _.id));
+		// idle
+		Device.IsJoyStickUsed
+			.Where (_ => _ == false)
+			.Subscribe (_ => {
+				GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_IDLE, PlayerID);
+			});
 
-		// jump
-		_inputStream
-			.Where (_ => Input.GetKeyUp (KeyCode.Space))
-			.Zip (_playerStream, (_, _id) =>
-				new {
-					id = _id
-				})
-			.First ()
-			.Repeat ()
-			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_JUMP, _.id));
+		// Move CrossHair
+		CameraOperState = new ReactiveProperty<bool>(false);
 
-		// aim
-		_inputStream
-			.Select (_ => Input.GetMouseButton(0))
-			.DistinctUntilChanged()
-			.Zip (_playerStream, (_, _id) =>
-				new {
-					id = _id, aim = _
-				})
-			.First ()
-			.Repeat ()
-			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_AIM, _.id, _.aim));
+		InputStream.Where(_ => CameraOperState.Value == true)
+			.Select(_ => Input.mousePosition)
+			.Scan((_pre, _cur) => {
+				Vector3 dir = (_cur - _pre) * 0.5f;
+				GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_MOVEMENT, 
+					(uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA), 
+					dir.x, dir.y, Input.GetAxis("Mouse ScrollWheel"));
+
+				return _cur;
+			})
+			.Subscribe (_ => {});
+
+		InputStream
+			.Where (_ => Input.GetMouseButtonDown (0) == true && GameCore.IsTouchInterface (Input.mousePosition) == false)
+			.Subscribe (_ => CameraOperState.Value = true);
+
+		InputStream
+			.Where(_ => Input.GetMouseButtonUp(0) == true)
+			.Subscribe (_ => CameraOperState.Value = false);
+
+		// Fire
+		mBtnFire.DownTrigger.OnPointerDownAsObservable()
+			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_AIM, PlayerID, true));
+
+		mBtnFire.UpTrigger.OnPointerUpAsObservable()
+			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_AIM, PlayerID, false));
+
+		// Jump
+		mBtnJump.UpTrigger.OnPointerUpAsObservable()
+			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_JUMP, PlayerID));
+
+		// Tracking
+		//InputStream
+		//	.Buffer (System.TimeSpan.FromSeconds (0.5f))
+		//	.Subscribe (_ => Tracking());
 	}
 
-	void ControlCamera(IObservable<uint> _cameraStream, IObservable<Unit> _inputStream)
+	public override void Hide()
 	{
-		// Lock Mouse
-		_inputStream
-			.Where (_ => Cursor.lockState != CursorLockMode.Locked)
-			.Subscribe (
-				_ =>
-				{
-					Cursor.lockState = CursorLockMode.Locked;
-					Cursor.visible = false;
-				},
-				() => 
-				{
-					Cursor.lockState = CursorLockMode.None;
-					Cursor.visible = true;
-				}
-			);
-		
-		// Move CrossHair
-		_cameraStream
-			.Subscribe (_ => 
-				{
-					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_MOVEMENT, _, Input.GetAxis ("Mouse X"), Input.GetAxis ("Mouse Y"), Input.GetAxis("Mouse ScrollWheel"));
-				});
+		//Cursor.lockState = CursorLockMode.None;
+		//Cursor.visible = true;
+	}
+
+	void Tracking()
+	{
+		Transform transPlayer = (Transform)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_TRANSFORM, PlayerID);
+
+		Collider[] cols = Physics.OverlapSphere (transPlayer.position, 5F, GameCore.GetRaycastLayer (GameCore.LAYER_ENEMY));
 	}
 }

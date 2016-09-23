@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 {
-	uint mMainPlayer = 0;
-
 	// Use this for initialization
 	void Start () 
 	{		
@@ -47,14 +46,8 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case PlayerInst.CREATE_PLAYER:			
-			CreateNewPlayer ((uint)_params[0], (Actor)_params[1]);
-			TransCommand((uint)_params[0], PlayerInst.CREATE_PLAYER, GetPlayerData ((uint)_params[0]));
-			break;
-
-		case PlayerInst.MAIN_PLAYER:
-			TransCommand (mMainPlayer, _inst, false);
-			mMainPlayer = (uint)_params[0];
-			TransCommand (mMainPlayer, _inst, true);
+			CreateNewPlayer ((uint)_params[0], (uint)_params[1]);
+			TransCommand((uint)_params[0], PlayerInst.CREATE_PLAYER, (uint)_params[0]);
 			break;
 
 		default:
@@ -71,20 +64,12 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 
 		switch (_inst) 
 		{
-		case PlayerParam.MAIN_PLAYER:
-			output = (System.Object)mMainPlayer;
-			break;
-
 		case PlayerParam.PLAYER_DATA:
 			output = (System.Object)GetPlayerData ((uint)_params[0]);
 			break;
 
 		case PlayerParam.PLAYER_TRANSFORM:
-			output = (System.Object)(GetPlayerData ((uint)_params[0]).RefActor.transform);
-			break;
-
-		case PlayerParam.MAIN_PLAYER_DATA:
-			output = (System.Object)GetPlayerData (mMainPlayer);
+			output = (System.Object)(GetPlayerData ((uint)_params[0]).transform);
 			break;
 		}
 
@@ -93,20 +78,15 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 
 	void TransCommand(uint _ID, uint _inst, params System.Object[] _params)
 	{
-		PlayerData player = GetPlayerData (_ID);
-		if (player != null && player.RefActor != null) 
-			player.RefActor.ExecCommand (_inst, _params);
+		PlayerActor player = GetPlayerData (_ID);
+		if (player != null) 
+			player.ExecCommand (_inst, _params);
 	}
 
 	void BroadcastCommand (uint _inst, params System.Object[] _params)
 	{
-		PlayerData[] players = GetAllPlayerData ();
-
-		for (int Indx = 0; Indx < players.Length; ++Indx) 
-		{
-			PlayerData player = players[Indx];
-			if (player != null && player.RefActor != null) 
-				player.RefActor.ExecCommand (_inst, _params);
-		}
+		GetAllPlayerData().ToObservable ()
+			.Where (_ => _ != null)
+			.Subscribe (_ => _.ExecCommand (_inst, _params));
 	}
 }

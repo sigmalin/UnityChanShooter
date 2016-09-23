@@ -3,15 +3,15 @@ using System.Collections;
 
 public class ActorController
 {
-	Actor mActor = null;
-	protected Actor Owner { get { return mActor; } }
+	PlayerActor mRefActor = null;
+	protected PlayerActor Owner { get { return mRefActor; } }
 
 	IMotion mCurMotion = null;
 
 	// Use this for initialization
-	public virtual void Initial (Actor _actor)
+	public virtual void Initial (PlayerActor _actor)
 	{
-		mActor = _actor;
+		mRefActor = _actor;
 	}
 
 	// Update is called once per frame
@@ -19,22 +19,22 @@ public class ActorController
 	{
 	}
 
-	public void OnUpdate()
+	public virtual void OnUpdate()
 	{
-		if (mCurMotion != null && mActor.PlayerData != null)
-			mCurMotion.UpdateMotion (mActor.PlayerData);
+		if (mCurMotion != null)
+			mCurMotion.UpdateMotion (mRefActor);
 	}
 
 	public void OnAnimMove()
 	{
-		if (mCurMotion != null && mActor.PlayerData != null)
-			mCurMotion.AnimMoveMotion (mActor.PlayerData);
+		if (mCurMotion != null)
+			mCurMotion.AnimMoveMotion (mRefActor);
 	}
 
 	public void OnAnimIK()
 	{
-		if (mCurMotion != null && mActor.PlayerData != null)
-			mCurMotion.AnimIKMotion (mActor.PlayerData);
+		if (mCurMotion != null)
+			mCurMotion.AnimIKMotion (mRefActor);
 	}
 
 	protected void SetMotion(IMotion _motion)
@@ -43,16 +43,16 @@ public class ActorController
 			return;
 
 		if (mCurMotion != null)
-			mCurMotion.LeaveMotion (mActor.PlayerData);
+			mCurMotion.LeaveMotion (mRefActor);
 
 		mCurMotion = _motion;
 
 		if (mCurMotion != null)
-			mCurMotion.EnterMotion (mActor.PlayerData);
+			mCurMotion.EnterMotion (mRefActor);
 	}
 
 	public virtual void Clear()
 	{
-		mActor = null;
+		mRefActor = null;
 	}
 }

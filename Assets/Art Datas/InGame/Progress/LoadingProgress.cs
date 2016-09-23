@@ -7,7 +7,6 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 
 	public class InstSet
 	{
-		public const uint SET_PROGRESS_TEXT = 0;
 		public const uint SET_PROGRESS_PERCENT = 1;
 	}
 
@@ -53,12 +52,9 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 	{
 		switch(_inst)
 		{
-		case InstSet.SET_PROGRESS_TEXT:
-			Tab = (string)_params[0];
-			break;
-
 		case InstSet.SET_PROGRESS_PERCENT:
 			Percent = (float)_params [0];
+			Tab = string.Format ("{0}%", (int)((float)_params [0] * 100));
 			break;
 		}
 	}

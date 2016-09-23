@@ -1,14 +1,11 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Manager\LobbyManager\LobbyManager_Stack.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\ActorController\Actor_UnityChan.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameCore\Data\StageRepository.cs" Line="17" Column="30" />
-      <File FileName="Assets\Scripts\GameCore\Data\CharacterRepository.cs" Line="23" Column="37" />
-      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\LobbyManager.cs" Line="53" Column="36" />
-      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\LobbyManager_PageCharacter.cs" Line="22" Column="8" />
-      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\LobbyManager_Stack.cs" Line="28" Column="4" />
-      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\UI\LobbyBase_MenuBtns.cs" Line="3" Column="13" />
-      <File FileName="Assets\Scripts\GameCore\Manager\LobbyManager\LobbyManager_LobbyBase.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\PlayerActor.cs" Line="16" Column="22" />
+      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\PlayerManager.cs" Line="48" Column="36" />
+      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\PlayerActor_Equipment.cs" Line="96" Column="16" />
+      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\ActorController\Actor_UnityChan.cs" Line="49" Column="20" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

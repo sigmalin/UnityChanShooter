@@ -7,8 +7,11 @@ public sealed partial class LobbyManager : CommandBehaviour, IParam, IRegister
 	{
 		base.OnDestroy ();
 
+		ReleaseStack ();
+
 		DestroyLobbyBase ();
 		DestroyPageCharacter ();
+		DestroyPageSingle ();
 	} 
 
 	public void OnRegister ()
@@ -67,7 +70,7 @@ public sealed partial class LobbyManager : CommandBehaviour, IParam, IRegister
 
 		case LobbyInst.ENTER_PAGE_SINGLE:
 			ShowPageSingle ();
-			SetLobbyBaseStateCharacter ();
+			SetLobbyBaseStateSingle ();
 			break;
 
 		case LobbyInst.EXIT_PAGE_SINGLE:

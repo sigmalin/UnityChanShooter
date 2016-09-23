@@ -20,6 +20,8 @@ public sealed partial class LobbyManager
 		NormalizationLobbyUI ();
 
 		OpenInterface (mPageSingle);
+
+		mPageSingle.LobbyOrder (Page_Single.OrderList.UPDATE_CHAPTER_LIST);
 	}
 
 	void HidePageSingle()

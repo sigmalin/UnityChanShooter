@@ -2,48 +2,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 public partial class PlayerManager
 {
-	public class PlayerData
-	{
-		public uint ID;
-		public Vector3 Move;
-		public float Speed;
-		public Vector3 LookAt;
-
-		public Actor RefActor;
-
-		public void Clear()
-		{
-			RefActor = null;
-		}
-	}
-
-	Dictionary<uint, PlayerData> mPlayerTable = null;
+	Dictionary<uint, PlayerActor> mPlayerTable = null;
 
 	void InitialPlayerData()
 	{
-		mPlayerTable = new Dictionary<uint, PlayerData> ();
+		mPlayerTable = new Dictionary<uint, PlayerActor> ();
 	}
 
-	void CreateNewPlayer(uint _playerID, Actor _actor)
+	void CreateNewPlayer(uint _playerID, uint _containerID)
 	{
 		if (mPlayerTable.ContainsKey (_playerID) == true) 
 		{
-			mPlayerTable [_playerID].Clear ();
+			mPlayerTable [_playerID].ExecCommand (PlayerInst.REMOVE_PLAYER);
 			mPlayerTable.Remove (_playerID);
 		}
 
-		PlayerData data = new PlayerData ();
+		GameObject container = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CONTAINER, _containerID);
+		PlayerActor actor = container.GetOrAddComponent<PlayerActor> ();
 
-		data.ID = _playerID;
-		data.RefActor = _actor;
-
-		mPlayerTable.Add (_playerID, data);
+		mPlayerTable.Add (_playerID, actor);
 	}
 
-	PlayerData GetPlayerData(uint _playerID)
+	PlayerActor GetPlayerData(uint _playerID)
 	{
 		if (mPlayerTable.ContainsKey (_playerID) == false)
 			return null;
@@ -56,18 +40,14 @@ public partial class PlayerManager
 		return mPlayerTable.Keys.ToArray ();
 	}
 
-	PlayerData[] GetAllPlayerData()
+	PlayerActor[] GetAllPlayerData()
 	{
 		return mPlayerTable.Values.ToArray ();
 	}
 
 	void ClearPlayerData()
 	{
-		foreach (PlayerData data in mPlayerTable.Values) 
-		{
-			if (data != null)
-				data.Clear ();
-		}
+		BroadcastCommand (PlayerInst.REMOVE_PLAYER);
 
 		mPlayerTable.Clear ();
 	}
