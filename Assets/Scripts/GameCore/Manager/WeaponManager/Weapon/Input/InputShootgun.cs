@@ -1,34 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 using UniRx;
 using UniRx.Triggers;
 
-public sealed class InputShootgun : WeaponUiBehavior
+public sealed partial class InputShootgun : WeaponUiBehavior
 {
 	public ReactiveProperty<bool> CameraOperState { get; private set; }
 
-	Transform mTransMainCamera;
-	public Transform TransMainCamera
+	Camera mMainCamera;
+	public Camera MainCamera
 	{
 		get 
 		{
-			if (mTransMainCamera == null) 
+			if (mMainCamera == null) 
 			{
 				uint mainCameraID = (uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA);;
 				GameObject mainCameraGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.CAMERA_OBJECT, mainCameraID);
-				mTransMainCamera = mainCameraGO.transform;
+				mMainCamera = mainCameraGO.GetComponent<Camera>();
 			}
-			return mTransMainCamera;
+			return mMainCamera;
 		}
 	}
-
-	System.IDisposable mCameraOperDisposable;
 
 	[SerializeField]
 	WeaponUiButton mBtnFire;
 
 	[SerializeField]
 	WeaponUiButton mBtnJump;
+
+	[SerializeField]
+	UiTracer mCrossHair;
+
+	[SerializeField]
+	Status mStatus;
 
 	// Use this for initialization
 	public override void Start () 
@@ -37,9 +42,10 @@ public sealed class InputShootgun : WeaponUiBehavior
 
 		// move
 		Device.Vec3JoyStickMoved
+			.Where (_ => _ != Vector3.zero)
 			.Subscribe ( _ =>
 				{
-					Vector3 dir = TransMainCamera.TransformDirection(_);
+					Vector3 dir = MainCamera.transform.TransformDirection(_);
 					dir = new Vector3(dir.x, 0f, dir.z);
 					dir = dir.normalized;
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, PlayerID, dir);
@@ -52,30 +58,7 @@ public sealed class InputShootgun : WeaponUiBehavior
 			.Subscribe (_ => {
 				GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_IDLE, PlayerID);
 			});
-
-		// Move CrossHair
-		CameraOperState = new ReactiveProperty<bool>(false);
-
-		InputStream.Where(_ => CameraOperState.Value == true)
-			.Select(_ => Input.mousePosition)
-			.Scan((_pre, _cur) => {
-				Vector3 dir = (_cur - _pre) * 0.5f;
-				GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_MOVEMENT, 
-					(uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA), 
-					dir.x, dir.y, Input.GetAxis("Mouse ScrollWheel"));
-
-				return _cur;
-			})
-			.Subscribe (_ => {});
-
-		InputStream
-			.Where (_ => Input.GetMouseButtonDown (0) == true && GameCore.IsTouchInterface (Input.mousePosition) == false)
-			.Subscribe (_ => CameraOperState.Value = true);
-
-		InputStream
-			.Where(_ => Input.GetMouseButtonUp(0) == true)
-			.Subscribe (_ => CameraOperState.Value = false);
-
+		
 		// Fire
 		mBtnFire.DownTrigger.OnPointerDownAsObservable()
 			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_AIM, PlayerID, true));
@@ -88,21 +71,78 @@ public sealed class InputShootgun : WeaponUiBehavior
 			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_JUMP, PlayerID));
 
 		// Tracking
-		//InputStream
-		//	.Buffer (System.TimeSpan.FromSeconds (0.5f))
-		//	.Subscribe (_ => Tracking());
+		InputStream
+			.Buffer (System.TimeSpan.FromSeconds (0.5f))
+			.Subscribe (_ => Tracking());
+
+		OperatorForStanealone ();
 	}
 
-	public override void Hide()
+	public override void Localization()
 	{
-		//Cursor.lockState = CursorLockMode.None;
-		//Cursor.visible = true;
+		base.Localization ();
+
+		mStatus.Localization ();
+	}
+
+	public override void Operation(uint _inst, params System.Object[] _params)
+	{
+		base.Operation (_inst, _params);
+
+		switch (_inst) 
+		{
+		case InstSet.SET_ACTOR_ID:
+			mStatus.Initial (PlayerID);
+			break;
+		}
 	}
 
 	void Tracking()
 	{
-		Transform transPlayer = (Transform)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_TRANSFORM, PlayerID);
+		uint[] enemyIDs = (uint[])GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.GET_HOSTILITY_LIST, PlayerID);
 
-		Collider[] cols = Physics.OverlapSphere (transPlayer.position, 5F, GameCore.GetRaycastLayer (GameCore.LAYER_ENEMY));
+		if (enemyIDs == null || enemyIDs.Length == 0)
+			return;
+
+		PlayerActor mineActor = (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, PlayerID);
+
+		if (mineActor == null)
+			return;
+
+		Vector3 minePos = mineActor.transform.position;
+		Vector3 mineEye = mineActor.PlayerRole.BodyPt.Eye.position;
+
+		PlayerActor targetActor = enemyIDs.Select (_ => (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, _))
+			.Where (_ => _ != null)
+			.Select (_ => new { Actor = _, Distance = Vector3.Distance (minePos, _.transform.position) })
+			.Where (_ => _.Distance < 5f)
+			.OrderBy (_ => _.Distance)
+			.Select (_ => _.Actor)
+			.Where (_ => Physics.Raycast (mineEye, (_.PlayerRole.BodyPt.AimPt.position - mineEye).normalized, 5f, GameCore.GetRaycastLayer(GameCore.LAYER_DEFAULT)) == false)
+			.FirstOrDefault ();
+
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_LOCK, PlayerID, targetActor == null ? 0u : targetActor.ActorID); 
+
+		SetCrossHair (targetActor);
+	}
+
+	void SetCrossHair(PlayerActor _actor)
+	{
+		if (_actor == null) 
+		{
+			mCrossHair.Target = null;
+			mCrossHair.MainCamera = null;
+
+			if (mCrossHair.gameObject.activeSelf == true)
+				mCrossHair.gameObject.SetActive (false);
+		} 
+		else 
+		{
+			mCrossHair.Target = _actor.PlayerRole.BodyPt.AimPt;
+			mCrossHair.MainCamera = MainCamera;
+
+			if (mCrossHair.gameObject.activeSelf == false)
+				mCrossHair.gameObject.SetActive (true);
+		}
 	}
 }

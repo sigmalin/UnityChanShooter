@@ -63,13 +63,13 @@ public sealed partial class WeaponManager
 	{
 		WeaponActor actor = GetWeaponActor(_id);
 		if (actor == null) return;
-		if (actor.AmmoCount == 0) return;
+		if (actor.AmmoCount.Value == 0) return;
 		if (0F < actor.ShootFreq) return;
 
 		actor.ShootFreq = actor.MaxShootFreq;
 
-		uint bulletCount = actor.AmmoCount < actor.MaxShootRayCount ? actor.AmmoCount : actor.MaxShootRayCount;
-		actor.AmmoCount -= bulletCount;
+		uint bulletCount = actor.AmmoCount.Value < actor.MaxShootRayCount ? actor.AmmoCount.Value : actor.MaxShootRayCount;
+		actor.AmmoCount.Value -= bulletCount;
 
 		if (_arm == null) return;
 
@@ -77,7 +77,16 @@ public sealed partial class WeaponManager
 
 		for (int Indx = 0; Indx < bulletCount; ++Indx) 
 		{
-			_arm.OnFire (_id, actor.BulletID, actor.ShootATK);
+			_arm.OnFire (_id, actor.BulletID, actor.ShootATK, GetAttackLayer(actor));
 		}
+	}
+
+	int GetAttackLayer(WeaponActor _actor)
+	{
+		WeaponActor mainActor = GetWeaponActor (mMainActorID);
+
+		return _actor.Team == mainActor.Team ? 
+			GameCore.GetRaycastLayer (GameCore.LAYER_DEFAULT) | GameCore.GetRaycastLayer (GameCore.LAYER_ENEMY) :
+			GameCore.GetRaycastLayer (GameCore.LAYER_DEFAULT) | GameCore.GetRaycastLayer (GameCore.LAYER_PLAYER);
 	}
 }

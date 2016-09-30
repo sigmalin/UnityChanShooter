@@ -23,14 +23,14 @@ public sealed partial class WeaponManager
 			.Subscribe (_ => _.ShootFreq = Mathf.Clamp (_.ShootFreq - Time.deltaTime, 0F, _.ShootFreq));
 
 		mReloadDisposable = actorObserver
-			.Where (_ => _.AmmoCount < _.MaxAmmoCount)
+			.Where (_ => _.AmmoCount.Value < _.MaxAmmoCount)
 			.Do (_ => _.ReloadTime -= Time.deltaTime)
 			.Where (_ => _.ReloadTime <= 0F)
 			.Subscribe (
 				_ => 
 				{
 					_.ReloadTime = _.MaxReloadTime;
-					++_.AmmoCount;
+					++_.AmmoCount.Value;
 				});
 	}
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using UniRx;
 
-public partial class PlayerActor : MonoBehaviour 
+public partial class PlayerActor : MonoBehaviour, ITarget 
 {
 	[System.Serializable]
 	public class ActorData
@@ -65,14 +65,5 @@ public partial class PlayerActor : MonoBehaviour
 				mActorController.ExecCommand (_inst, _params);
 			break;
 		}
-	}
-
-	void RecycleResource(GameObject _resGO)
-	{
-		GameCoreResRecycle recycle = _resGO.GetComponent<GameCoreResRecycle> ();
-		if (recycle != null)
-			recycle.Recycle ();
-		else
-			GameObject.Destroy (_resGO);
 	}
 }

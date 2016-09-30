@@ -1,35 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 [RequireComponent(typeof(Camera))]
 public class GameCamera : MonoBehaviour 
 {
 	CameraManager.CameraData mRefCameraData = null;
 
-	IMode mCameraMode = null;
+	Stack<IMode> mModeStack;
 
 	// Use this for initialization
 	void Start () 
 	{
+		mModeStack = new Stack<IMode> ();
+	}
 
+	void OnDestroy()
+	{
+		ClearStack ();
+
+		mModeStack = null;
 	}
 	
 	// Update is called once per frame
-	void LateUpdate () 
+	public void FrameMove () 
 	{
-		if (mCameraMode != null && mRefCameraData != null)
-			mCameraMode.UpdateMode (mRefCameraData);	
+		IMode curMode = GetCurrentMode ();
+
+		if (curMode != null && mRefCameraData != null)
+			curMode.UpdateMode (mRefCameraData);	
 	}
 
-	void SetCameraMode (IMode _mode)
+	void PushCameraMode (IMode _mode)
 	{
-		if (mCameraMode != null)
-			mCameraMode.LeaveMode (mRefCameraData);
+		if (_mode == null)
+			return;
 
-		mCameraMode = _mode;
+		if (GetCurrentMode() != null)
+			GetCurrentMode().LeaveMode (mRefCameraData);
 
-		if (mCameraMode != null)
-			mCameraMode.EnterMode (mRefCameraData);
+		Stack<IMode> tempStack = new Stack<IMode> ();
+
+		while (mModeStack.Count != 0) 
+		{
+			if (mModeStack.Peek () != _mode)
+				tempStack.Push (mModeStack.Pop());
+		}
+
+		while (tempStack.Count != 0) 
+		{
+			mModeStack.Push (tempStack.Pop());
+		}
+
+		mModeStack.Push (_mode);
+
+		_mode.EnterMode (mRefCameraData);
 	}
 
 	public void ExecCommand(uint _inst, params System.Object[] _params)
@@ -42,17 +68,34 @@ public class GameCamera : MonoBehaviour
 
 		case CameraInst.CAMERA_UNREGISTER:
 			mRefCameraData = null;
-			SetCameraMode (null);
+			ClearStack ();
 			break;
 
 		case CameraInst.SET_CAMERA_MODE:
-			SetCameraMode ((IMode)_params[0]);
+			PushCameraMode ((IMode)_params[0]);
 			break;
 
 		default:
-			if (mCameraMode != null)
-				mCameraMode.ExecCommand (_inst, _params);
+			if (GetCurrentMode() != null)
+				GetCurrentMode().ExecCommand (_inst, _params);
 			break;
 		}
+	}
+
+	IMode GetCurrentMode()
+	{
+		if (mModeStack == null)
+			return null;
+
+		if (mModeStack.Count == 0)
+			return null;
+		
+		return mModeStack.Peek ();
+	}
+
+	void ClearStack()
+	{
+		if (mModeStack != null)
+			mModeStack.Clear ();
 	}
 }

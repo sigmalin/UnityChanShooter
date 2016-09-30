@@ -28,9 +28,17 @@ public class CharacterItem : MonoBehaviour, IItem
 	{
 		mCharacterID = (uint)_params[0];
 
-		mPortrait.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT, mCharacterID, 1, false);
+		mPortrait.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT, mCharacterID, ProtraitDefine.PROTRAIT_KEY_NORAML, false);
 
 		if (mButton != null)
 			mButton.interactable = true;
+	}
+
+	public void Release ()
+	{
+	}
+
+	public void SetReactiveProperty<T>(ReadOnlyReactiveProperty<T> _reactiveProperty)
+	{
 	}
 }

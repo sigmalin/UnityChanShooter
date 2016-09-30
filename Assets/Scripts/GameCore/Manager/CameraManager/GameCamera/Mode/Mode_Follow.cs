@@ -3,9 +3,15 @@ using System.Collections;
 
 public sealed class Mode_Follow : IMode 
 {
+	float mCurAngle = 0F;
+
+	float mCurHeight = 1.2F;
+
+
 	float mAngle = 0F;
 
 	float mHeight = 1.2F;
+
 
 	float mDistance = -1.2F;
 
@@ -20,9 +26,13 @@ public sealed class Mode_Follow : IMode
 		if (_cameraData.RefCamera == null)
 			return;
 
+		mCurAngle = _cameraData.RefCamera.transform.rotation.y;
+
 		mAngle = GetTargetTrans(_cameraData).rotation.y;
 
-		mHeight = 1.2F;
+		mCurHeight = 0.8f;
+
+		mHeight = 0.8F;
 
 		mDistance = -2F;
 
@@ -42,16 +52,21 @@ public sealed class Mode_Follow : IMode
 		if (transTarget == null)
 			return;
 
-		Vector3 dir = Quaternion.Euler (new Vector3 (0F, mAngle, 0F)) * Vector3.forward;
+		float weight = Time.deltaTime * 2f;
+
+		mCurAngle = Mathf.LerpAngle (mCurAngle, mAngle, weight);
+		mCurHeight = Mathf.Lerp (mCurHeight, mHeight, weight);
+
+		Vector3 dir = Quaternion.Euler (new Vector3 (0F, mCurAngle, 0F)) * Vector3.forward;
 		
-		Vector3 lookAt = transTarget.position + dir * 4F + transTarget.up * mHeight; 
+		Vector3 lookAt = transTarget.position + dir * 4F + transTarget.up * mCurHeight; 
 
 		Vector3 cameraAt = transTarget.position + dir * mDistance + transTarget.up * 1.2F;
 
 		_cameraData.RefCamera.transform.position = cameraAt;
 		_cameraData.RefCamera.transform.LookAt (lookAt, transTarget.up);
 
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_LOOKAT, _cameraData.TargetID, lookAt);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_FOCUS, _cameraData.TargetID, lookAt);
 	}
 
 	public void ExecCommand(uint _inst, params System.Object[] _params)

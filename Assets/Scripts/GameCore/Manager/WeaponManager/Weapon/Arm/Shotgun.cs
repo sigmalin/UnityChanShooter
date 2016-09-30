@@ -10,7 +10,7 @@ public class Shotgun : MonoBehaviour, IArm
 	[SerializeField]
 	GameObject mShootShock;
 
-	public void OnFire (uint _shooterID, uint _bulletID, uint _atk)
+	public void OnFire (uint _shooterID, uint _bulletID, uint _atk, int _layer)
 	{
 		GameObject bullet = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.BULLET, _bulletID);
 		if (bullet == null)
@@ -30,12 +30,13 @@ public class Shotgun : MonoBehaviour, IArm
 		Ray ray = new Ray (muzzle.position + forward * -0.5F, forward);
 		RaycastHit hit;
 
-		int layer = GameCore.GetRaycastLayer (GameCore.LAYER_DEFAULT) |
-			GameCore.GetRaycastLayer (GameCore.LAYER_ENEMY);
-
-		if (Physics.Raycast (ray, out hit, 100F, layer) == true) 
+		if (Physics.Raycast (ray, out hit, 100F, _layer) == true) 
 		{
 			shoot.BeamEnd = hit.point;
+
+			ITarget target = hit.collider.gameObject.GetComponent<ITarget> ();
+			if (target != null)
+				GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.ADD_FIRE_DAMAGE, target.ActorID, _shooterID, _atk);
 		} 
 		else 
 		{

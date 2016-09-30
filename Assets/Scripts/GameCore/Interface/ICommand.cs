@@ -41,7 +41,9 @@ public class PlayerInst
 	public const uint PLAYER_JUMP = 22;
 	public const uint PLAYER_ROTATE = 23;
 	public const uint PLAYER_AIM = 24;
-	public const uint PLAYER_LOOKAT = 25;
+	public const uint PLAYER_FOCUS = 25;
+	public const uint PLAYER_LOCK = 26;
+	public const uint PLAYER_DEAD = 27;
 }
 
 public class CameraInst
@@ -77,7 +79,10 @@ public class WeaponInst
 	public const uint REMOVE_ACTOR = 4;
 	public const uint MAIN_ACTOR = 5;
 
+	public const uint SET_TEAM = 6;
+
 	public const uint ARM_FIRE = 10;
+	public const uint ADD_FIRE_DAMAGE = 11;
 }
 
 public class CacheInst

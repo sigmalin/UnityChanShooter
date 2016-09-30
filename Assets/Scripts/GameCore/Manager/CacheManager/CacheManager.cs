@@ -167,7 +167,7 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 				output = GetCache (
 					GetCachePath (CacheParam.GET_CHARACTER_PATH, _params), 
 					GetCacheAsset (CacheParam.GET_CHARACTER_PATH, _params), 
-					(bool)_params [1]);
+					(bool)_params [2]);
 			}
 			break;
 

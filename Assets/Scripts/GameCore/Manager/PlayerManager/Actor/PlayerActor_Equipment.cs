@@ -30,7 +30,7 @@ public partial class PlayerActor
 
 		ClearRoleModel ();
 
-		RecycleResource (this.gameObject);
+		this.gameObject.SafeRecycle ();
 	}
 
 	void SetActorController(ActorController _actorCtrl)
@@ -89,7 +89,7 @@ public partial class PlayerActor
 
 		if (mRole != null) 
 		{
-			RecycleResource (mRole.gameObject);
+			mRole.gameObject.SafeRecycle ();
 			mRole = null;
 		}
 
@@ -119,8 +119,7 @@ public partial class PlayerActor
 		if (mLauncher.LeftHand != null)
 			mLauncher.LeftHand.transform.parent = mLauncher.transform;
 
-		RecycleResource (mLauncher.gameObject);
-
+		mLauncher.gameObject.SafeRecycle ();
 		mLauncher = null;
 	}
 

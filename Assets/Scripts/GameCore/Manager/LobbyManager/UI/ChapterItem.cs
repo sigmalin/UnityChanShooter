@@ -37,6 +37,14 @@ public class ChapterItem : MonoBehaviour, IItem
 			mButton.interactable = true;
 	}
 
+	public void Release ()
+	{
+	}
+
+	public void SetReactiveProperty<T>(ReadOnlyReactiveProperty<T> _reactiveProperty)
+	{
+	}
+
 	void SetItemImage()
 	{
 		mImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_IMAGE, mChapterID, false);

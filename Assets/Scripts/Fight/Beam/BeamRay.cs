@@ -89,6 +89,9 @@ public class BeamRay : MonoBehaviour
 
 		RndRotate = Random.value * 360.0f;
 
+		if (BeamLineEnd == null)
+			BeamLineEnd = new ReactiveProperty<Vector3> (this.transform.position);
+
 		BeamLineEnd.Subscribe (_ => 
 			{
 				mBeamLineParam.Line.SetPosition(0, this.transform.position);

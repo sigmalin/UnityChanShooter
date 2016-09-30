@@ -75,9 +75,14 @@ public sealed class Actor_UnityChan : ActorController
 			else       SetMotion (mStandard);			
 			break;
 
-		case PlayerInst.PLAYER_LOOKAT:
+		case PlayerInst.PLAYER_FOCUS:
 
-			Owner.MotionData.LookAt = (Vector3)_params [0];
+			Owner.MotionData.FocusOn = (Vector3)_params [0];
+			break;
+
+		case PlayerInst.PLAYER_LOCK:
+			
+			Owner.MotionData.LockActor = (uint)_params [0];
 			break;
 		}	
 	}

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class GameCore
 {
@@ -39,5 +40,15 @@ public partial class GameCore
 			return false;
 
 		return Instance.GetRaycastResult (_position).Count != 0;
+	}
+
+	static public bool IsTouchInterface(Vector2 _position, string _name)
+	{
+		if (Instance == null)
+			return false;
+
+		List<UnityEngine.EventSystems.RaycastResult> list = Instance.GetRaycastResult (_position);
+
+		return list.Where (_ => string.Equals (_name, _.gameObject.name)).Count () != 0;
 	}
 }

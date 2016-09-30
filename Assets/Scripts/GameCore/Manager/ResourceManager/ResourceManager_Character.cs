@@ -58,7 +58,7 @@ public partial class ResourceManager
 
 	GameObject LoadCharacter(uint _key)
 	{
-		GameObject character = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER, _key, true);
+		GameObject character = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER, _key, CharacterDefine.CHARACTER_KEY_MODEL, true);
 		if (character == null)
 			return null;
 

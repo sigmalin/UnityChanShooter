@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UniRx;
+using UniRx.Triggers;
 
 public class DevelopTestCode : MonoBehaviour 
 {
@@ -19,18 +20,22 @@ public class DevelopTestCode : MonoBehaviour
 
 	bool isPress = false;
 
+	public GameObject go;
+
 	public ReactiveProperty<bool> IsMousePress { get; private set; }
 
 	// Use this for initialization
 	void Start () 
 	{
-		mSubject.AsObservable ()
-			.Buffer(System.TimeSpan.FromSeconds(0.5))
-			.Subscribe(_ => Debug.Log(Time.time));
+		//this.UpdateAsObservable ()
+		//	.Subscribe (_ => Debug.Log ("run"));
+		float a = 0.5f;
+		Debug.Log(string.Format("{0:0.0%}",a));
 	}
-
+	/*
 	void Update()
 	{
 		mSubject.OnNext (Time.deltaTime);
 	}
+	*/
 }

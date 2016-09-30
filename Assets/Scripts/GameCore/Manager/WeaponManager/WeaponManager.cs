@@ -47,7 +47,7 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 		switch (_inst) 
 		{
 		case WeaponInst.REGISTER_ACTOR:
-			RegisterActor ((uint)_params [0], (uint)_params [1]);
+			RegisterActor ((uint)_params [0], (uint)_params [1], (uint)_params [2]);
 			break;
 
 		case WeaponInst.REMOVE_ALL_ACTOR:
@@ -62,8 +62,16 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 			SetMainActor ((uint)_params [0]);
 			break;
 
+		case WeaponInst.SET_TEAM:
+			SetActorTeam ((uint)_params [0], (int)_params [1]);
+			break;
+
 		case WeaponInst.ARM_FIRE:
 			AddFireRequest ((uint)_params [0], (IArm)_params [1]);
+			break;
+
+		case WeaponInst.ADD_FIRE_DAMAGE:
+			AddFireDamage ((uint)_params [0], (uint)_params [1], (uint)_params [2]);
 			break;
 		}
 	}
@@ -71,6 +79,21 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 	public System.Object GetParameter (uint _inst, params System.Object[] _params)
 	{
 		System.Object output = default(System.Object);
+
+		switch (_inst) 
+		{
+		case WeaponParam.WEAPON_ACTOR_DATA:
+			output = (System.Object)GetWeaponActor ((uint)_params [0]);
+			break;
+
+		case WeaponParam.GET_ALLY_LIST:
+			output = GetAllyList ((uint)_params [0]);
+			break;
+
+		case WeaponParam.GET_HOSTILITY_LIST:
+			output = GetHostilityList ((uint)_params [0]);
+			break;
+		}
 
 		return output;
 	}

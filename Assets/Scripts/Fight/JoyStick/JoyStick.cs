@@ -2,7 +2,7 @@
 using System.Collections;
 using UniRx;
 
-public class JoyStick : MonoBehaviour 
+public partial class JoyStick : MonoBehaviour 
 {
 	public ReactiveProperty<bool> IsJoyStickUsed { get; private set; }
 
@@ -15,6 +15,16 @@ public class JoyStick : MonoBehaviour
 	RectTransform mJoyStickNob;
 
 	System.IDisposable[] mDisposeList;
+
+	protected System.IDisposable[] DisposeList 
+	{ 
+		get { return mDisposeList;  } 
+		set { mDisposeList = value; } 
+	}
+
+	protected string JoyStickName { get { return mJoyStickBoard.name; } }
+
+	protected Vector2 JoyStickBoardPos { get { return mJoyStickBoard.anchoredPosition; } }
 
 	bool mIsInvalid;
 
@@ -39,32 +49,9 @@ public class JoyStick : MonoBehaviour
 
 		ReleaseDispose ();
 
-		mDisposeList = new System.IDisposable[2];
+		ResetJoyStickPosition ();
 
-		mDisposeList[0] = _observable.Where(_ => IsJoyStickUsed.Value == false)
-			.Where (_ => Input.GetMouseButtonDown (0) == true)
-			.Select (_ => GameCore.InterfaceRaycast (Input.mousePosition))
-			.SelectMany (_ => _.ToObservable ())
-			.Where (_ => string.Equals (mJoyStickBoard.name, _.gameObject.name))
-			.Subscribe (_ => {
-				IsJoyStickUsed.Value = true;
-				mJoyStickNob.anchoredPosition = Input.mousePosition;
-			});
-
-		mDisposeList[1] = _observable.Where(_ => IsJoyStickUsed.Value == true)
-			.Do (_ => {
-				Vector2 dir = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - mJoyStickBoard.anchoredPosition;
-				float dis = Mathf.Min(50f, dir.magnitude);
-				dir = dir.normalized;
-
-				Vec3JoyStickMoved.Value = new Vector3(dir.x, 0f, dir.y);
-				mJoyStickNob.anchoredPosition = mJoyStickBoard.anchoredPosition + (dir * dis);
-			})
-			.Where (_ => Input.GetMouseButtonUp (0) == true)
-			.Subscribe (_ => {
-				IsJoyStickUsed.Value = false;
-				mJoyStickNob.anchoredPosition = mJoyStickBoard.anchoredPosition;
-			});
+		OperatorForStandalone (_observable);
 	}
 
 	bool CheckJoyStick()
@@ -93,5 +80,15 @@ public class JoyStick : MonoBehaviour
 
 			mDisposeList = null;
 		}
+	}
+
+	void SetJoyStickPosition(Vector2 _pos)
+	{
+		mJoyStickNob.anchoredPosition = _pos;
+	}
+
+	void ResetJoyStickPosition()
+	{
+		mJoyStickNob.anchoredPosition = mJoyStickBoard.anchoredPosition;
 	}
 }

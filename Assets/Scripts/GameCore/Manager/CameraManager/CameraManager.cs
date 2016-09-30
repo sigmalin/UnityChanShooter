@@ -8,7 +8,7 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 	// Use this for initialization
 	void Start () 
 	{
-		InitialCameraData ();
+		
 	}
 
 	public void OnRegister ()
@@ -17,11 +17,17 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 
 		GameCore.RegisterParam (ParamGroup.GROUP_CAMERA, this);
 
+		InitialCameraData ();
+
 		InitialRequestQueue ();
+
+		InitialUpdater ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleaseUpdater ();
+
 		ReleaseRequestQueue ();
 
 		BroadcastCommand (CameraInst.CAMERA_UNREGISTER);

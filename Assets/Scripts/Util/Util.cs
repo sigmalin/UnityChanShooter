@@ -12,6 +12,18 @@ public static class Util
 		return behaviour;
 	}
 
+	public static void SafeRecycle(this GameObject _go)
+	{
+		if (_go == null)
+			return;
+
+		GameCoreResRecycle recycle = _go.GetComponent<GameCoreResRecycle> ();
+		if (recycle != null) 
+			recycle.Recycle ();
+		else 
+			GameObject.Destroy (_go);
+	}
+
 	public static bool IsPointAhead(this Transform _center, Vector3 _pt)
 	{
 		Vector3 dir = (_pt - _center.position).normalized;

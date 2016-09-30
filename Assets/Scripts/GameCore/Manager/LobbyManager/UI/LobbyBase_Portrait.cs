@@ -11,6 +11,6 @@ public sealed partial class LobbyBase
 		if (mPortrait == null)
 			return;
 
-		mPortrait.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT, GameCore.UserProfile.MainCharacterID, 1, false);
+		mPortrait.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT, GameCore.UserProfile.MainCharacterID, ProtraitDefine.PROTRAIT_KEY_NORAML, false);
 	}
 }

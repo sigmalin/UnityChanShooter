@@ -44,6 +44,10 @@ public class ResourceParam
 
 public class WeaponParam
 {
+	public const uint WEAPON_ACTOR_DATA = 1;
+
+	public const uint GET_ALLY_LIST = 11;
+	public const uint GET_HOSTILITY_LIST = 12;
 }
 
 public class CacheParam

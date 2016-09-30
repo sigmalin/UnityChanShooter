@@ -89,7 +89,7 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 			.SelectMany(Observable.NextFrame (FrameCountType.Update))
 			.Subscribe (_ => 
 				{
-					GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.MAIN_ACTOR, MAIN_PLAYER_ID);
+					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.SET_CAMERA_MODE, mCameraList.MainCamera.CameraID, new Mode_Follow());
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.GAME_START);
 				});
 	}
@@ -98,17 +98,20 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 	void RegisterAllPlayer()
 	{
 		// register mine
-		RegisterPlayer (MAIN_PLAYER_ID, GameCore.UserProfile.MainCharacterID, false, mFriendly.SpawnPtList);
+		RegisterPlayer (MAIN_PLAYER_ID, GameCore.UserProfile.MainCharacterID, 1, mFriendly.SpawnPtList);
 
 		// register enemy
 		if (mEnemy.ServicesList.Length != 0) 
 		{
 			mEnemy.ServicesList.ToObservable()
-				.Subscribe(_ => RegisterPlayer(_.PlayerID, _.CharacterID, true, mEnemy.SpawnPtList));
+				.Subscribe(_ => RegisterPlayer(_.PlayerID, _.CharacterID, 2, mEnemy.SpawnPtList));
 		}
+
+		// register main actor
+		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.MAIN_ACTOR, MAIN_PLAYER_ID);
 	}
 
-	void RegisterPlayer(uint _playerID, uint _characterID, bool _isEnemy, Transform[] _spawn)
+	void RegisterPlayer(uint _playerID, uint _characterID, int _team, Transform[] _spawn)
 	{
 		GameObject character = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CHARACTER_MODEL, _characterID);
 
@@ -117,13 +120,14 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.CREATE_PLAYER, _playerID, NORMAL_CONTAINER);
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_POSITION, _playerID, spawn.position);
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_DIRECTION, _playerID, spawn.rotation);
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_LAYER, _playerID, _isEnemy ? GameCore.LAYER_ENEMY : GameCore.LAYER_PLAYER);
+
 
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_MODEL, _playerID, character);
 
 		uint weaponID = GetWeaponID (_characterID);
 
-		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.REGISTER_ACTOR, _playerID, weaponID);
+		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.REGISTER_ACTOR, _playerID, _characterID, weaponID);
+		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.SET_TEAM, _playerID, _team);
 	}
 
 	uint GetWeaponID(uint _characterID)

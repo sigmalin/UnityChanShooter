@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 public partial class CameraManager
 {
@@ -47,6 +48,11 @@ public partial class CameraManager
 			return null;
 
 		return mCameraTable[_cameraID];
+	}
+
+	uint[] GetAllCameraID()
+	{
+		return mCameraTable.Keys.ToArray ();
 	}
 
 	CameraData[] GetAllCameraData()
