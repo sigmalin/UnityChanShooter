@@ -6,43 +6,37 @@ using UniRx;
 
 public partial class CameraManager
 {
-	public class CameraData
+	Dictionary<uint, GameCamera> mCameraTable = null;
+
+	void InitialCameraTable()
 	{
-		public uint CameraID;
-		public uint TargetID;
-
-		public GameCamera RefCamera;
-
-		public void Clear()
-		{
-			RefCamera = null;
-		}
+		mCameraTable = new Dictionary<uint, GameCamera> ();
 	}
 
-	Dictionary<uint, CameraData> mCameraTable = null;
-
-	void InitialCameraData()
+	void RegisterGameCamera(GameCamera _camera)
 	{
-		mCameraTable = new Dictionary<uint, CameraData> ();
-	}
+		if (_camera == null)
+			return;
 
-	void RegisterNewCamera(uint _cameraID, GameCamera _camera)
-	{
-		if (mCameraTable.ContainsKey (_cameraID) == true) 
+		if (mCameraTable.ContainsKey (_camera.CameraID) == true) 
 		{
-			mCameraTable [_cameraID].Clear ();
-			mCameraTable.Remove (_cameraID);
+			mCameraTable [_camera.CameraID].ClearStack ();
+			mCameraTable.Remove (_camera.CameraID);
 		}
 
-		CameraData data = new CameraData ();
-
-		data.CameraID = _cameraID;
-		data.RefCamera = _camera;
-
-		mCameraTable.Add (_cameraID, data);
+		mCameraTable.Add (_camera.CameraID, _camera);
 	}
 
-	CameraData GetCameraData(uint _cameraID)
+	void UnRegisterGameCamera(uint _cameraID)
+	{
+		if (mCameraTable.ContainsKey (_cameraID) == false)
+			return;
+
+		mCameraTable [_cameraID].ClearStack ();
+		mCameraTable.Remove (_cameraID);
+	}
+
+	GameCamera GetGameCamera(uint _cameraID)
 	{
 		if (mCameraTable.ContainsKey (_cameraID) == false)
 			return null;
@@ -55,28 +49,19 @@ public partial class CameraManager
 		return mCameraTable.Keys.ToArray ();
 	}
 
-	CameraData[] GetAllCameraData()
+	GameCamera[] GetAllGameCamera()
 	{
 		return mCameraTable.Values.ToArray ();
 	}
 
-	void ClearCameraData()
+	void ClearCameraTable()
 	{
-		foreach (CameraData data in mCameraTable.Values) 
+		foreach (GameCamera data in mCameraTable.Values) 
 		{
 			if (data != null)
-				data.Clear ();
+				data.ClearStack ();
 		}
 
 		mCameraTable.Clear ();
-	}
-
-	GameObject GetCameraObject(uint _cameraID)
-	{
-		CameraData data = GetCameraData (_cameraID);
-		if (data == null)
-			return null;
-
-		return data.RefCamera.gameObject;
 	}
 }

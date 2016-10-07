@@ -3,11 +3,11 @@ using System.Collections;
 
 public static class Util
 {
-	public static T GetOrAddComponent<T>(this GameObject _gameobject) where T : MonoBehaviour
+	public static T GetOrAddComponent<T>(this GameObject _go) where T : MonoBehaviour
 	{
-		T behaviour = _gameobject.GetComponent<T> ();
+		T behaviour = _go.GetComponent<T> ();
 		if (behaviour == null)
-			behaviour = _gameobject.AddComponent<T> ();
+			behaviour = _go.AddComponent<T> ();
 
 		return behaviour;
 	}

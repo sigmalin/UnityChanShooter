@@ -15,17 +15,9 @@ public class VersionRepository : ScriptableObject
 	public struct VersionInfo
 	{
 		public string DataPath;
+		public string LinkPath;
 		public int Version;
 		public bool IsForceDownLoad;
-
-		public VersionInfo(string _path, int _ver)
-		{
-			DataPath = _path;
-
-			Version = _ver;
-
-			IsForceDownLoad = false;
-		}
 	}
 
 	[System.Serializable]

@@ -38,7 +38,15 @@ public partial class ResourceManager
 		if (mContainerTable.ContainsKey (_key) == false)
 			ProduceContainerResPool(_key);
 
-		res = (System.Object)mContainerTable [_key].Produce ();
+		GameObject go = mContainerTable [_key].Produce ();
+
+		if (go != null) 
+		{
+			GameCoreResRecycle recycle = go.GetOrAddComponent<GameCoreResRecycle> ();
+			recycle.IsRecycled = false;
+		}
+
+		res = (System.Object)go;
 
 		return res;
 	}
@@ -64,9 +72,7 @@ public partial class ResourceManager
 
 		container.name = string.Format ("Container_{0}",_key.ToString());
 
-		GameCoreResRecycle recycle = container.GetComponent<GameCoreResRecycle> ();
-		if (recycle == null)
-			recycle = container.AddComponent<GameCoreResRecycle> ();
+		GameCoreResRecycle recycle = container.GetOrAddComponent<GameCoreResRecycle> ();
 
 		recycle.RecycleMethod = () => GameCore.SendCommand (CommandGroup.GROUP_RESOURCE, ResourceInst.RECYCLE_CONTAINER, _key, container);
 

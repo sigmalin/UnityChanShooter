@@ -158,6 +158,10 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
+		case CacheParam.GET_INSTANT_RESOURCE_UI_PATH:
+			output = (System.Object)GetCachePath (_inst);
+			break;
+
 		case CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH:
 			output = (System.Object)GetCachePath (_inst);
 			break;
@@ -247,6 +251,15 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 				GetCachePath (CacheParam.GET_STAGE_IMAGE_PATH, _params), 
 				GetCacheAsset (CacheParam.GET_STAGE_IMAGE_PATH, _params), 
 				(bool)_params [2]);
+			break;
+
+		case CacheParam.GET_INSTANT_RESOURCE_UI:
+			{
+				output = GetCache (
+					GetCachePath (CacheParam.GET_INSTANT_RESOURCE_UI_PATH, _params), 
+					GetCacheAsset (CacheParam.GET_INSTANT_RESOURCE_UI_PATH, _params), 
+					(bool)_params [1]);
+			}
 			break;
 
 		case CacheParam.GET_INSTANT_RESOURCE_INPUT:

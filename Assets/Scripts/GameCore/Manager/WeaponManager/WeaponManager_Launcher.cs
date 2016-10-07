@@ -27,6 +27,24 @@ public sealed partial class WeaponManager
 		}
 	}
 
+	void PushWeaponInterface()
+	{
+		if (mWeaponUI != null) 
+		{
+			IUserInterface ui = mWeaponUI.GetComponent<IUserInterface> ();
+			if (ui != null) GameCore.PushInterface (ui);
+		}
+	}
+
+	void PopWeaponInterface()
+	{
+		if (mWeaponUI != null) 
+		{
+			IUserInterface ui = mWeaponUI.GetComponent<IUserInterface> ();
+			if (ui != null) GameCore.PopInterface (ui);
+		}
+	}
+
 	void SetWeaponInterface(WeaponActor _actor)
 	{
 		ReleaseWeaponUI ();
@@ -35,19 +53,10 @@ public sealed partial class WeaponManager
 		if (mWeaponUI != null) 
 		{
 			IUserInterface ui = mWeaponUI.GetComponent<IUserInterface> ();
-			if (ui != null) 
-			{
-				ui.Operation (WeaponUiBehavior.InstSet.SET_ACTOR_ID, _actor.ActorID);
-				GameCore.PushInterface (ui);
-			}
+			if (ui != null) ui.Operation (WeaponUiBehavior.InstSet.SET_ACTOR_ID, _actor.ActorID);
+
+			PushWeaponInterface ();
 		}
-	}
-
-	void SetMainCamera(WeaponActor _actor)
-	{
-		uint cameraID = (uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA);
-
-		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_TARGET, cameraID, _actor.ActorID);
 	}
 
 	void SetActorController(WeaponActor _actor)
@@ -57,8 +66,7 @@ public sealed partial class WeaponManager
 
 	void SetWeaponModel(WeaponActor _actor)
 	{
-		GameObject weapon = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.WEAPON_MODEL, _actor.RefWeaponData.WeaponID);
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_WEAPON, _actor.ActorID, weapon);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_WEAPON, _actor.ActorID, _actor.RefWeaponData.ModelID);
 	}
 
 	void PreloadResource(WeaponActor _actor)

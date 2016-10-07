@@ -3,21 +3,8 @@ using System.Collections;
 using UniRx;
 
 [RequireComponent(typeof(Animator))]
-public class Role : MonoBehaviour 
+public class Role : ModelBehaviour 
 {
-	[System.Serializable]
-	public class BodyPoint
-	{
-		public Transform Eye;
-		public Transform RightHand;
-		public Transform LeftHand;
-		public Transform AimPt;
-	}
-
-	[SerializeField]
-	BodyPoint mBodyPoint;
-	public BodyPoint BodyPt { get { return mBodyPoint; } }
-
 	Subject<Unit> mOnAnimatorMoveSubject = new Subject<Unit>();
 	public IObservable<Unit> OnAnimatorMoveAsObservable { get { return mOnAnimatorMoveSubject.AsObservable (); } }
 

@@ -24,18 +24,14 @@ public class DevelopTestCode : MonoBehaviour
 
 	public ReactiveProperty<bool> IsMousePress { get; private set; }
 
+	public NavMeshAgent Agent;
+
+	public Transform target;
+
+	public Rigidbody rig;
+
 	// Use this for initialization
 	void Start () 
 	{
-		//this.UpdateAsObservable ()
-		//	.Subscribe (_ => Debug.Log ("run"));
-		float a = 0.5f;
-		Debug.Log(string.Format("{0:0.0%}",a));
 	}
-	/*
-	void Update()
-	{
-		mSubject.OnNext (Time.deltaTime);
-	}
-	*/
 }

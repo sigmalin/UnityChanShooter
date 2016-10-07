@@ -3,11 +3,11 @@ using System.Collections;
 
 public interface IMode
 {
-	void EnterMode(CameraManager.CameraData _cameraData);
+	void EnterMode(GameCamera _cameraData);
 
-	void LeaveMode(CameraManager.CameraData _cameraData);
+	void LeaveMode(GameCamera _cameraData);
 
-	void UpdateMode(CameraManager.CameraData _cameraData);
+	void UpdateMode(GameCamera _cameraData);
 
 	void ExecCommand(uint _inst, params System.Object[] _params);
 }

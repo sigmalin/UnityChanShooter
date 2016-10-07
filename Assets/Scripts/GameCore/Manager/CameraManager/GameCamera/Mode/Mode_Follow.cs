@@ -17,18 +17,27 @@ public sealed class Mode_Follow : IMode
 
 	float mHeightScale = 1F;
 
+	uint mTargetID = 0u;
+
 
 	const float CAMERA_HEIGHT_MAX = 2.4F;
 	const float CAMERA_HEIGHT_MIN = 0F;
 
-	public void EnterMode(CameraManager.CameraData _cameraData)
+	public Mode_Follow(uint _targetID)
 	{
-		if (_cameraData.RefCamera == null)
+		mTargetID = _targetID;
+	}
+
+	public void EnterMode(GameCamera _camera)
+	{
+		if (_camera == null)
 			return;
 
-		mCurAngle = _cameraData.RefCamera.transform.rotation.y;
+		mCurAngle = _camera.transform.rotation.y;
 
-		mAngle = GetTargetTrans(_cameraData).rotation.y;
+		Transform target = GetTargetTrans ();
+		if (target != null)
+			mAngle = target.rotation.y;
 
 		mCurHeight = 0.8f;
 
@@ -39,16 +48,16 @@ public sealed class Mode_Follow : IMode
 		mHeightScale = (CAMERA_HEIGHT_MAX - CAMERA_HEIGHT_MIN) / (Screen.height);
 	}
 
-	public void LeaveMode(CameraManager.CameraData _cameraData)
+	public void LeaveMode(GameCamera _camera)
 	{
 	}
 
-	public void UpdateMode(CameraManager.CameraData _cameraData)
+	public void UpdateMode(GameCamera _camera)
 	{
-		if (_cameraData.RefCamera == null)
+		if (_camera == null)
 			return;
 
-		Transform transTarget = GetTargetTrans (_cameraData);
+		Transform transTarget = GetTargetTrans ();
 		if (transTarget == null)
 			return;
 
@@ -63,10 +72,10 @@ public sealed class Mode_Follow : IMode
 
 		Vector3 cameraAt = transTarget.position + dir * mDistance + transTarget.up * 1.2F;
 
-		_cameraData.RefCamera.transform.position = cameraAt;
-		_cameraData.RefCamera.transform.LookAt (lookAt, transTarget.up);
+		_camera.transform.position = cameraAt;
+		_camera.transform.LookAt (lookAt, transTarget.up);
 
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_FOCUS, _cameraData.TargetID, lookAt);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_FOCUS, mTargetID, lookAt);
 	}
 
 	public void ExecCommand(uint _inst, params System.Object[] _params)
@@ -82,11 +91,8 @@ public sealed class Mode_Follow : IMode
 		}
 	}
 
-	Transform GetTargetTrans(CameraManager.CameraData _cameraData)
+	Transform GetTargetTrans()
 	{
-		if (_cameraData == null)
-			return null;
-
-		return (Transform)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_TRANSFORM, _cameraData.TargetID);
+		return (Transform)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_TRANSFORM, mTargetID);
 	}
 }

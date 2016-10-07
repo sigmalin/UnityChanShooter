@@ -11,6 +11,7 @@ public class ParamGroup
 	public const uint GROUP_CACHE    		= 5;
 	public const uint GROUP_LOBBY    		= 6;
 	public const uint GROUP_REPOSITORY      = 7;
+	public const uint GROUP_AI              = 8;
 }
 
 public class SystemParam
@@ -22,6 +23,10 @@ public class PlayerParam
 	public const uint PLAYER_DATA = 10;
 
 	public const uint PLAYER_TRANSFORM = 11;
+
+	public const uint PLAYER_LOCK_TARGET = 12;
+
+	public const uint PLAYER_DISTANCE_WITH_LOCK_ACTOR = 20;
 }
 
 public class CameraParam
@@ -38,13 +43,16 @@ public class ResourceParam
 	public const uint WEAPON_DATA = 13;
 	public const uint WEAPON_MODEL = 14;
 	public const uint BULLET = 15;
+	public const uint RAGDOLL_MODEL = 16;
 
+	public const uint INSTANT_RESOURCE_UI = 98;
 	public const uint INSTANT_RESOURCE_INPUT = 99;
 }
 
 public class WeaponParam
 {
 	public const uint WEAPON_ACTOR_DATA = 1;
+	public const uint GET_LASTEST_MURDERER= 5;
 
 	public const uint GET_ALLY_LIST = 11;
 	public const uint GET_HOSTILITY_LIST = 12;
@@ -67,6 +75,7 @@ public class CacheParam
 	public const uint GET_CHAPTER_IMAGE_PATH = 20;
 	public const uint GET_STAGE_IMAGE_PATH = 21;
 
+	public const uint GET_INSTANT_RESOURCE_UI_PATH = 98;
 	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 99;
 
 	public const uint GET_CHARACTER = 111;
@@ -81,6 +90,7 @@ public class CacheParam
 	public const uint GET_CHAPTER_IMAGE= 120;
 	public const uint GET_STAGE_IMAGE= 121;
 
+	public const uint GET_INSTANT_RESOURCE_UI = 198;
 	public const uint GET_INSTANT_RESOURCE_INPUT = 199;
 }
 
@@ -98,6 +108,15 @@ public class RepositoryParam
 	public const uint GET_ALL_CHAPTER_DATA = 22;
 
 	public const uint GET_WEAPON_DATA = 31;
+}
+
+public class AiParam
+{
+	public const uint GET_STRATEGY_IDLE = 1;
+	public const uint GET_STRATEGY_TRACKING = 2;
+	public const uint GET_STRATEGY_FACE_LOOK_TARGET = 3;
+	public const uint GET_STRATEGY_HURT_PLAYER = 4;
+	public const uint GET_STRATEGY_AIM = 5;
 }
 
 public interface IParam 

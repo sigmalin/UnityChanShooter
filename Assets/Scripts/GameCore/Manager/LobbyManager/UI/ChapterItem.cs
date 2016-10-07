@@ -41,7 +41,7 @@ public class ChapterItem : MonoBehaviour, IItem
 	{
 	}
 
-	public void SetReactiveProperty<T>(ReadOnlyReactiveProperty<T> _reactiveProperty)
+	public void SetReactiveProperty(ReadOnlyReactiveProperty<float> _reactiveProperty)
 	{
 	}
 
@@ -57,7 +57,7 @@ public class ChapterItem : MonoBehaviour, IItem
 
 			GameCore.AdditionalLoad (
 				loadList,
-				() => mImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_IMAGE, mChapterID, false),
+				() => { if (mImage != null) mImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_IMAGE, mChapterID, false); },
 				true
 			);
 		}

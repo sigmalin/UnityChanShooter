@@ -15,16 +15,21 @@ public partial class PlayerManager
 
 	void CreateNewPlayer(uint _playerID, uint _containerID)
 	{
-		if (mPlayerTable.ContainsKey (_playerID) == true) 
-		{
-			mPlayerTable [_playerID].ExecCommand (PlayerInst.REMOVE_PLAYER);
-			mPlayerTable.Remove (_playerID);
-		}
+		RemovePlayer (_playerID);
 
 		GameObject container = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CONTAINER, _containerID);
 		PlayerActor actor = container.GetOrAddComponent<PlayerActor> ();
 
 		mPlayerTable.Add (_playerID, actor);
+	}
+
+	void RemovePlayer(uint _playerID)
+	{
+		if (mPlayerTable.ContainsKey (_playerID) == false)
+			return;
+
+		mPlayerTable [_playerID].ExecCommand (PlayerInst.REMOVE_PLAYER);
+		mPlayerTable.Remove (_playerID);
 	}
 
 	PlayerActor GetPlayerData(uint _playerID)

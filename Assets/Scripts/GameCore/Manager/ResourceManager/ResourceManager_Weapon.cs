@@ -38,7 +38,15 @@ public partial class ResourceManager
 		if (mWeaponTable.ContainsKey (_key) == false)
 			ProduceWeaponResPool(_key);
 
-		res = (System.Object)mWeaponTable [_key].Produce ();
+		GameObject go = mWeaponTable [_key].Produce ();
+
+		if (go != null) 
+		{
+			GameCoreResRecycle recycle = go.GetOrAddComponent<GameCoreResRecycle> ();
+			recycle.IsRecycled = false;
+		}
+
+		res = (System.Object)go;
 
 		return res;
 	}
@@ -64,9 +72,7 @@ public partial class ResourceManager
 
 		weapon.name = string.Format ("Weapon_{0}",_key.ToString());
 
-		GameCoreResRecycle recycle = weapon.GetComponent<GameCoreResRecycle> ();
-		if (recycle == null)
-			recycle = weapon.AddComponent<GameCoreResRecycle> ();
+		GameCoreResRecycle recycle = weapon.GetOrAddComponent<GameCoreResRecycle> ();
 
 		recycle.RecycleMethod = () => GameCore.SendCommand (CommandGroup.GROUP_RESOURCE, ResourceInst.RECYCLE_WEAPON_MODEL, _key, weapon);
 

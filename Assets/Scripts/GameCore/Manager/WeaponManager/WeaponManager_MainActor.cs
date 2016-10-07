@@ -5,6 +5,7 @@ using UniRx;
 public sealed partial class WeaponManager
 {
 	uint mMainActorID = 0;
+	public uint MainActorID { get { return mMainActorID; } }
 
 	void SetMainActor(uint _id)
 	{
@@ -15,8 +16,6 @@ public sealed partial class WeaponManager
 		mMainActorID = _id;
 
 		SetWeaponInterface (actor);
-
-		SetMainCamera (actor);
 
 		uint[] actorIDs = GetAllActorID ();
 

@@ -48,7 +48,7 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 					Vector3 dir = MainCamera.transform.TransformDirection(_);
 					dir = new Vector3(dir.x, 0f, dir.z);
 					dir = dir.normalized;
-					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, PlayerID, dir);
+					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, PlayerID, dir, 1f);
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_ROTATE, PlayerID, dir);
 				});
 
@@ -73,9 +73,18 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 		// Tracking
 		InputStream
 			.Buffer (System.TimeSpan.FromSeconds (0.5f))
+			.Where (_ => MainCamera != null)
 			.Subscribe (_ => Tracking());
 
 		OperatorForStanealone ();
+	}
+
+	public override void Hide()
+	{
+		base.Hide ();
+
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_IDLE, PlayerID);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_AIM, PlayerID, false);
 	}
 
 	public override void Localization()
@@ -101,8 +110,11 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 	{
 		uint[] enemyIDs = (uint[])GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.GET_HOSTILITY_LIST, PlayerID);
 
-		if (enemyIDs == null || enemyIDs.Length == 0)
+		if (enemyIDs == null || enemyIDs.Length == 0) 
+		{
+			SetCrossHair (null);
 			return;
+		}
 
 		PlayerActor mineActor = (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, PlayerID);
 
@@ -118,6 +130,7 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 			.Where (_ => _.Distance < 5f)
 			.OrderBy (_ => _.Distance)
 			.Select (_ => _.Actor)
+			.Where (_ => MainCamera.transform.IsPointAhead (_.PlayerRole.BodyPt.AimPt.position))
 			.Where (_ => Physics.Raycast (mineEye, (_.PlayerRole.BodyPt.AimPt.position - mineEye).normalized, 5f, GameCore.GetRaycastLayer(GameCore.LAYER_DEFAULT)) == false)
 			.FirstOrDefault ();
 
@@ -128,6 +141,9 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 
 	void SetCrossHair(PlayerActor _actor)
 	{
+		if (mCrossHair == null)
+			return;
+
 		if (_actor == null) 
 		{
 			mCrossHair.Target = null;
@@ -140,6 +156,8 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 		{
 			mCrossHair.Target = _actor.PlayerRole.BodyPt.AimPt;
 			mCrossHair.MainCamera = MainCamera;
+
+			mCrossHair.UpdateScreenPoint ();
 
 			if (mCrossHair.gameObject.activeSelf == false)
 				mCrossHair.gameObject.SetActive (true);

@@ -36,15 +36,17 @@ public sealed class Motion_StandardFire : IMotion
 			0.2F,	// eye
 			0.5F);	// clamp
 
-
+		bool isAhead = _owner.transform.IsPointAhead (_owner.MotionData.LookAt);
 		bool isRightSide = _owner.transform.IsPointRightSide (_owner.MotionData.LookAt);
 		AvatarIKGoal goal = isRightSide ? AvatarIKGoal.RightHand : AvatarIKGoal.LeftHand;
 		IArm arm = isRightSide ? _owner.Launcher.RightArm : _owner.Launcher.LeftArm;
 
+		Vector3 lookat = isAhead ? _owner.MotionData.LookAt : _owner.PlayerRole.BodyPt.Eye.position + ((isRightSide ? 1f : -1f) * _owner.transform.right);
 
 		_owner.Actordata.Anim.SetIKPositionWeight (goal, 1F);
 
-		_owner.Actordata.Anim.SetLookAtPosition (_owner.MotionData.LookAt);
+		//_owner.Actordata.Anim.SetLookAtPosition (_owner.MotionData.LookAt);
+		_owner.Actordata.Anim.SetLookAtPosition (lookat);
 
 		_owner.Actordata.Anim.SetIKPosition (goal, _owner.MotionData.LookAt);
 

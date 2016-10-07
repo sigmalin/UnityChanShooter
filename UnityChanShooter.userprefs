@@ -1,12 +1,9 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Manager\CacheManager\CacheManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Manager\WeaponManager\Weapon\Input\InputShootgun.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameCore\Flow\GamePlay\Flow_GamePlay.cs" Line="116" Column="102" />
-      <File FileName="Assets\Scripts\GameCore\Manager\ResourceManager\ResourceManager.cs" Line="86" Column="23" />
-      <File FileName="Assets\Scripts\GameCore\Manager\ResourceManager\ResourceManager_Character.cs" Line="62" Column="25" />
-      <File FileName="Assets\Scripts\GameCore\Manager\CacheManager\CacheManager.cs" Line="171" Column="5" />
-      <File FileName="Assets\Scripts\Define\ProtraitDefine.cs" Line="6" Column="2" />
+      <File FileName="Assets\Scripts\GameCore\Flow\GamePlay\Flow_GamePlay_Camera.cs" Line="58" Column="90" />
+      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\Weapon\Input\InputShootgun.cs" Line="145" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

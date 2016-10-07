@@ -38,7 +38,15 @@ public partial class ResourceManager
 		if (mCharacterTable.ContainsKey (_key) == false)
 			ProduceCharacterResPool(_key);
 
-		res = (System.Object)mCharacterTable [_key].Produce ();
+		GameObject go = mCharacterTable [_key].Produce ();
+
+		if (go != null) 
+		{
+			GameCoreResRecycle recycle = go.GetOrAddComponent<GameCoreResRecycle> ();
+			recycle.IsRecycled = false;
+		}
+
+		res = (System.Object)go;
 
 		return res;
 	}
@@ -64,9 +72,7 @@ public partial class ResourceManager
 
 		character.name = string.Format ("Character_{0}",_key.ToString());
 
-		GameCoreResRecycle recycle = character.GetComponent<GameCoreResRecycle> ();
-		if (recycle == null)
-			recycle = character.AddComponent<GameCoreResRecycle> ();
+		GameCoreResRecycle recycle = character.GetOrAddComponent<GameCoreResRecycle> ();
 
 		recycle.RecycleMethod = () => GameCore.SendCommand (CommandGroup.GROUP_RESOURCE, ResourceInst.RECYCLE_CHARACTER_MODEL, _key, character);
 		

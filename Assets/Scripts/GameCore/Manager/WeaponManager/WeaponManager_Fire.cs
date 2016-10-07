@@ -63,6 +63,7 @@ public sealed partial class WeaponManager
 	{
 		WeaponActor actor = GetWeaponActor(_id);
 		if (actor == null) return;
+		if (actor.IsDead.Value == true) return;
 		if (actor.AmmoCount.Value == 0) return;
 		if (0F < actor.ShootFreq) return;
 

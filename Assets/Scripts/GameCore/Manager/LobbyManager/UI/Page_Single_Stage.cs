@@ -18,9 +18,14 @@ public sealed partial class Page_Single
 	[SerializeField]
 	UnityEngine.UI.RawImage mStageImage;
 
+	System.IDisposable mMissionBtnDisposable;
+
 	void InitialStage()
 	{
-		mBtnMissionStart.OnClickAsObservable ()
+		if (mMissionBtnDisposable != null)
+			mMissionBtnDisposable.Dispose ();
+		
+		mMissionBtnDisposable = mBtnMissionStart.OnClickAsObservable ()
 			.Subscribe (_ => GoStage());
 	}
 
@@ -49,7 +54,8 @@ public sealed partial class Page_Single
 				loadList,
 				() => 
 				{
-					mStageImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_STAGE_IMAGE, CurrentChapter, CurrentStage + 1, false);
+					if (mStageImage != null)
+						mStageImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_STAGE_IMAGE, CurrentChapter, CurrentStage + 1, false);
 				},
 				true
 			);
@@ -82,7 +88,8 @@ public sealed partial class Page_Single
 		string[] loadList = new string[] {
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SCENE_PATH, "GamePlay"/*_stage.ScemeName*/),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH, (uint)1),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_UI_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH),
 		};
 
 		loadList = loadList.Concat (GetCharacterDownLoadList (GameCore.UserProfile.MainCharacterID)).ToArray ();
@@ -108,7 +115,7 @@ public sealed partial class Page_Single
 		return new string[] { 
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_PATH, _characterID),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH, weapon.BulletID),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_PATH, character.weaponID)
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_PATH, weapon.ModelID)
 		};
 	}
 }

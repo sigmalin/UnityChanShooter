@@ -11,9 +11,9 @@ public partial class CameraManager
 		mCameraDisposable = LateUpdateObservable
 			.Select(_ => GetAllCameraID ())
 			.SelectMany (_ => _.ToObservable ())
-			.Select(_ => GetCameraData(_))
+			.Select(_ => GetGameCamera(_))
 			.Where (_ => _ != null)
-			.Subscribe (_ => _.RefCamera.FrameMove());
+			.Subscribe (_ => _.FrameMove());
 	
 	}
 

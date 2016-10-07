@@ -41,10 +41,11 @@ public sealed class Actor_UnityChan : ActorController
 		case PlayerInst.GAME_START:
 
 			SetMotion (mStandard);
+			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isSaluteID, false);
 			break;
 
 		case PlayerInst.PLAYER_IDLE:
-			
+
 			Owner.MotionData.Speed = 0F;
 			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, false);
 			break;
@@ -52,7 +53,7 @@ public sealed class Actor_UnityChan : ActorController
 		case PlayerInst.PLAYER_MOVE:
 
 			Owner.MotionData.Move = (Vector3)_params [0];
-			Owner.MotionData.Speed = 1F;
+			Owner.MotionData.Speed = (float)_params [1];
 			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, true);
 			break;
 
@@ -60,6 +61,16 @@ public sealed class Actor_UnityChan : ActorController
 
 			if (IsGround () == true && mNextJumpWait <= 0F) 
 				Owner.Actordata.Rigid.velocity = new Vector3 (Owner.Actordata.Rigid.velocity.x, 5F, Owner.Actordata.Rigid.velocity.z);			
+			break;
+
+		case PlayerInst.PLAYER_SALUTE:
+
+			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isSaluteID, (bool)_params [0]);
+			break;
+
+		case PlayerInst.PLAYER_FACE:
+			
+			Owner.Actordata.Anim.SetInteger (GameCore.AnimID_iFaceID, (int)_params [0]);
 			break;
 
 		case PlayerInst.PLAYER_ROTATE:
@@ -73,16 +84,6 @@ public sealed class Actor_UnityChan : ActorController
 
 			if (isAim) SetMotion (mFire);
 			else       SetMotion (mStandard);			
-			break;
-
-		case PlayerInst.PLAYER_FOCUS:
-
-			Owner.MotionData.FocusOn = (Vector3)_params [0];
-			break;
-
-		case PlayerInst.PLAYER_LOCK:
-			
-			Owner.MotionData.LockActor = (uint)_params [0];
 			break;
 		}	
 	}

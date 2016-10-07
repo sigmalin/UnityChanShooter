@@ -16,7 +16,7 @@ public partial class PlayerActor
 			get 
 			{
 				PlayerActor actor = (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, LockActor);
-				if (actor == null)
+				if (actor == null || actor.PlayerRole == null)
 					return FocusOn;
 				else
 					return actor.PlayerRole.BodyPt.AimPt.position;

@@ -17,7 +17,7 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 
 		GameCore.RegisterParam (ParamGroup.GROUP_CAMERA, this);
 
-		InitialCameraData ();
+		InitialCameraTable ();
 
 		InitialRequestQueue ();
 
@@ -32,7 +32,7 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 
 		BroadcastCommand (CameraInst.CAMERA_UNREGISTER);
 
-		ClearCameraData ();
+		ClearCameraTable ();
 
 		GameCore.UnRegisterCommand (CommandGroup.GROUP_CAMERA);
 
@@ -44,18 +44,15 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 		switch (_inst) 
 		{
 		case CameraInst.CAMERA_REGISTER:
-			RegisterNewCamera ((uint)_params[0], (GameCamera)_params[1]);
-			TransCommand((uint)_params[0], CameraInst.CAMERA_REGISTER, GetCameraData ((uint)_params[0]));
+			RegisterGameCamera ((GameCamera)_params[0]);
+			break;
+
+		case CameraInst.CAMERA_UNREGISTER:
+			UnRegisterGameCamera ((uint)_params[0]);
 			break;
 
 		case CameraInst.MAIN_CAMERA:
 			mMainCamera = (uint)_params [0];
-			break;
-
-		case CameraInst.CAMERA_TARGET:
-			CameraData camera = GetCameraData ((uint)_params [0]);
-			if (camera.RefCamera != null)
-				camera.TargetID = (uint)_params [1];
 			break;
 
 		default:
@@ -77,7 +74,9 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case CameraParam.CAMERA_OBJECT:
-			output = (System.Object)GetCameraObject ((uint)_params[0]);
+			GameCamera cam = GetGameCamera ((uint)_params[0]);
+			if(cam != null)
+				output = (System.Object)(cam.gameObject);
 			break;
 		}
 
@@ -86,20 +85,20 @@ public sealed partial class CameraManager : CommandBehaviour, IParam, IRegister
 
 	void TransCommand(uint _ID, uint _inst, params System.Object[] _params)
 	{
-		CameraData camera = GetCameraData (_ID);
-		if (camera != null && camera.RefCamera != null) 
-			camera.RefCamera.ExecCommand (_inst, _params);
+		GameCamera cam = GetGameCamera (_ID);
+		if (cam != null) 
+			cam.ExecCommand (_inst, _params);
 	}
 
 	void BroadcastCommand (uint _inst, params System.Object[] _params)
 	{
-		CameraData[] cameras = GetAllCameraData ();
+		GameCamera[] cameras = GetAllGameCamera ();
 
 		for (int Indx = 0; Indx < cameras.Length; ++Indx) 
 		{
-			CameraData camera = cameras[Indx];
-			if (camera != null && camera.RefCamera != null) 
-				camera.RefCamera.ExecCommand (_inst, _params);
+			GameCamera cam = cameras[Indx];
+			if (cam != null) 
+				cam.ExecCommand (_inst, _params);
 		}
 	}
 }

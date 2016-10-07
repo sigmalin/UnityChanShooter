@@ -72,7 +72,8 @@ public sealed partial class Page_Single
 						loadList,
 						() => 
 						{
-							_.contest.mImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_STAGE_IMAGE, _chapterID, _.stage, false);
+							if(_.contest.mImage != null)
+								_.contest.mImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_STAGE_IMAGE, _chapterID, _.stage, false);
 						},
 						true
 					);

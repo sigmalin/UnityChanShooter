@@ -38,7 +38,15 @@ public partial class ResourceManager
 		if (mBulletTable.ContainsKey (_key) == false)
 			ProduceBulletResPool(_key);
 
-		res = (System.Object)mBulletTable [_key].Produce ();
+		GameObject go = mBulletTable [_key].Produce ();
+
+		if (go != null) 
+		{
+			GameCoreResRecycle recycle = go.GetOrAddComponent<GameCoreResRecycle> ();
+			recycle.IsRecycled = false;
+		}
+
+		res = (System.Object)go;
 
 		return res;
 	}
@@ -64,9 +72,7 @@ public partial class ResourceManager
 
 		bullet.name = string.Format ("Bullet_{0}",_key.ToString());
 
-		GameCoreResRecycle recycle = bullet.GetComponent<GameCoreResRecycle> ();
-		if (recycle == null)
-			recycle = bullet.AddComponent<GameCoreResRecycle> ();
+		GameCoreResRecycle recycle = bullet.GetOrAddComponent<GameCoreResRecycle> ();
 
 		recycle.RecycleMethod = () => GameCore.SendCommand (CommandGroup.GROUP_RESOURCE, ResourceInst.RECYCLE_BULLET, _key, bullet);
 

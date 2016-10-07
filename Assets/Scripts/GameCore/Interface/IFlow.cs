@@ -17,6 +17,9 @@ public class FlowEvent
 	public const uint DOWN_LOAD_CACHE_UNDONE = 8;
 
 	public const uint CONNECT_FAILURED = 9;
+
+	public const uint MAIN_ACTOR_DEAD = 21;
+	public const uint ALL_ENEMY_DEAD = 22;
 }
 
 public interface IFlow 

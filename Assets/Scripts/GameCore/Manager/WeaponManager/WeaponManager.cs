@@ -73,6 +73,14 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 		case WeaponInst.ADD_FIRE_DAMAGE:
 			AddFireDamage ((uint)_params [0], (uint)_params [1], (uint)_params [2]);
 			break;
+
+		case WeaponInst.PUSH_MAIN_WEAPON_INTERFACE:
+			PushWeaponInterface ();
+			break;
+
+		case WeaponInst.POP_MAIN_WEAPON_INTERFACE:
+			PopWeaponInterface ();
+			break;
 		}
 	}
 
@@ -86,12 +94,16 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 			output = (System.Object)GetWeaponActor ((uint)_params [0]);
 			break;
 
+		case WeaponParam.GET_LASTEST_MURDERER:
+			output = (System.Object)GetLastestMurdererID ((uint)_params [0]);
+			break;
+
 		case WeaponParam.GET_ALLY_LIST:
-			output = GetAllyList ((uint)_params [0]);
+			output = (System.Object)GetAllyList ((uint)_params [0]);
 			break;
 
 		case WeaponParam.GET_HOSTILITY_LIST:
-			output = GetHostilityList ((uint)_params [0]);
+			output = (System.Object)GetHostilityList ((uint)_params [0]);
 			break;
 		}
 

@@ -9,8 +9,15 @@ public partial class GameCore
 
 	System.IDisposable mSceneDisposable = null;
 
+	bool mIsAllowSwitchScene = true;
+
 	void SwitchScene(string _scene, string[] _loadList, bool _record)
 	{
+		if (mIsAllowSwitchScene == false)
+			return;
+
+		mIsAllowSwitchScene = false;
+
 		if (mSceneDisposable != null) 
 		{
 			mSceneDisposable.Dispose ();
@@ -38,6 +45,8 @@ public partial class GameCore
 
 					if (_record == false)
 						mLoadList = null;
+
+					mIsAllowSwitchScene = true;
 				},
 				_ex => Debug.LogError(_ex),
 				() => Debug.Log("Completed")

@@ -38,7 +38,7 @@ public class CharacterItem : MonoBehaviour, IItem
 	{
 	}
 
-	public void SetReactiveProperty<T>(ReadOnlyReactiveProperty<T> _reactiveProperty)
+	public void SetReactiveProperty(ReadOnlyReactiveProperty<float> _reactiveProperty)
 	{
 	}
 }

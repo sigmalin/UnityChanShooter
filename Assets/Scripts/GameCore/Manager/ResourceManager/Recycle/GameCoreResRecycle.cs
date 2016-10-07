@@ -8,6 +8,9 @@ public class GameCoreResRecycle : MonoBehaviour
 	RecycleCallBack mRecycleCallBack = null;
 	public RecycleCallBack RecycleMethod { set { mRecycleCallBack = value; } }
 
+	bool mIsRecycled = false;
+	public bool IsRecycled { set { mIsRecycled = value; } }
+
 	public virtual void OnDestroy()
 	{
 		mRecycleCallBack = null;
@@ -15,9 +18,18 @@ public class GameCoreResRecycle : MonoBehaviour
 
 	public void Recycle()
 	{
-		if (mRecycleCallBack != null)
+		if (mIsRecycled == true)
+			return;
+
+		if (mRecycleCallBack != null) 
+		{
 			mRecycleCallBack ();
-		else
+
+			mIsRecycled = true;
+		}
+		else 
+		{
 			this.gameObject.SetActive (false);
+		}
 	}
 }

@@ -6,7 +6,9 @@ using System.Linq;
 [RequireComponent(typeof(Camera))]
 public class GameCamera : MonoBehaviour 
 {
-	CameraManager.CameraData mRefCameraData = null;
+	[SerializeField]
+	uint mCameraID;
+	public uint CameraID { get { return mCameraID; } }
 
 	Stack<IMode> mModeStack;
 
@@ -28,8 +30,8 @@ public class GameCamera : MonoBehaviour
 	{
 		IMode curMode = GetCurrentMode ();
 
-		if (curMode != null && mRefCameraData != null)
-			curMode.UpdateMode (mRefCameraData);	
+		if (curMode != null)
+			curMode.UpdateMode (this);	
 	}
 
 	void PushCameraMode (IMode _mode)
@@ -37,42 +39,60 @@ public class GameCamera : MonoBehaviour
 		if (_mode == null)
 			return;
 
+		if (mModeStack.Contains (_mode) == true)
+			return;
+
 		if (GetCurrentMode() != null)
-			GetCurrentMode().LeaveMode (mRefCameraData);
-
-		Stack<IMode> tempStack = new Stack<IMode> ();
-
-		while (mModeStack.Count != 0) 
-		{
-			if (mModeStack.Peek () != _mode)
-				tempStack.Push (mModeStack.Pop());
-		}
-
-		while (tempStack.Count != 0) 
-		{
-			mModeStack.Push (tempStack.Pop());
-		}
+			GetCurrentMode().LeaveMode (this);
 
 		mModeStack.Push (_mode);
 
-		_mode.EnterMode (mRefCameraData);
+		_mode.EnterMode (this);
+	}
+
+	void PopCameraMode(IMode _mode)
+	{
+		if (GetCurrentMode () == _mode) 
+		{
+			mModeStack.Pop ();
+			_mode.LeaveMode (this);
+
+			if (GetCurrentMode () != null)
+				GetCurrentMode ().EnterMode (this);
+		} 
+		else 
+		{
+			Stack<IMode> tempStack = new Stack<IMode> ();
+
+			while (mModeStack.Count != 0) 
+			{
+				IMode mode = mModeStack.Pop ();
+
+				if (_mode != mode)
+					tempStack.Push (mode);
+			}
+
+			while (tempStack.Count != 0)
+			{
+				mModeStack.Push (tempStack.Pop());
+			}
+		}
 	}
 
 	public void ExecCommand(uint _inst, params System.Object[] _params)
 	{
 		switch(_inst)
 		{
-		case CameraInst.CAMERA_REGISTER:
-			mRefCameraData = (CameraManager.CameraData)_params[0];
-			break;
-
-		case CameraInst.CAMERA_UNREGISTER:
-			mRefCameraData = null;
-			ClearStack ();
+		case CameraInst.CAMERA_ACTIVE:
+			this.gameObject.GetComponent<Camera> ().enabled = (bool)_params [0];
 			break;
 
 		case CameraInst.SET_CAMERA_MODE:
 			PushCameraMode ((IMode)_params[0]);
+			break;
+
+		case CameraInst.REMOVE_CAMERA_MODE:
+			PopCameraMode ((IMode)_params[0]);
 			break;
 
 		default:
@@ -93,9 +113,12 @@ public class GameCamera : MonoBehaviour
 		return mModeStack.Peek ();
 	}
 
-	void ClearStack()
+	public void ClearStack()
 	{
-		if (mModeStack != null)
+		if (GetCurrentMode () != null) 
+		{
+			GetCurrentMode ().LeaveMode (this);
 			mModeStack.Clear ();
+		}
 	}
 }

@@ -46,7 +46,9 @@ public class Shotgun : MonoBehaviour, IArm
 
 	public void OnPullTrigger()
 	{
-		if (mShootShock != null)
+		if (mShootShock != null) 
+		{
 			mShootShock.SetActive (true);
+		}
 	}
 }

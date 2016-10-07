@@ -14,15 +14,10 @@ public partial class PlayerActor
 	public WeaponLauncher Launcher { get { return mLauncher; } }
 
 	ActorController mActorController = null;
+	public ActorController Controller { get { return mActorController; } }
 
-	// Update is called once per frame
-	public void FrameMove () 
-	{
-		if (mActorController == null)
-			return;
-
-		mActorController.OnUpdate ();
-	}
+	uint mModelID;
+	public uint ModelID { get { return mModelID; } }
 
 	void ReleaseAll()
 	{
@@ -41,14 +36,18 @@ public partial class PlayerActor
 			mActorController.Initial (this);
 	}
 
-	void SetRoleModel(GameObject _roleGO)
+	void SetRoleModel(uint _modelID)
 	{
 		ClearRoleModel ();
 
-		if (_roleGO == null)
+		mModelID = _modelID;
+
+		GameObject roleGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CHARACTER_MODEL, mModelID);
+
+		if (roleGO == null)
 			return;
 
-		mRole = _roleGO.GetComponent<Role> ();
+		mRole = roleGO.GetComponent<Role> ();
 
 		if (mRole == null)
 			return;
@@ -68,7 +67,7 @@ public partial class PlayerActor
 		mRole.transform.localRotation = Quaternion.identity;
 		mRole.transform.localScale = Vector3.one;
 
-		mActorData.Anim = _roleGO.GetComponent<Animator> ();
+		mActorData.Anim = roleGO.GetComponent<Animator> ();
 
 		Equipment ();
 	}
@@ -94,16 +93,20 @@ public partial class PlayerActor
 		}
 
 		mActorData.Anim = null;
+
+		mModelID = 0;
 	}
 
-	void SetWeaponModel(GameObject _launcherGO)
+	void SetWeaponModel(uint _weaponID)
 	{
 		ClearWeaponModel ();
 
-		if (_launcherGO == null)
+		GameObject launcherGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.WEAPON_MODEL, _weaponID);
+
+		if (launcherGO == null)
 			return;
 
-		mLauncher = _launcherGO.GetComponent<WeaponLauncher>();
+		mLauncher = launcherGO.GetComponent<WeaponLauncher>();
 
 		Equipment ();
 	}

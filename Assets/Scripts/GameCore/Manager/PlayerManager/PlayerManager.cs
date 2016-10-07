@@ -50,6 +50,10 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 			TransCommand((uint)_params[0], PlayerInst.CREATE_PLAYER, (uint)_params[0]);
 			break;
 
+		case PlayerInst.REMOVE_PLAYER:
+			RemovePlayer ((uint)_params[0]);
+			break;
+
 		default:
 			System.Object[] objects = new System.Object[_params.Length - 1];
 			System.Array.Copy (_params, 1, objects, 0, _params.Length - 1);
@@ -69,7 +73,16 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case PlayerParam.PLAYER_TRANSFORM:
-			output = (System.Object)(GetPlayerData ((uint)_params[0]).transform);
+			PlayerActor actor = GetPlayerData ((uint)_params [0]);
+			output = actor == null ? null : (System.Object)(actor.transform);
+			break;
+
+		case PlayerParam.PLAYER_LOCK_TARGET:
+			output = (System.Object)GetLockActorID ((uint)_params [0]);
+			break;
+
+		case PlayerParam.PLAYER_DISTANCE_WITH_LOCK_ACTOR:
+			output = (System.Object)CalcDistanceWithLockActor ((uint)_params [0]);
 			break;
 		}
 

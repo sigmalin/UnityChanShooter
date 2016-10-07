@@ -12,28 +12,19 @@ public class UiTracer : MonoBehaviour
 	Camera mMainCamera;
 	public Camera MainCamera { set { mMainCamera = value; } }
 
+	RectTransform mRectTrans;
+
 	// Use this for initialization
 	void Start () 
 	{
-		RectTransform rectTrans = this.GetComponent<RectTransform> ();
+		mRectTrans = this.GetComponent<RectTransform> ();
 
-		rectTrans.anchorMax = Vector2.zero;
-		rectTrans.anchorMin = Vector2.zero;
-		rectTrans.pivot = new Vector2 (0.5f, 0.5f);
-
-		this.OnEnableAsObservable()
-			.Where (_ => mTarget != null && mMainCamera != null)
-			.Subscribe (_ => 
-				{
-					rectTrans.anchoredPosition = mMainCamera.WorldToScreenPoint (mTarget.position);
-				});
+		mRectTrans.anchorMax = Vector2.zero;
+		mRectTrans.anchorMin = Vector2.zero;
+		mRectTrans.pivot = new Vector2 (0.5f, 0.5f);
 
 		this.UpdateAsObservable ()
-			.Where (_ => mTarget != null && mMainCamera != null)
-			.Subscribe (_ => 
-				{
-					rectTrans.anchoredPosition = mMainCamera.WorldToScreenPoint (mTarget.position);
-				});
+			.Subscribe (_ => UpdateScreenPoint());
 	}
 
 	void OnDestroy()
@@ -41,5 +32,13 @@ public class UiTracer : MonoBehaviour
 		mTarget = null;
 
 		mMainCamera = null;
+	}
+
+	public void UpdateScreenPoint()
+	{
+		if (mTarget == null || mMainCamera == null || mRectTrans == null)
+			return;
+
+		mRectTrans.anchoredPosition = mMainCamera.WorldToScreenPoint (mTarget.position);
 	}
 }

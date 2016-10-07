@@ -97,11 +97,11 @@ public partial class CacheManager
 
 	void DownLoadCache(CacheRequest[] _list, System.Action _callbackUnlock)
 	{
-		VersionRepository.VersionInfo[] versions = _list
-													.Select(_ => _.Path)
-													.Distinct()
-													.Select (_ => new  VersionRepository.VersionInfo (_, GetLastestVersion (_)))
-													.ToArray ();
+		VersionData[] versions = _list
+								.Select(_ => _.Path)
+								.Distinct()
+								.Select (_ => GetVersionData(_))
+								.ToArray ();
 
 		DownLoadAndWrite2Stream (versions, 
 			() => {
