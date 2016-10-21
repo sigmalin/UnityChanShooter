@@ -40,8 +40,8 @@ public class Ai_Zoombie : AiBase
 		AddStrategy (
 			(IStrategy)GameCore.GetParameter(ParamGroup.GROUP_AI, AiParam.GET_STRATEGY_HURT_PLAYER),
 			() => {
-				float distance = (float)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DISTANCE_WITH_LOCK_ACTOR, ActorID);
-				if(0f <= distance && distance <= 5f) FirePlayer();
+				float distance = (float)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DISTANCE_BETWEEN_LOCK_ACTOR, ActorID);
+				if(0f <= distance && distance <= 1.5f) FirePlayer();
 			}
 		);
 	}

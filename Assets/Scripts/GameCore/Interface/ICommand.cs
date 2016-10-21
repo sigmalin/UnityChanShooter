@@ -27,11 +27,8 @@ public class PlayerInst
 	public const uint SET_CONTAINER = 2;
 	public const uint SET_WEAPON = 3;
 	public const uint REMOVE_PLAYER = 4;
-	public const uint SET_ACTOR_CONTROLLER = 5;
-
-	public const uint GAME_START = 7;
-	public const uint GAME_SUSPEND = 8;
-	public const uint GAME_END = 9;
+	public const uint PUSH_ACTOR_CONTROLLER = 5;
+	public const uint POP_ACTOR_CONTROLLER = 6;
 
 	public const uint SET_POSITION = 11;
 	public const uint SET_DIRECTION = 12;

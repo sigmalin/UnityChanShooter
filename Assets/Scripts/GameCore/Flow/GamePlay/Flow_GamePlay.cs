@@ -67,6 +67,10 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 		case FlowEvent.ALL_ENEMY_DEAD:
 			GotoCloseUp ();
 			break;
+
+		case FlowEvent.MAIN_ACTOR_DEAD:
+			GotoFailure ();
+			break;
 		}
 	}
 
@@ -75,16 +79,11 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 		InitialInput ();
 
 		Observable.NextFrame (FrameCountType.Update)
-			.Do (_ => {
+			.Subscribe (_ => {
 				RegisterCamera ();
 				RegisterAllPlayer ();
 				SetMainCameraMode ();
-			})
-			.SelectMany(Observable.NextFrame (FrameCountType.Update))
-			.Subscribe (_ => 
-				{					
-					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.GAME_START);
-				});
+			});
 	}
 
 	#region Player
@@ -97,8 +96,7 @@ public sealed partial class Flow_GamePlay : FlowBehaviour, IInput, IUserInterfac
 		if (mHostility.Length != 0) 
 		{
 			mHostility.ToObservable()
-				//.Subscribe(_ => RegisterPlayer(_.PlayerID, _.CharacterID, _.AiID, 2, _.SpawnPt));
-				.Subscribe(_ => RegisterPlayer(_.PlayerID, GameCore.UserProfile.MainCharacterID, _.AiID, 2, _.SpawnPt));
+				.Subscribe(_ => RegisterPlayer(_.PlayerID, _.CharacterID, _.AiID, 2, _.SpawnPt));
 		}
 
 		// register main actor

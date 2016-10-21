@@ -27,6 +27,12 @@ public class WeaponDataRepository : ScriptableObject
 
 		public float ReloadTime;
 		public float ShootFreq;
+
+		public float Speed;
+		public float Range;
+
+		public float Impact;
+		public float Stamina;
 	}
 
 	[SerializeField]

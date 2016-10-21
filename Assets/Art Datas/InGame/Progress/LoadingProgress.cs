@@ -27,6 +27,8 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 	public void Show(Transform _root)
 	{
 		this.transform.SetParent(_root);
+		this.transform.localPosition = new Vector3 (0F, 0F, 0F);
+		this.transform.localScale = new Vector3 (1F, 1F, 1F);
 
 		if (this.gameObject.activeSelf == false)
 			this.gameObject.SetActive (true);

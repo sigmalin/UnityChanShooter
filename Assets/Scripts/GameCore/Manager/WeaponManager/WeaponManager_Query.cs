@@ -5,6 +5,24 @@ using System.Linq;
 
 public sealed partial class WeaponManager
 {
+	float GetActorSpeed(uint _actorID)
+	{
+		WeaponActor actor = GetWeaponActor (_actorID);
+		return actor == null ? 0f : actor.MoveSpeed;
+	}
+
+	float GetActorRange(uint _actorID)
+	{
+		WeaponActor actor = GetWeaponActor (_actorID);
+		return actor == null ? 0f : actor.AttackRange;
+	}
+
+	float GetActorFreq(uint _actorID)
+	{
+		WeaponActor actor = GetWeaponActor (_actorID);
+		return actor == null ? 0f : actor.MaxShootFreq;
+	}
+
 	uint GetLastestMurdererID(uint _actorID)
 	{
 		WeaponActor actor = GetWeaponActor (_actorID);

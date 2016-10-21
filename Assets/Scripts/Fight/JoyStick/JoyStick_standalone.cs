@@ -16,19 +16,22 @@ public partial class JoyStick
 				SetJoyStickPosition(Input.mousePosition);
 			});
 
-		DisposeList[1] = _observable.Where(_ => IsJoyStickUsed.Value == true)
+		DisposeList [1] = _observable.Where (_ => IsJoyStickUsed.Value == true)
 			.Do (_ => {
-				Vector2 dir = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - mJoyStickBoard.anchoredPosition;
-				float dis = Mathf.Min(50f, dir.magnitude);
-				dir = dir.normalized;
+			Vector2 dir = new Vector2 (Input.mousePosition.x, Input.mousePosition.y) - mJoyStickBoard.anchoredPosition;
+			float dis = Mathf.Min (50f, dir.magnitude);
+			dir = dir.normalized;
 
-				Vec3JoyStickMoved.Value = new Vector3(dir.x, 0f, dir.y);
-				mJoyStickNob.anchoredPosition = JoyStickBoardPos + (dir * dis);
+			Vec3JoyStickMoved.Value = new Vector3 (dir.x, 0f, dir.y);
+			mJoyStickNob.anchoredPosition = JoyStickBoardPos + (dir * dis);
 			})
 			.Where (_ => Input.GetMouseButtonUp (0) == true)
-			.Subscribe (_ => {
-				IsJoyStickUsed.Value = false;
-				ResetJoyStickPosition();
-			});
+			.Subscribe (_ => ClearForStandalone ());
+	}
+
+	void ClearForStandalone()
+	{
+		IsJoyStickUsed.Value = false;
+		ResetJoyStickPosition();
 	}
 }

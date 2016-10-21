@@ -5,7 +5,7 @@ using UniRx.Triggers;
 
 public sealed partial class WeaponManager
 {
-	void AddFireDamage(uint _victimsID, uint _murdererID, uint _damage)
+	void AddFireDamage(uint _victimsID, uint _murdererID, uint _damage, Vector3 _hitPt)
 	{
 		WeaponActor victimsActor = GetWeaponActor (_victimsID);
 		if (victimsActor == null)
@@ -15,6 +15,7 @@ public sealed partial class WeaponManager
 			return;
 
 		victimsActor.MurdererID = _murdererID;
+		victimsActor.HitPt = _hitPt;
 		victimsActor.HP.Value = victimsActor.HP.Value < _damage ? 0u : victimsActor.HP.Value - _damage;
 	}
 
@@ -24,7 +25,11 @@ public sealed partial class WeaponManager
 		if (victimsActor == null)
 			return;
 
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_DEAD, _victimsID, _murdererID);
+		WeaponActor murdererActor = GetWeaponActor (_murdererID);
+		if (murdererActor == null)
+			return;
+
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_DEAD, _victimsID, _murdererID, murdererActor.Impact, victimsActor.HitPt);
 		GameCore.SendCommand (CommandGroup.GROUP_AI, AiInst.REMOVE_AI, _victimsID);
 
 		if (_victimsID == MainActorID)

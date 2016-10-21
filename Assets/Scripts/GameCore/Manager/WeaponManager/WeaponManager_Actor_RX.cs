@@ -18,10 +18,6 @@ public sealed partial class WeaponManager
 			.Select (_ => GetWeaponActor (_))
 			.Where (_ => _ != null).Publish().RefCount();
 
-		mShootFreqDisposable = actorObserver
-			.Where (_ => 0F < _.ShootFreq)
-			.Subscribe (_ => _.ShootFreq = Mathf.Clamp (_.ShootFreq - Time.deltaTime, 0F, _.ShootFreq));
-
 		mReloadDisposable = actorObserver
 			.Where (_ => _.AmmoCount.Value < _.MaxAmmoCount)
 			.Do (_ => _.ReloadTime -= Time.deltaTime)

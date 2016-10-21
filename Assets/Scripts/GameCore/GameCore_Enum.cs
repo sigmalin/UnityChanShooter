@@ -18,14 +18,23 @@ public partial class GameCore
 	int mAnimID_fJumpForce = 0;
 	static public int AnimID_fJumpForce { get { return mInstance != null ? mInstance.mAnimID_fJumpForce : 0; } }
 
+	int mAnimID_fLife = 0;
+	static public int AnimID_fLife { get { return mInstance != null ? mInstance.mAnimID_fLife : 0; } }
+
 	int mAnimID_iFace = 0;
 	static public int AnimID_iFaceID { get { return mInstance != null ? mInstance.mAnimID_iFace : 0; } }
 
 	int mAnimID_iLobbyState = 0;
 	static public int AnimID_iLobbyState { get { return mInstance != null ? mInstance.mAnimID_iLobbyState : 0; } }
 
+	int mAnimID_triggerFire = 0;
+	static public int AnimID_triggerFire { get { return mInstance != null ? mInstance.mAnimID_triggerFire : 0; } }
+
 	int mAnimID_triggerExit = 0;
 	static public int AnimID_triggerExit { get { return mInstance != null ? mInstance.mAnimID_triggerExit : 0; } }
+
+	int mAnimID_triggerShock = 0;
+	static public int AnimID_triggerShock { get { return mInstance != null ? mInstance.mAnimID_triggerShock : 0; } }
 
 	// Use this for initialization
 	void InitialAnimID () 
@@ -40,12 +49,16 @@ public partial class GameCore
 
 		mAnimID_fJumpForce = Animator.StringToHash ("fJumpForce");
 
+		mAnimID_fLife = Animator.StringToHash ("fLife");
+
 		mAnimID_iFace = Animator.StringToHash ("iFace");
 
 		mAnimID_iLobbyState = Animator.StringToHash ("iLobbyState");
 
-		mAnimID_triggerExit = Animator.StringToHash ("triggerExit");
+		mAnimID_triggerFire = Animator.StringToHash ("triggerFire");
 
 		mAnimID_triggerExit = Animator.StringToHash ("triggerExit");
+
+		mAnimID_triggerShock = Animator.StringToHash ("triggerShock");
 	}
 }

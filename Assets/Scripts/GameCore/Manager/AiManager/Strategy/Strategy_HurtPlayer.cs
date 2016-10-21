@@ -4,6 +4,12 @@ using System.Linq;
 
 public class Strategy_HurtMainPlayer : StrategyBase 
 {
+	float mSpeed;
+
+	float mRange;
+
+	float mStrategyTime;
+
 	// Use this for initialization
 	public override void Exec (IAi _owner, System.Action _onCompleted = null) 
 	{
@@ -37,7 +43,13 @@ public class Strategy_HurtMainPlayer : StrategyBase
 
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_LOCK, _owner.ActorID, targetActor == null ? 0u : targetActor.ActorID); 
 
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.AGENT_GOTO, _owner.ActorID, targetActor == null ? minePos : targetActor.transform.position, 0.5f, 1f);
+		mSpeed = (float)GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.WEAPON_ACTOR_SPEED, _owner.ActorID);
+
+		mRange = (float)GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.WEAPON_ACTOR_RANGE, _owner.ActorID);
+
+		mStrategyTime = 3f;
+
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.AGENT_GOTO, _owner.ActorID, targetActor == null ? minePos : targetActor.transform.position, mSpeed, mRange);
 	}
 
 	// Update is called once per frame
@@ -61,7 +73,9 @@ public class Strategy_HurtMainPlayer : StrategyBase
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, _owner.ActorID, dir, speed);
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_ROTATE, _owner.ActorID, dir);
 
-		if (mineActor.Actordata.Agent.IsArrived () == true || IsCloseTarget(_owner) == true) 
+		mStrategyTime -= Time.deltaTime;
+
+		if (mineActor.Actordata.Agent.IsArrived () == true || IsCloseTarget(_owner) == true || mStrategyTime <= 0f) 
 		{
 			GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.AGENT_STOP, _owner.ActorID);
 
@@ -73,8 +87,8 @@ public class Strategy_HurtMainPlayer : StrategyBase
 
 	bool IsCloseTarget(IAi _owner)
 	{
-		float distance = (float)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DISTANCE_WITH_LOCK_ACTOR, _owner.ActorID);
+		float distance = (float)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DISTANCE_BETWEEN_LOCK_ACTOR, _owner.ActorID);
 
-		return distance < 5f;
+		return distance < mRange;
 	}
 }

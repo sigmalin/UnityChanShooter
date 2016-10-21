@@ -35,10 +35,16 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 	[SerializeField]
 	Status mStatus;
 
+	System.IDisposable mTrackDisposable;
+
 	// Use this for initialization
 	public override void Start () 
 	{
 		base.Start ();
+
+		float moveSpeed = (float)GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.WEAPON_ACTOR_SPEED, PlayerID);
+
+		float attackRange = (float)GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.WEAPON_ACTOR_RANGE, PlayerID);
 
 		// move
 		Device.Vec3JoyStickMoved
@@ -48,7 +54,7 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 					Vector3 dir = MainCamera.transform.TransformDirection(_);
 					dir = new Vector3(dir.x, 0f, dir.z);
 					dir = dir.normalized;
-					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, PlayerID, dir, 1f);
+					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, PlayerID, dir, moveSpeed);
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_ROTATE, PlayerID, dir);
 				});
 
@@ -71,12 +77,21 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 			.Subscribe (_ => GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_JUMP, PlayerID));
 
 		// Tracking
-		InputStream
+		mTrackDisposable = InputStream
 			.Buffer (System.TimeSpan.FromSeconds (0.5f))
 			.Where (_ => MainCamera != null)
-			.Subscribe (_ => Tracking());
+			.Subscribe (_ => Tracking(attackRange));
 
 		OperatorForStanealone ();
+	}
+
+	void OnDestroy()
+	{
+		if (mTrackDisposable != null) 
+		{
+			mTrackDisposable.Dispose ();
+			mTrackDisposable = null;
+		}
 	}
 
 	public override void Hide()
@@ -94,6 +109,13 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 		mStatus.Localization ();
 	}
 
+	public override void Clear()
+	{
+		Device.Clear ();
+
+		ClearForStanealone ();
+	}
+
 	public override void Operation(uint _inst, params System.Object[] _params)
 	{
 		base.Operation (_inst, _params);
@@ -106,7 +128,7 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 		}
 	}
 
-	void Tracking()
+	void Tracking(float _attackRange)
 	{
 		uint[] enemyIDs = (uint[])GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.GET_HOSTILITY_LIST, PlayerID);
 
@@ -127,11 +149,11 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 		PlayerActor targetActor = enemyIDs.Select (_ => (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, _))
 			.Where (_ => _ != null)
 			.Select (_ => new { Actor = _, Distance = Vector3.Distance (minePos, _.transform.position) })
-			.Where (_ => _.Distance < 5f)
+			.Where (_ => _.Distance < _attackRange)
 			.OrderBy (_ => _.Distance)
 			.Select (_ => _.Actor)
 			.Where (_ => MainCamera.transform.IsPointAhead (_.PlayerRole.BodyPt.AimPt.position))
-			.Where (_ => Physics.Raycast (mineEye, (_.PlayerRole.BodyPt.AimPt.position - mineEye).normalized, 5f, GameCore.GetRaycastLayer(GameCore.LAYER_DEFAULT)) == false)
+			.Where (_ => Physics.Raycast (mineEye, (_.PlayerRole.BodyPt.AimPt.position - mineEye).normalized, _attackRange, GameCore.GetRaycastLayer(GameCore.LAYER_DEFAULT)) == false)
 			.FirstOrDefault ();
 
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_LOCK, PlayerID, targetActor == null ? 0u : targetActor.ActorID); 

@@ -1,9 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Manager\WeaponManager\Weapon\Input\InputShootgun.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\Ragdoll.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameCore\Flow\GamePlay\Flow_GamePlay_Camera.cs" Line="58" Column="90" />
-      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\Weapon\Input\InputShootgun.cs" Line="145" Column="9" />
+      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\WeaponManager.cs" Line="74" Column="95" />
+      <File FileName="Assets\Scripts\GameCore\Data\WeaponDataRepository.cs" Line="35" Column="23" />
+      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\WeaponManager_Battle.cs" Line="32" Column="99" />
+      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\WeaponManager_Actor.cs" Line="42" Column="22" />
+      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\PlayerActor.cs" Line="73" Column="32" />
+      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\PlayerActor_Dead.cs" Line="34" Column="15" />
+      <File FileName="Assets\Scripts\GameCore\Manager\PlayerManager\Actor\Ragdoll.cs" Line="56" Column="59" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

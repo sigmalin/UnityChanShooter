@@ -24,11 +24,11 @@ public sealed partial class WeaponManager
 
 		public float ReloadTime { get; set; }
 
-		public float ShootFreq { get; set; }
-
 		public int Team { get; set; }
 
 		public uint MurdererID { get; set; }
+
+		public Vector3 HitPt { get; set; }
 
 		public WeaponDataRepository.WeaponData RefWeaponData { get; set; }
 		public uint BulletID { get { return RefWeaponData.BulletID; } }
@@ -37,6 +37,9 @@ public sealed partial class WeaponManager
 		public uint MaxShootRayCount { get { return RefWeaponData.ShootRayCount; } }
 		public float MaxReloadTime { get { return RefWeaponData.ReloadTime; } }
 		public float MaxShootFreq { get { return RefWeaponData.ShootFreq; } }
+		public float MoveSpeed { get { return RefWeaponData.Speed; } }
+		public float AttackRange { get { return RefWeaponData.Range; } }
+		public float Impact { get { return RefWeaponData.Impact; } }
 	}
 
 	Dictionary<uint, WeaponActor> mActorTable = null;
@@ -69,7 +72,6 @@ public sealed partial class WeaponManager
 		actor.Charge = actor.AmmoCount.Select (_ => ((float)_ / (float)actor.RefWeaponData.AmmoCount)).ToReadOnlyReactiveProperty ();
 
 		actor.ReloadTime = 0F;
-		actor.ShootFreq = 0F;
 
 		actor.MurdererID = 0u;
 

@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UniRx;
 
 public partial class PlayerActor
 {
 	System.IDisposable mAnimatorMoveDisposable;
 	System.IDisposable mAnimatorIKDisposable;
+	System.IDisposable mAnimatorEventDisposable;
 
 	Role mRole;
 	public Role PlayerRole { get { return mRole; } }
@@ -13,14 +15,16 @@ public partial class PlayerActor
 	WeaponLauncher mLauncher;
 	public WeaponLauncher Launcher { get { return mLauncher; } }
 
-	ActorController mActorController = null;
-	public ActorController Controller { get { return mActorController; } }
+	Stack<ActorController> mControllerStack;
+	public ActorController Controller { get { return mControllerStack == null ? null : mControllerStack.Peek(); } }
 
 	uint mModelID;
 	public uint ModelID { get { return mModelID; } }
 
 	void ReleaseAll()
 	{
+		ClearActorController ();
+
 		ClearWeaponModel ();
 
 		ClearRoleModel ();
@@ -28,12 +32,46 @@ public partial class PlayerActor
 		this.gameObject.SafeRecycle ();
 	}
 
-	void SetActorController(ActorController _actorCtrl)
+	void PushActorController(ActorController _actorCtrl)
 	{
-		mActorController = _actorCtrl;
+		if (mControllerStack == null)
+			mControllerStack = new Stack<ActorController> ();
+		
+		if (_actorCtrl != null && mControllerStack.Contains(_actorCtrl) == false) 
+		{
+			mControllerStack.Push (_actorCtrl);
+			_actorCtrl.Initial (this);
+		}
+	}
 
-		if (mActorController != null)
-			mActorController.Initial (this);
+	void PopActorController(ActorController _actorCtrl)
+	{
+		if (mControllerStack == null)
+			return;
+
+		Stack<ActorController> tempStack = new Stack<ActorController> ();
+
+		while (mControllerStack.Count != 0) 
+		{
+			ActorController ctrl = mControllerStack.Pop ();
+			if (_actorCtrl != ctrl)
+				tempStack.Push (ctrl);
+		}
+
+		while (tempStack.Count != 0) 
+		{
+			mControllerStack.Push (tempStack.Pop());
+		}
+	}
+
+	void ClearActorController()
+	{
+		if (mControllerStack != null) 
+		{
+			mControllerStack.Clear ();
+
+			mControllerStack = null;
+		}
 	}
 
 	void SetRoleModel(uint _modelID)
@@ -53,14 +91,18 @@ public partial class PlayerActor
 			return;
 
 		mAnimatorMoveDisposable = mRole.OnAnimatorMoveAsObservable
-			.Select (_ => mActorController)
+			.Select (_ => Controller)
 			.Where (_ => _ != null)
 			.Subscribe (_ => _.OnAnimMove ());
 
 		mAnimatorIKDisposable = mRole.OnAnimatorIKAsObservable
-			.Select (_ => mActorController)
+			.Select (_ => Controller)
 			.Where (_ => _ != null)
 			.Subscribe (_ => _.OnAnimIK ());
+
+		mAnimatorEventDisposable = mRole.OnAnimatorEventAsObservable
+			.Where (_ => Controller != null)
+			.Subscribe (_ => Controller.OnAnimEvent (_));
 
 		mRole.transform.parent = this.transform;
 		mRole.transform.localPosition = Vector3.zero;

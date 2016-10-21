@@ -10,7 +10,7 @@ public class Strategy_Aim : StrategyBase
 	{
 		base.Exec (_owner, _onCompleted);
 
-		mAimStay = 0.5f;
+		mAimStay = 3f;
 	}
 
 	// Update is called once per frame

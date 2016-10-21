@@ -23,4 +23,8 @@ public sealed partial class InputShootgun
 					dir.x, dir.y, Input.GetAxis("Mouse ScrollWheel"));
 			});
 	}
+
+	void ClearForStanealone()
+	{
+	}
 }

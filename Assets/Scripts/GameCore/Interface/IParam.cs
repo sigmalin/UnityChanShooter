@@ -26,7 +26,7 @@ public class PlayerParam
 
 	public const uint PLAYER_LOCK_TARGET = 12;
 
-	public const uint PLAYER_DISTANCE_WITH_LOCK_ACTOR = 20;
+	public const uint PLAYER_DISTANCE_BETWEEN_LOCK_ACTOR = 20;
 }
 
 public class CameraParam
@@ -52,6 +52,10 @@ public class ResourceParam
 public class WeaponParam
 {
 	public const uint WEAPON_ACTOR_DATA = 1;
+	public const uint WEAPON_ACTOR_SPEED = 2;
+	public const uint WEAPON_ACTOR_RANGE = 3;
+	public const uint WEAPON_ACTOR_FREQ = 4;
+
 	public const uint GET_LASTEST_MURDERER= 5;
 
 	public const uint GET_ALLY_LIST = 11;

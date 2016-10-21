@@ -11,6 +11,9 @@ public class Role : ModelBehaviour
 	Subject<Unit> mOnAnimatorIKSubject = new Subject<Unit>();
 	public IObservable<Unit> OnAnimatorIKAsObservable { get { return mOnAnimatorIKSubject.AsObservable (); } }
 
+	Subject<string> mOnAnimatorEventSubject = new Subject<string>();
+	public IObservable<string> OnAnimatorEventAsObservable { get { return mOnAnimatorEventSubject.AsObservable (); } }
+
 	void OnAnimatorMove()
 	{
 		mOnAnimatorMoveSubject.OnNext (Unit.Default);
@@ -19,5 +22,10 @@ public class Role : ModelBehaviour
 	void OnAnimatorIK()
 	{
 		mOnAnimatorIKSubject.OnNext (Unit.Default);
+	}
+
+	void AnimEvent(string _event)
+	{
+		mOnAnimatorEventSubject.OnNext (_event);
 	}
 }

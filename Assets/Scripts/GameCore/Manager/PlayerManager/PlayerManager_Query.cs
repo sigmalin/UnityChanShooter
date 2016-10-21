@@ -9,7 +9,7 @@ public partial class PlayerManager
 		return actor == null ? 0u : actor.MotionData.LockActor;
 	}
 
-	float CalcDistanceWithLockActor(uint _actorID)
+	float CalcDistanceBetweenLockActor(uint _actorID)
 	{
 		PlayerActor actor = GetPlayerData (_actorID);
 		if (actor == null)

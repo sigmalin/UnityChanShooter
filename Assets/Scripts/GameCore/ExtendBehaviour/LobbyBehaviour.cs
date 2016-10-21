@@ -39,6 +39,8 @@ public class LobbyBehaviour : MonoBehaviour, IInput, IUserInterface
 			rectTrans.pivot = new Vector2 (0.5F, 0.5F);
 			rectTrans.offsetMax = new Vector2 (0F,0F);
 			rectTrans.offsetMin = new Vector2 (0F,0F);
+			rectTrans.localScale = new Vector3 (1F,1F,1F);
+			rectTrans.localPosition = new Vector3 (0F,0F,0F);
 		}
 
 		this.gameObject.SetActive (true);

@@ -30,18 +30,21 @@ public partial class JoyStick
 				.First ()
 			)
 			.Do (_ => {
-				Vector2 dir = _.position - mJoyStickBoard.anchoredPosition;
-				float dis = Mathf.Min(50f, dir.magnitude);
-				dir = dir.normalized;
+			Vector2 dir = _.position - mJoyStickBoard.anchoredPosition;
+			float dis = Mathf.Min (50f, dir.magnitude);
+			dir = dir.normalized;
 
-				Vec3JoyStickMoved.Value = new Vector3(dir.x, 0f, dir.y);
-				mJoyStickNob.anchoredPosition = JoyStickBoardPos + (dir * dis);
+			Vec3JoyStickMoved.Value = new Vector3 (dir.x, 0f, dir.y);
+			mJoyStickNob.anchoredPosition = JoyStickBoardPos + (dir * dis);
 			})
-			.Where(_ => _.phase == TouchPhase.Canceled || _.phase == TouchPhase.Ended)
-			.Subscribe (_ => {
-				IsJoyStickUsed.Value = false;
-				ResetJoyStickPosition();
-				mUsedFingerID = -1;
-			});
+			.Where (_ => _.phase == TouchPhase.Canceled || _.phase == TouchPhase.Ended)
+			.Subscribe (_ => ClearForSmartphone ());
+	}
+
+	void ClearForSmartphone()
+	{
+		IsJoyStickUsed.Value = false;
+		ResetJoyStickPosition();
+		mUsedFingerID = -1;
 	}
 }

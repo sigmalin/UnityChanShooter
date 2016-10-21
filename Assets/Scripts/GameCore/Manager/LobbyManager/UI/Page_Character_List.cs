@@ -62,6 +62,8 @@ public sealed partial class Page_Character
 		GameObject itemGO = mItemPool.Produce ();
 
 		itemGO.transform.SetParent (mList);
+		itemGO.transform.localPosition = new Vector3 (0F, 0F, 0F);
+		itemGO.transform.localScale = new Vector3 (1F, 1F, 1F);
 
 		IItem item = itemGO.GetComponent<IItem> ();
 		if (item != null) 

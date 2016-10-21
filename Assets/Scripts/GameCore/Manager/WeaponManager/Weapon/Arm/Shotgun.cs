@@ -36,7 +36,7 @@ public class Shotgun : MonoBehaviour, IArm
 
 			ITarget target = hit.collider.gameObject.GetComponent<ITarget> ();
 			if (target != null)
-				GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.ADD_FIRE_DAMAGE, target.ActorID, _shooterID, _atk);
+				GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.ADD_FIRE_DAMAGE, target.ActorID, _shooterID, _atk, hit.point);
 		} 
 		else 
 		{

@@ -3,20 +3,24 @@ using System.Collections;
 
 public partial class PlayerActor
 {
-	void PlayerDead()
+	void PlayerDead(uint _murdererID, float _impact, Vector3 _hitPt)
 	{
-		SetRagdoll ();
+		SetRagdoll (_impact, _hitPt);
+
+		ClearActorController ();
 
 		ClearWeaponModel ();
 
 		ClearRoleModel ();
 
-		SetActorController (null);
+		StopNavMeshAgent ();
+
+		ResetMotionData ();
 
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.REMOVE_PLAYER, ActorID);
 	}
 
-	void SetRagdoll()
+	void SetRagdoll(float _impact, Vector3 _hitPt)
 	{
 		GameObject ragdollGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.RAGDOLL_MODEL, ModelID);
 		if (ragdollGO == null)
@@ -27,5 +31,6 @@ public partial class PlayerActor
 			return;
 
 		ragdoll.CopyPose (PlayerRole);
+		ragdoll.AddImpact (_impact, _hitPt);
 	}
 }

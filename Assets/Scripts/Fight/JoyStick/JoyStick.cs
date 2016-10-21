@@ -54,6 +54,11 @@ public partial class JoyStick : MonoBehaviour
 		OperatorForStandalone (_observable);
 	}
 
+	public void Clear()
+	{
+		ClearForStandalone ();
+	}
+
 	bool CheckJoyStick()
 	{
 		if (mJoyStickBoard == null || mJoyStickNob == null)

@@ -18,6 +18,9 @@ public sealed class Actor_UnityChan : ActorController
 
 		mStandard = new Motion_Standard ();
 		mFire = new Motion_StandardFire ();
+
+		SetMotion (mStandard);
+		Owner.Actordata.Anim.SetBool (GameCore.AnimID_isSaluteID, false);
 	}
 
 	public override void OnUpdate()
@@ -38,12 +41,6 @@ public sealed class Actor_UnityChan : ActorController
 	{
 		switch(_inst)
 		{
-		case PlayerInst.GAME_START:
-
-			SetMotion (mStandard);
-			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isSaluteID, false);
-			break;
-
 		case PlayerInst.PLAYER_IDLE:
 
 			Owner.MotionData.Speed = 0F;
@@ -74,7 +71,7 @@ public sealed class Actor_UnityChan : ActorController
 			break;
 
 		case PlayerInst.PLAYER_ROTATE:
-
+			
 			Owner.transform.rotation = Quaternion.LookRotation ((Vector3)_params [0], Vector3.up);
 			break;
 

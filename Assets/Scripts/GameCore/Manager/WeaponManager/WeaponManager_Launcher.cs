@@ -61,7 +61,7 @@ public sealed partial class WeaponManager
 
 	void SetActorController(WeaponActor _actor)
 	{
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_ACTOR_CONTROLLER, _actor.ActorID, TransWeaponBehavior2ActorController(_actor.RefWeaponData.WeaponBehavior));
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PUSH_ACTOR_CONTROLLER, _actor.ActorID, TransWeaponBehavior2ActorController(_actor.RefWeaponData.WeaponBehavior));
 	}
 
 	void SetWeaponModel(WeaponActor _actor)
@@ -87,6 +87,10 @@ public sealed partial class WeaponManager
 		{
 		case WeaponDataRepository.Behavior.Shootgun:
 			res = new Actor_UnityChan ();
+			break;
+
+		case WeaponDataRepository.Behavior.Zombie:
+			res = new Actor_Zombie ();
 			break;
 		}
 

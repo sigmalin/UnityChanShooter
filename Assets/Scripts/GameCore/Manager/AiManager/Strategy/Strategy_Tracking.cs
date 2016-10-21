@@ -31,14 +31,15 @@ public class Strategy_Tracking : StrategyBase
 		PlayerActor targetActor = enemyIDs.Select (_ => (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, _))
 			.Where (_ => _ != null)
 			.Select (_ => new { Actor = _, Distance = Vector3.Distance (minePos, _.transform.position) })
-			.Where (_ => _.Distance < 5f)
+			.Where (_ => _.Distance < 10f)
 			.OrderBy (_ => _.Distance)
 			.Select (_ => _.Actor)
 			.FirstOrDefault ();
 
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_LOCK, _owner.ActorID, targetActor == null ? 0u : targetActor.ActorID); 
 
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.AGENT_GOTO, _owner.ActorID, targetActor == null ? minePos : targetActor.transform.position, 0.5f, 1f);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.AGENT_GOTO, _owner.ActorID, targetActor == null ? minePos : targetActor.transform.position, 
+			(float)GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.WEAPON_ACTOR_SPEED, _owner.ActorID), 1f);
 	}
 
 	// Update is called once per frame

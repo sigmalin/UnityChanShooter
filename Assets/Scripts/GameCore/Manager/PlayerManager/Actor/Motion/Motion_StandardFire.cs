@@ -3,8 +3,23 @@ using System.Collections;
 
 public sealed class Motion_StandardFire : IMotion 
 {
+	float mFireStay = 0f;
+	float mFireRemain = 0f;
+
+	float mWeightIK = 0f;
+	public float Weight { get { return mWeightIK; } }
+
+	public void UpdateWeight(float _varWeight)
+	{
+		mWeightIK = Mathf.Clamp01 (mWeightIK + _varWeight);
+	}
+
 	public void EnterMotion(PlayerActor _owner)
 	{
+		mFireStay = (float)GameCore.GetParameter(ParamGroup.GROUP_WEAPON, WeaponParam.WEAPON_ACTOR_FREQ, _owner.ActorID);
+		mFireRemain = 0f;
+
+		mWeightIK = 1f;
 	}
 
 	public void LeaveMotion(PlayerActor _owner)
@@ -18,6 +33,8 @@ public sealed class Motion_StandardFire : IMotion
 		speed = Mathf.Lerp (speed, _owner.MotionData.Speed, Time.deltaTime * 5F);
 
 		_owner.Actordata.Anim.SetFloat(GameCore.AnimID_fSpeed, speed);
+
+		mFireRemain -= Time.deltaTime;
 	}
 
 	public void AnimMoveMotion(PlayerActor _owner)
@@ -30,7 +47,7 @@ public sealed class Motion_StandardFire : IMotion
 
 	public void AnimIKMotion(PlayerActor _owner)
 	{
-		_owner.Actordata.Anim.SetLookAtWeight (1F, 	// weight 
+		_owner.Actordata.Anim.SetLookAtWeight (mWeightIK, 	// weight 
 			0.3F,	// body
 			0.4F,	// head
 			0.2F,	// eye
@@ -43,14 +60,22 @@ public sealed class Motion_StandardFire : IMotion
 
 		Vector3 lookat = isAhead ? _owner.MotionData.LookAt : _owner.PlayerRole.BodyPt.Eye.position + ((isRightSide ? 1f : -1f) * _owner.transform.right);
 
-		_owner.Actordata.Anim.SetIKPositionWeight (goal, 1F);
+		_owner.Actordata.Anim.SetIKPositionWeight (goal, mWeightIK);
 
 		//_owner.Actordata.Anim.SetLookAtPosition (_owner.MotionData.LookAt);
 		_owner.Actordata.Anim.SetLookAtPosition (lookat);
 
 		_owner.Actordata.Anim.SetIKPosition (goal, _owner.MotionData.LookAt);
 
-		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.ARM_FIRE, _owner.ActorID, arm);
+		if (mFireRemain <= 0f && 0.9f < mWeightIK) 
+		{
+			mFireRemain = mFireStay;
+			GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.ARM_FIRE, _owner.ActorID, arm);
+		}
+	}
+
+	public void AnimEventMotion(PlayerActor _owner, string _event)
+	{
 	}
 
 	void Movement(PlayerActor _owner)

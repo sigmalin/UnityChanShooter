@@ -92,6 +92,9 @@ public partial class GameCore
 		if (mInterfaceStack.Contains (_interface) == true)
 			return;
 
+		if (mInterfaceStack.Count != 0)
+			mInterfaceStack.Peek ().Clear ();
+
 		mInterfaceStack.Push (_interface);
 
 		_interface.Localization ();

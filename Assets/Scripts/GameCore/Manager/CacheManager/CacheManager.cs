@@ -130,8 +130,7 @@ public sealed partial class CacheManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case CacheParam.GET_BULLET_PATH:
-			if ((uint)_params [0] == 0u) output = (System.Object)(string.Empty);
-			else                         output = (System.Object)GetCachePath (_inst, _params);
+			output = (System.Object)GetCachePath (_inst, _params);
 			break;
 
 		case CacheParam.GET_PORTRAIT_PATH:

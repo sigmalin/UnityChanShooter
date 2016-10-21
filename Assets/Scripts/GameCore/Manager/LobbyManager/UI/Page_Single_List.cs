@@ -64,6 +64,8 @@ public sealed partial class Page_Single
 		GameObject itemGO = mItemPool.Produce ();
 
 		itemGO.transform.SetParent (mList);
+		itemGO.transform.localPosition = new Vector3 (itemGO.transform.localPosition.x, itemGO.transform.localPosition.y, 0F);
+		itemGO.transform.localScale = new Vector3 (1F, 1F, 1F);
 
 		IItem item = itemGO.GetComponent<IItem> ();
 		if (item != null) 

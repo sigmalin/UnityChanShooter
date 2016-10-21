@@ -71,7 +71,7 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 			break;
 
 		case WeaponInst.ADD_FIRE_DAMAGE:
-			AddFireDamage ((uint)_params [0], (uint)_params [1], (uint)_params [2]);
+			AddFireDamage ((uint)_params [0], (uint)_params [1], (uint)_params [2], (Vector3)_params [3]);
 			break;
 
 		case WeaponInst.PUSH_MAIN_WEAPON_INTERFACE:
@@ -92,6 +92,18 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 		{
 		case WeaponParam.WEAPON_ACTOR_DATA:
 			output = (System.Object)GetWeaponActor ((uint)_params [0]);
+			break;
+
+		case WeaponParam.WEAPON_ACTOR_SPEED:
+			output = (System.Object)GetActorSpeed ((uint)_params [0]);
+			break;
+
+		case WeaponParam.WEAPON_ACTOR_RANGE:
+			output = (System.Object)GetActorRange ((uint)_params [0]);
+			break;
+
+		case WeaponParam.WEAPON_ACTOR_FREQ:
+			output = (System.Object)GetActorFreq ((uint)_params [0]);
 			break;
 
 		case WeaponParam.GET_LASTEST_MURDERER:

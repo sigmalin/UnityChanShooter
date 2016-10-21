@@ -55,6 +55,7 @@ public class StatusItem : MonoBehaviour, IItem
 		Release ();
 
 		mReactivePropertyDisposable = _reactiveProperty.Subscribe (_ => {
+			mStartValue = mEndValue;
 			mEndValue = _;
 			mWeight = 0F;
 		});

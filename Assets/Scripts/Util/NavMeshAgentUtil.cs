@@ -7,7 +7,7 @@ public static class NavMeshAgentUtil
 	{
 		if (Vector3.Distance (_agent.destination, _agent.transform.position) <= _agent.stoppingDistance) 
 		{
-			if (_agent.hasPath == false || _agent.velocity.sqrMagnitude == 0f)
+			//if (_agent.hasPath == false || _agent.velocity.sqrMagnitude == 0f)
 				return true;
 		}
 

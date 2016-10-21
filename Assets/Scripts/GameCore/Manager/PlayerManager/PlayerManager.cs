@@ -41,10 +41,6 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 	{
 		switch (_inst) 
 		{
-		case PlayerInst.GAME_START:
-			BroadcastCommand (_inst, _params);
-			break;
-
 		case PlayerInst.CREATE_PLAYER:			
 			CreateNewPlayer ((uint)_params[0], (uint)_params[1]);
 			TransCommand((uint)_params[0], PlayerInst.CREATE_PLAYER, (uint)_params[0]);
@@ -81,8 +77,8 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 			output = (System.Object)GetLockActorID ((uint)_params [0]);
 			break;
 
-		case PlayerParam.PLAYER_DISTANCE_WITH_LOCK_ACTOR:
-			output = (System.Object)CalcDistanceWithLockActor ((uint)_params [0]);
+		case PlayerParam.PLAYER_DISTANCE_BETWEEN_LOCK_ACTOR:
+			output = (System.Object)CalcDistanceBetweenLockActor ((uint)_params [0]);
 			break;
 		}
 

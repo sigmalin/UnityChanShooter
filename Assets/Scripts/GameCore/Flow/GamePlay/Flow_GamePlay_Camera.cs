@@ -24,7 +24,7 @@ public partial class Flow_GamePlay
 	{
 		Transform playerTrans = (Transform)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_TRANSFORM, MAIN_PLAYER_ID);
 
-		Vector3 cameraAt = playerTrans.position + (playerTrans.forward * 2f) + (playerTrans.up * 1f);
+		Vector3 cameraAt = playerTrans.position + (playerTrans.forward * 1f) + (playerTrans.up * 1f);
 
 		Vector3 lookAt = playerTrans.position + (playerTrans.up * 0.5f);
 
@@ -55,7 +55,7 @@ public partial class Flow_GamePlay
 
 		Vector3 dir = murdererTrans.position - victimsTrans.position;
 
-		Vector3 cameraAt = victimsTrans.position - (dir.normalized * 3f) + (victimsTrans.up * 2f);
+		Vector3 cameraAt = victimsTrans.position + (victimsTrans.right * dir.magnitude) + (victimsTrans.up * 1f);
 
 		Vector3 lookAt = murdererTrans.position + (murdererTrans.up * 0.5f);
 

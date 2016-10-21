@@ -79,17 +79,18 @@ public sealed partial class Page_Single
 
 		ChapterRepository.StageData stage = chapter.Stages[CurrentStage];
 
-		GameCore.ChangeScene ("GamePlay", GetLoadList(stage));
-		//GameCore.ChangeScene (stage.ScemeName, GetLoadList(stage));
+		//GameCore.ChangeScene ("GamePlay", GetLoadList(stage));
+		GameCore.ChangeScene (stage.ScemeName, GetLoadList(stage));
 	}
 
 	string[] GetLoadList(ChapterRepository.StageData _stage)
 	{
 		string[] loadList = new string[] {
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SCENE_PATH, "GamePlay"/*_stage.ScemeName*/),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SCENE_PATH, _stage.ScemeName/*"GamePlay"*/),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_UI_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH),
 		};
 
 		loadList = loadList.Concat (GetCharacterDownLoadList (GameCore.UserProfile.MainCharacterID)).ToArray ();
@@ -114,7 +115,6 @@ public sealed partial class Page_Single
 
 		return new string[] { 
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CHARACTER_PATH, _characterID),
-			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH, weapon.BulletID),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_PATH, weapon.ModelID)
 		};
 	}

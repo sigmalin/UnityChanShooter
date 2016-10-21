@@ -17,15 +17,19 @@ public class Ragdoll : ModelBehaviour
 
 	void Start()
 	{
-		this.OnDisableAsObservable ()
-			.SelectMany (_ => mRigidbodies.ToObservable ())
-			.Where (_ => _ != null)
-			.Subscribe (_ => _.isKinematic = true);
+		//this.OnDisableAsObservable ()
+		//	.SelectMany (_ => mRigidbodies.ToObservable ())
+		//	.Where (_ => _ != null)
+		//	.Subscribe (_ => _.isKinematic = true);
 
 		this.OnEnableAsObservable()
 			.SelectMany (_ => mRigidbodies.ToObservable ())
 			.Where (_ => _ != null)
-			.Subscribe (_ => _.isKinematic = false);
+			.Subscribe (_ => 
+				{
+					_.isKinematic = true;
+					_.interpolation = RigidbodyInterpolation.None
+				});
 	}
 
 	public void CopyPose(ModelBehaviour _model)
@@ -43,5 +47,22 @@ public class Ragdoll : ModelBehaviour
 					Bones [_.Index].rotation = _.Bone.rotation;
 				}
 			});
+
+		mRigidbodies.ToObservable ()
+			.Where (_ => _ != null)
+			.Subscribe (_ => 
+				{
+					_.isKinematic = false;
+					_.interpolation = RigidbodyInterpolation.Interpolate;
+				});
+	}
+
+	public void AddImpact(float _impact, Vector3 _hitPt)
+	{
+		mRigidbodies.ToObservable ()
+			.Where (_ => _ != null)
+			.First ()
+			//.Subscribe (_ => _.AddExplosionForce(20f, _hitPt, 1f, 20f));
+			.Subscribe (_ => _.AddForce(new Vector3(_.position.x - _hitPt.x, 5f, _.position.z - _hitPt.z) * _impact, ForceMode.Impulse));
 	}
 }

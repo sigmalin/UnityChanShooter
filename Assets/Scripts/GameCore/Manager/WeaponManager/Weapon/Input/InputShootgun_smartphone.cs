@@ -41,8 +41,11 @@ public sealed partial class InputShootgun
 			});
 
 		cameraObservable.Where(_ => _.phase == TouchPhase.Canceled || _.phase == TouchPhase.Ended)
-			.Subscribe (_ => {
-				mUsedFingerID = -1;
-			});
+			.Subscribe (_ => ClearForSmartphone());
+	}
+
+	void ClearForSmartphone()
+	{
+		mUsedFingerID = -1;
 	}
 }

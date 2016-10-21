@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public sealed class Mode_Follow : IMode 
 {
@@ -19,7 +20,6 @@ public sealed class Mode_Follow : IMode
 
 	uint mTargetID = 0u;
 
-
 	const float CAMERA_HEIGHT_MAX = 2.4F;
 	const float CAMERA_HEIGHT_MIN = 0F;
 
@@ -33,12 +33,12 @@ public sealed class Mode_Follow : IMode
 		if (_camera == null)
 			return;
 
-		mCurAngle = _camera.transform.rotation.y;
+		mCurAngle = _camera.transform.rotation.eulerAngles.y;
 
 		Transform target = GetTargetTrans ();
 		if (target != null)
-			mAngle = target.rotation.y;
-
+			mAngle = target.rotation.eulerAngles.y;
+		
 		mCurHeight = 0.8f;
 
 		mHeight = 0.8F;
