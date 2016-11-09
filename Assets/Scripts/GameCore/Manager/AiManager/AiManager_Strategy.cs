@@ -9,6 +9,7 @@ public sealed partial class AiManager
 
 	public class StrategyIDs
 	{
+		public const uint FREEZE = 0;
 		public const uint IDLE = 1;
 		public const uint TRACKING = 2;
 		public const uint FACE_LOOK_TARGET = 3;
@@ -70,6 +71,10 @@ public sealed partial class AiManager
 
 		switch (_key) 
 		{
+		case StrategyIDs.FREEZE:
+			strategy = new Strategy_Freeze ();
+			break;
+
 		case StrategyIDs.IDLE:
 			strategy = new Strategy_Idle ();
 			break;

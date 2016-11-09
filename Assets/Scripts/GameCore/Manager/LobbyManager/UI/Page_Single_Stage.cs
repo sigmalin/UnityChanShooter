@@ -91,6 +91,7 @@ public sealed partial class Page_Single
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_UI_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_ABILITY_PATH),
 		};
 
 		loadList = loadList.Concat (GetCharacterDownLoadList (GameCore.UserProfile.MainCharacterID)).ToArray ();

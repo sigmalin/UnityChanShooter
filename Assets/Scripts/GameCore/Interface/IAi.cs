@@ -10,4 +10,6 @@ public interface IAi
 	void Release ();
 
 	void Think ();
+
+	void Freeze (bool _isEnable);
 }

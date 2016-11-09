@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 
 public partial class Status
@@ -18,10 +20,22 @@ public partial class Status
 	{
 		RecycleItems ();
 
-		mUsedItems = new GameObject[] {
-			// fire
+		// fire
+		mUsedItems = new GameObject[] 
+		{
 			GetItem((string)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_LOCALIZATION, LocalizationDefine.LOCALIZATION_GROUP_WEAPON, (int)_actor.RefWeaponData.WeaponID), _actor.Charge),
 		};
+
+		// ability
+		if (_actor.Abilities != null) 
+		{
+			GameObject[] abilities = _actor.Abilities
+				.Where (_ => _ != null && _.IsPassive == false)
+				.Select (_ => GetItem ((string)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_LOCALIZATION, LocalizationDefine.LOCALIZATION_GROUP_ABILITY, (int)_.AbilityID), _.Charge))
+				.ToArray ();
+			
+			mUsedItems = mUsedItems.Concat (abilities).ToArray();
+		}
 	}
 
 	GameObject GetItem(string _title, ReadOnlyReactiveProperty<float> _reactiveProperty)

@@ -8,6 +8,7 @@ public sealed class Actor_UnityChan : ActorController
 
 	IMotion mStandard;
 	IMotion mFire;
+	IMotion mDualFire;
 
 	// Use this for initialization
 	public override void Initial (PlayerActor _actor)
@@ -18,6 +19,7 @@ public sealed class Actor_UnityChan : ActorController
 
 		mStandard = new Motion_Standard ();
 		mFire = new Motion_StandardFire ();
+		mDualFire = new Motion_DualFire ();
 
 		SetMotion (mStandard);
 		Owner.Actordata.Anim.SetBool (GameCore.AnimID_isSaluteID, false);
@@ -49,14 +51,17 @@ public sealed class Actor_UnityChan : ActorController
 
 		case PlayerInst.PLAYER_MOVE:
 
-			Owner.MotionData.Move = (Vector3)_params [0];
-			Owner.MotionData.Speed = (float)_params [1];
-			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, true);
+			if (Owner.HasFlag (PlayerActor.Flags.STUN) == false) 
+			{
+				Owner.MotionData.Move = (Vector3)_params [0];
+				Owner.MotionData.Speed = (float)_params [1];
+				Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, true);
+			}
 			break;
 
 		case PlayerInst.PLAYER_JUMP:
 
-			if (IsGround () == true && mNextJumpWait <= 0F) 
+			if (IsGround () == true && mNextJumpWait <= 0F && Owner.HasFlag (PlayerActor.Flags.STUN) == false) 
 				Owner.Actordata.Rigid.velocity = new Vector3 (Owner.Actordata.Rigid.velocity.x, 5F, Owner.Actordata.Rigid.velocity.z);			
 			break;
 
@@ -71,16 +76,20 @@ public sealed class Actor_UnityChan : ActorController
 			break;
 
 		case PlayerInst.PLAYER_ROTATE:
-			
-			Owner.transform.rotation = Quaternion.LookRotation ((Vector3)_params [0], Vector3.up);
+
+			if (Owner.HasFlag (PlayerActor.Flags.STUN) == false) 
+				Owner.transform.rotation = Quaternion.LookRotation ((Vector3)_params [0], Vector3.up);
 			break;
 
 		case PlayerInst.PLAYER_AIM:
 
-			bool isAim = (bool)_params [0];
+			if (Owner.HasFlag (PlayerActor.Flags.STUN) == false) 
+			{
+				bool isAim = (bool)_params [0];
 
-			if (isAim) SetMotion (mFire);
-			else       SetMotion (mStandard);			
+				if (isAim) SetMotion (Owner.HasFlag(PlayerActor.Flags.FORM_CHANGE) ? mDualFire : mFire);
+				else       SetMotion (mStandard);	
+			}					
 			break;
 		}	
 	}

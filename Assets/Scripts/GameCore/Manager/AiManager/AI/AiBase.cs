@@ -36,6 +36,20 @@ public class AiBase : IAi
 	{
 	}
 
+	public void Freeze(bool _isEnable)
+	{
+		if (mStrategyQueue != null) 
+		{
+			while (HasStrategy() == true)
+				RecycleStrategy (mStrategyQueue.Dequeue ());
+		}
+
+		if (_isEnable == true) 
+		{
+			AddStrategy ((IStrategy)GameCore.GetParameter(ParamGroup.GROUP_AI, AiParam.GET_STRATEGY_FREEZE));
+		}
+	}
+
 	protected void AddStrategy (IStrategy _strategy, System.Action _onCompleted = null)
 	{
 		if (_strategy == null)

@@ -25,7 +25,7 @@ Weapon,3,雙刀,Dual Edge,
 ,,,,
 Ability,1001,移形換影,Teleport,
 Ability,1002,能量吸收,Energy absorption,
-Ability,1003,量子分解,Quantum decomposition,
+Ability,1003,精神集中,Concentrate,
 Ability,1004,1004,1004,
 Ability,1005,1005,1005,
 Ability,1006,1006,1006,
@@ -40,16 +40,12 @@ Skill,3,3,,
 Dialog-Ability,1001,"與隨機一名敵人位置互換
 
 冷卻時間:30秒",,
-Dialog-Ability,1002,"不分敵我，當有角色死亡時，
+Dialog-Ability,1002,"當擊殺敵人時，
 會在原地產生能量殘渣，
 靠近時可回復少許能量
 
 常駐技能",,
-Dialog-Ability,1003,"將身體分解成量子單位，
-可閃避所有攻擊，
-
-持續時間10秒
-冷卻時間60秒",,
+Dialog-Ability,1003,精神集中，使雙槍的效果能徹底發揮,,
 Dialog-Ability,1004,,,
 Dialog-Ability,1005,,,
 Dialog-Ability,1006,,,

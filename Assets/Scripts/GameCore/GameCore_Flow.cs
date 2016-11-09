@@ -76,4 +76,12 @@ public partial class GameCore
 
 		Instance.mFlowSubject.OnNext (_eventID);
 	}
+
+	static public IObservable<uint> GetFlowEventObservable()
+	{
+		if (Instance == null || Instance.mFlowSubject == null)
+			return null;
+
+		return Instance.FlowObservable;
+	}
 }

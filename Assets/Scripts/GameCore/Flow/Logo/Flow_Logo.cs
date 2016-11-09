@@ -26,6 +26,7 @@ public sealed class Flow_Logo : FlowBehaviour
 		{
 		case FlowEvent.VERSION_VERFITY_COMPLETED:
 			GameCore.SetNextFlow (null);
+			GameCore.SendCommand (CommandGroup.GROUP_SYSTEM, SystemInst.SHOW_FPS, true);
 			break;
 		}
 	}
@@ -70,7 +71,11 @@ public sealed class Flow_Logo : FlowBehaviour
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_DATA_PATH),
 		};
 
-		string[] listDown = listPortrait.Concat (listDataRepository).ToArray();
+		string[] listAudio = new string[] {
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_AUDIO_PATH, SystemManager.BGM_LOBBY),
+		};
+
+		string[] listDown = listPortrait.Concat (listDataRepository).Concat(listAudio).ToArray();
 
 		return listDown;
 	}

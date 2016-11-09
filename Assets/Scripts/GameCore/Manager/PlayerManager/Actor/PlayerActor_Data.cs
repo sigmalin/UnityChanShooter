@@ -21,20 +21,9 @@ public partial class PlayerActor
 		public Vector3 Move;
 		public float Speed;
 
-		public Vector3 FocusOn;
+		public Vector3 CameraFocusOn;
 		public uint LockActor;
-
-		public Vector3 LookAt
-		{
-			get 
-			{
-				PlayerActor actor = (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, LockActor);
-				if (actor == null || actor.PlayerRole == null)
-					return FocusOn;
-				else
-					return actor.PlayerRole.BodyPt.AimPt.position;
-			}
-		}
+		public uint SubLockActor;
 	}
 
 	PlayerMotionData mMotionData = new PlayerMotionData ();
@@ -70,7 +59,7 @@ public partial class PlayerActor
 	{
 		mMotionData.Move = Vector3.zero;
 		mMotionData.Speed = 0f;
-		mMotionData.FocusOn = Vector3.zero;
+		mMotionData.CameraFocusOn = Vector3.zero;
 		mMotionData.LockActor = 0u;
 	}
 }

@@ -37,22 +37,29 @@ public sealed class Actor_Zombie : ActorController
 
 		case PlayerInst.PLAYER_MOVE:
 
-			Owner.MotionData.Move = (Vector3)_params [0];
-			Owner.MotionData.Speed = (float)_params [1];
-			Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, true);
+			if (Owner.HasFlag (PlayerActor.Flags.STUN) == false) 
+			{
+				Owner.MotionData.Move = (Vector3)_params [0];
+				Owner.MotionData.Speed = (float)_params [1];
+				Owner.Actordata.Anim.SetBool (GameCore.AnimID_isMoveID, true);
+			}
 			break;
 
 		case PlayerInst.PLAYER_ROTATE:
 
-			Owner.transform.rotation = Quaternion.LookRotation ((Vector3)_params [0], Vector3.up);
+			if (Owner.HasFlag (PlayerActor.Flags.STUN) == false) 
+				Owner.transform.rotation = Quaternion.LookRotation ((Vector3)_params [0], Vector3.up);
 			break;
 
 		case PlayerInst.PLAYER_AIM:
 
-			bool isAim = (bool)_params [0];
+			if (Owner.HasFlag (PlayerActor.Flags.STUN) == false) 
+			{
+				bool isAim = (bool)_params [0];
 
-			if (isAim) SetMotion (mFire);
-			else       SetMotion (mStandard);			
+				if (isAim) SetMotion (mFire);
+				else       SetMotion (mStandard);		
+			}				
 			break;
 		}	
 	}

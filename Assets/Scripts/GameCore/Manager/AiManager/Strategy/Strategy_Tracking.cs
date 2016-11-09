@@ -26,7 +26,7 @@ public class Strategy_Tracking : StrategyBase
 		}
 
 		Vector3 minePos = mineActor.transform.position;
-		Vector3 mineEye = mineActor.PlayerRole.BodyPt.Eye.position;
+		//Vector3 mineEye = mineActor.PlayerRole.BodyPt.Eye.position;
 
 		PlayerActor targetActor = enemyIDs.Select (_ => (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, _))
 			.Where (_ => _ != null)
@@ -56,15 +56,17 @@ public class Strategy_Tracking : StrategyBase
 		{
 			Vector3 move = mineActor.Actordata.Agent.nextPosition - mineActor.transform.position;
 
-			move = new Vector3 (move.x, 0f, move.z);
+			if (move != Vector3.zero) 
+			{
+				move = new Vector3 (move.x, 0f, move.z);
 
-			Vector3 dir = move.normalized;
+				Vector3 dir = move.normalized;
 
-			float speed = move.magnitude;
+				float speed = move.magnitude;
 
-			GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, _owner.ActorID, dir, speed);
-			GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_ROTATE, _owner.ActorID, dir);
-
+				GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_MOVE, _owner.ActorID, dir, speed);
+				GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_ROTATE, _owner.ActorID, dir);
+			}
 			return false;
 		}
 

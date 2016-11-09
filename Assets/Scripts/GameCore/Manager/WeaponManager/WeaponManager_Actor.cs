@@ -26,13 +26,20 @@ public sealed partial class WeaponManager
 
 		public int Team { get; set; }
 
-		public uint MurdererID { get; set; }
+		public ReactiveProperty<uint> Murderer { get; set; }
+
+		public ReactiveProperty<uint> Victims { get; set; }
+
+		public ReactiveProperty<int> Flag { get; set; }
 
 		public Vector3 HitPt { get; set; }
+
+		public IAbility[] Abilities { get; set; }
 
 		public WeaponDataRepository.WeaponData RefWeaponData { get; set; }
 		public uint BulletID { get { return RefWeaponData.BulletID; } }
 		public uint ShootATK { get { return RefWeaponData.ATK; } }
+		public uint MaxHP { get { return RefWeaponData.HP; } }
 		public uint MaxAmmoCount { get { return RefWeaponData.AmmoCount; } }
 		public uint MaxShootRayCount { get { return RefWeaponData.ShootRayCount; } }
 		public float MaxReloadTime { get { return RefWeaponData.ReloadTime; } }
@@ -49,7 +56,7 @@ public sealed partial class WeaponManager
 		mActorTable = new Dictionary<uint, WeaponActor> ();
 	}
 
-	void RegisterActor(uint _actorID, uint _characterID, uint _weaponID)
+	void RegisterActor(uint _actorID, uint _characterID)
 	{
 		if (mActorTable == null)
 			return;
@@ -59,24 +66,35 @@ public sealed partial class WeaponManager
 
 		WeaponActor actor = new WeaponActor ();
 
-		actor.ActorID = _actorID;
-		actor.CharacterID = _characterID;
-		actor.RefWeaponData = GetWeaponData (_weaponID);
+		CharacterRepository.CharacterData characterData = GetCharacterData (_characterID);
 
-		if (actor.HP == null) actor.HP = new ReactiveProperty<uint> (actor.RefWeaponData.HP);
-		actor.Life = actor.HP.Select (_ => (float)_ / (float)actor.RefWeaponData.HP).ToReadOnlyReactiveProperty ();
+		actor.ActorID = _actorID;
+		actor.CharacterID = characterData.ID;
+		actor.RefWeaponData = GetWeaponData (characterData.weaponID);
+
+		if (actor.HP == null) actor.HP = new ReactiveProperty<uint> (actor.MaxHP);
+		actor.Life = actor.HP.Select (_ => (float)_ / (float)actor.MaxHP).ToReadOnlyReactiveProperty ();
 		actor.IsDead = actor.HP.Select (_ => _ <= 0u).ToReadOnlyReactiveProperty ();
-		actor.IsDead.Where (_ => _ == true).Subscribe (_ => ActorDead (actor.ActorID, actor.MurdererID));
+		actor.IsDead.Where (_ => _ == true).Subscribe (_ => ActorDead (actor.ActorID, actor.Murderer.Value));
 
 		if (actor.AmmoCount == null) actor.AmmoCount = new ReactiveProperty<uint> (actor.RefWeaponData.AmmoCount);
 		actor.Charge = actor.AmmoCount.Select (_ => ((float)_ / (float)actor.RefWeaponData.AmmoCount)).ToReadOnlyReactiveProperty ();
 
 		actor.ReloadTime = 0F;
 
-		actor.MurdererID = 0u;
+		actor.Murderer = new ReactiveProperty<uint> (0u);
+		actor.Victims = new ReactiveProperty<uint> (0u);
+
+		actor.Flag = new ReactiveProperty<int> (Flags.NONE);
 
 		mActorTable.Add (_actorID, actor);
 
+		actor.Abilities = new IAbility[] 
+		{
+			GetAbility (_actorID, characterData.ability1ID),
+			GetAbility (_actorID, characterData.ability2ID),
+			GetAbility (_actorID, characterData.ability3ID),
+		};
 
 		SetActorController (actor);
 		SetWeaponModel (actor);
@@ -106,6 +124,18 @@ public sealed partial class WeaponManager
 		SetActorLayer (actor);
 	}
 
+	void SetActorFlag(uint _actorID, int _flag, bool _enable)
+	{
+		WeaponActor actor = GetWeaponActor (_actorID);
+		if (actor == null)
+			return;
+
+		if (_enable == true)
+			actor.Flag.Value |= _flag;
+		else
+			actor.Flag.Value &= ~_flag;
+	}
+
 	void RemoveActor(uint _actorID)
 	{
 		if (mActorTable == null)
@@ -128,6 +158,8 @@ public sealed partial class WeaponManager
 
 		mActorTable [_actorID].IsDead.Dispose ();
 		mActorTable [_actorID].IsDead = null;
+
+		ReleaseAbility (mActorTable [_actorID]);
 
 		mActorTable.Remove (_actorID);
 	}

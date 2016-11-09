@@ -26,7 +26,7 @@ public sealed partial class WeaponManager
 	uint GetLastestMurdererID(uint _actorID)
 	{
 		WeaponActor actor = GetWeaponActor (_actorID);
-		return actor == null ? 0u : actor.MurdererID;
+		return actor == null ? 0u : actor.Murderer.Value;
 	}
 
 	uint[] GetHostilityList(uint _mineID)

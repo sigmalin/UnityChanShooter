@@ -17,6 +17,9 @@ public class CommandGroup
 public class SystemInst
 {
 	public const uint GAME_QUIT = 0;
+	public const uint PLAY_BGM = 1;
+
+	public const uint SHOW_FPS = 100;
 }
 
 public class PlayerInst
@@ -39,14 +42,20 @@ public class PlayerInst
 	public const uint PLAYER_JUMP = 22;
 	public const uint PLAYER_ROTATE = 23;
 	public const uint PLAYER_AIM = 24;
-	public const uint PLAYER_FOCUS = 25;
-	public const uint PLAYER_LOCK = 26;
+
+	public const uint PLAYER_LOCK = 25;
+	public const uint PLAYER_SUB_LOCK = 26;
 	public const uint PLAYER_DEAD = 27;
 	public const uint PLAYER_SALUTE = 28;
 	public const uint PLAYER_FACE = 29;
 
+	public const uint CAMERA_FOCUS = 30;
+
 	public const uint AGENT_GOTO = 40;
 	public const uint AGENT_STOP = 41;
+
+	public const uint PLAYER_STUN = 50;
+	public const uint PLAYER_FORM_CHANGE = 51;
 }
 
 public class CameraInst
@@ -56,7 +65,9 @@ public class CameraInst
 	public const uint MAIN_CAMERA = 2;
 
 	public const uint CAMERA_MOVEMENT = 10;
-	public const uint CAMERA_ACTIVE = 11;
+	public const uint CAMERA_DIRECT = 11;
+
+	public const uint CAMERA_ACTIVE = 20;
 
 	public const uint SET_CAMERA_MODE = 100;
 	public const uint REMOVE_CAMERA_MODE = 101;
@@ -70,12 +81,14 @@ public class ResourceInst
 	public const uint RELEASE_WEAPON = 3;
 	public const uint RELEASE_BULLET = 4;
 	public const uint RELEASE_RAGDOLL_MODEL = 5;
+	public const uint RELEASE_ABILITY = 6;
 
 	public const uint RECYCLE_CHARACTER_MODEL = 11;
 	public const uint RECYCLE_CONTAINER = 12;
 	public const uint RECYCLE_WEAPON_MODEL = 13;
 	public const uint RECYCLE_BULLET = 14;
 	public const uint RECYCLE_RAGDOLL_MODEL = 15;
+	public const uint RECYCLE_ABILITY = 16;
 }
 
 public class WeaponInst
@@ -86,9 +99,12 @@ public class WeaponInst
 	public const uint MAIN_ACTOR = 5;
 
 	public const uint SET_TEAM = 6;
+	public const uint SET_INVINCIBLE = 7;
 
 	public const uint ARM_FIRE = 10;
 	public const uint ADD_FIRE_DAMAGE = 11;
+	public const uint HEAL = 12;
+	public const uint USE_ABILITY = 13;
 
 
 	public const uint PUSH_MAIN_WEAPON_INTERFACE = 20;
@@ -141,7 +157,9 @@ public class AiInst
 
 	public const uint REMOVE_AI = 2;
 
-	public const uint RECYCLE_STRATEGY = 10;
+	public const uint RECYCLE_STRATEGY = 11;
+
+	public const uint FREEZE_AI = 21;
 }
 
 public interface ICommand 

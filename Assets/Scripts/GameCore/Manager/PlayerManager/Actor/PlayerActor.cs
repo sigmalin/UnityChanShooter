@@ -7,18 +7,12 @@ public partial class PlayerActor : MonoBehaviour, ITarget
 	uint mActorID;
 	public uint ActorID { get { return mActorID; } }
 
-	// Use this for initialization
-	//void Start () 
-	//{
-	//	InitialActorData ();
-	//}
-
 	// Update is called once per frame
 	public void FrameMove () 
 	{
 		if (Controller == null)
 			return;
-
+		
 		Controller.OnUpdate ();
 	}
 
@@ -33,6 +27,7 @@ public partial class PlayerActor : MonoBehaviour, ITarget
 		{
 		case PlayerInst.CREATE_PLAYER:
 			mActorID = (uint)_params [0];
+			InitialFlag();
 			break;
 
 		case PlayerInst.SET_MODEL:
@@ -73,9 +68,9 @@ public partial class PlayerActor : MonoBehaviour, ITarget
 			PlayerDead ((uint)_params [0], (float)_params [1], (Vector3)_params [2]);
 			break;
 
-		case PlayerInst.PLAYER_FOCUS:
+		case PlayerInst.CAMERA_FOCUS:
 
-			mMotionData.FocusOn = (Vector3)_params [0];
+			mMotionData.CameraFocusOn = (Vector3)_params [0];
 			break;
 
 		case PlayerInst.PLAYER_LOCK:
@@ -110,6 +105,14 @@ public partial class PlayerActor : MonoBehaviour, ITarget
 
 			if (Controller != null) 
 				Controller.ExecCommand (PlayerInst.PLAYER_IDLE);
+			break;
+
+		case PlayerInst.PLAYER_STUN:
+			SetStun ((bool)_params [0]);
+			break;
+
+		case PlayerInst.PLAYER_FORM_CHANGE:
+			SetFormChange ((bool)_params [0]);
 			break;
 
 		default:

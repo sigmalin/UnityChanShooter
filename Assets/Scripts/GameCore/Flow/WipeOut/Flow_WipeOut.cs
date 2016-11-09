@@ -169,19 +169,15 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_MODEL, _playerID, _characterID);
 
-		uint weaponID = GetWeaponID (_characterID);
-
-		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.REGISTER_ACTOR, _playerID, _characterID, weaponID);
+		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, 
+			WeaponInst.REGISTER_ACTOR, 
+			_playerID,
+			_characterID);
+		
 		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.SET_TEAM, _playerID, _team);
 
 		if (_aiID != 0)
 			GameCore.SendCommand (CommandGroup.GROUP_AI, AiInst.REGISTER_AI, _playerID, _aiID);
-	}
-
-	uint GetWeaponID(uint _characterID)
-	{
-		CharacterRepository.CharacterData character = (CharacterRepository.CharacterData)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_CHARACTER_DATA, _characterID);
-		return character.weaponID;
 	}
 	#endregion
 

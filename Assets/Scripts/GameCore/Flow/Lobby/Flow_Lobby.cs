@@ -25,6 +25,10 @@ public sealed partial class Flow_Lobby : FlowBehaviour
 			RepositoryInst.LOAD_WEAPON_DATA, 
 			(WeaponDataRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_WEAPON_DATA, false));
 
+		GameCore.SendCommand (CommandGroup.GROUP_SYSTEM,
+			SystemInst.PLAY_BGM,
+			SystemManager.BGM_LOBBY);
+
 		//GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
 		//	RepositoryInst.lo, 
 		//	(ChapterRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_DATA, false));

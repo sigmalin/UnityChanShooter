@@ -10,6 +10,9 @@ public class Shotgun : MonoBehaviour, IArm
 	[SerializeField]
 	GameObject mShootShock;
 
+	[SerializeField]
+	Transform mShootShockPt;
+
 	public void OnFire (uint _shooterID, uint _bulletID, uint _atk, int _layer)
 	{
 		GameObject bullet = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.BULLET, _bulletID);
@@ -46,8 +49,10 @@ public class Shotgun : MonoBehaviour, IArm
 
 	public void OnPullTrigger()
 	{
-		if (mShootShock != null) 
+		if (mShootShock != null && mShootShockPt != null) 
 		{
+			mShootShock.transform.position = mShootShockPt.position;
+			mShootShock.transform.rotation = mShootShockPt.rotation;
 			mShootShock.SetActive (true);
 		}
 	}

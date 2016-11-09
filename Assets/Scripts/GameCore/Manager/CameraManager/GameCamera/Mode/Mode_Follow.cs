@@ -75,7 +75,7 @@ public sealed class Mode_Follow : IMode
 		_camera.transform.position = cameraAt;
 		_camera.transform.LookAt (lookAt, transTarget.up);
 
-		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_FOCUS, mTargetID, lookAt);
+		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.CAMERA_FOCUS, mTargetID, lookAt);
 	}
 
 	public void ExecCommand(uint _inst, params System.Object[] _params)
@@ -87,6 +87,11 @@ public sealed class Mode_Follow : IMode
 			float varHeight = ((float)_params [1]) * mHeightScale;
 			mHeight = Mathf.Clamp (mHeight + varHeight, CAMERA_HEIGHT_MIN, CAMERA_HEIGHT_MAX);
 			mDistance = Mathf.Clamp (mDistance + (float)_params [2], -2.4F, -1.2F);
+			break;
+
+		case CameraInst.CAMERA_DIRECT:
+			Vector3 dir = (Vector3)_params [0];
+			mAngle = Vector3.Angle (Vector3.forward, dir.normalized);
 			break;
 		}
 	}

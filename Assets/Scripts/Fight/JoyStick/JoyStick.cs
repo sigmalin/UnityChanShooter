@@ -52,11 +52,13 @@ public partial class JoyStick : MonoBehaviour
 		ResetJoyStickPosition ();
 
 		OperatorForStandalone (_observable);
+		//OperatorForSmartphone (_observable);
 	}
 
 	public void Clear()
 	{
 		ClearForStandalone ();
+		//ClearForSmartphone ();
 	}
 
 	bool CheckJoyStick()

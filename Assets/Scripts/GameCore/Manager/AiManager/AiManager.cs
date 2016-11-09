@@ -54,6 +54,10 @@ public sealed partial class AiManager : CommandBehaviour, IParam, IRegister
 			RecycleStrategy ((IStrategy)_params[0]);
 			break;
 
+		case AiInst.FREEZE_AI:
+			FreezeAi ((uint)_params [0], (bool)_params [1]);
+			break;
+
 		default:
 			break;
 		}
@@ -65,6 +69,10 @@ public sealed partial class AiManager : CommandBehaviour, IParam, IRegister
 
 		switch (_inst) 
 		{
+		case AiParam.GET_STRATEGY_FREEZE:
+			output = GetStrategy (StrategyIDs.FREEZE);
+			break;
+
 		case AiParam.GET_STRATEGY_IDLE:
 			output = GetStrategy (StrategyIDs.IDLE);
 			break;

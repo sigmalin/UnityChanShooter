@@ -84,7 +84,7 @@ public partial class ResourceManager
 		ResourcePool<GameObject> _pool = new ResourcePool<GameObject> (
 			() => {	return LoadRagdoll (_key); },
 			_ => { GameObject.Destroy (_); },
-			(obj, isActive) => { obj.SetActive (isActive); },
+			null,//(obj, isActive) => { obj.SetActive (isActive); },
 			4
 		);
 

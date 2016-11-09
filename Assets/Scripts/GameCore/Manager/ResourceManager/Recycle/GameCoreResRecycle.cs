@@ -14,6 +14,8 @@ public class GameCoreResRecycle : MonoBehaviour
 	public virtual void OnDestroy()
 	{
 		mRecycleCallBack = null;
+
+		mIsRecycled = true;
 	}
 
 	public void Recycle()

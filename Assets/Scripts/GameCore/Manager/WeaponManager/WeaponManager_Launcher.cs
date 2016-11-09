@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public sealed partial class WeaponManager
 {
@@ -75,6 +76,16 @@ public sealed partial class WeaponManager
 		GameObject bullet = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.BULLET, _actor.BulletID);
 		if (bullet != null)
 			bullet.SafeRecycle ();
+
+		// Ability
+		if (_actor.Abilities != null) 
+		{
+			_actor.Abilities.ToObservable ()
+				.Where (_ => _ != null)
+				.Select (_ => (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.ABILITY, _.AbilityID))
+				.Where (_ => _ != null)
+				.Subscribe (_ => _.SafeRecycle ());
+		}
 
 		// Skill
 	}

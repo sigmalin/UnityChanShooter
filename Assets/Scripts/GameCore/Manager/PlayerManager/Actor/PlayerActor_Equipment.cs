@@ -128,6 +128,12 @@ public partial class PlayerActor
 			mAnimatorIKDisposable = null;
 		}
 
+		if (mAnimatorEventDisposable != null) 
+		{
+			mAnimatorEventDisposable.Dispose ();
+			mAnimatorIKDisposable = null;
+		}
+
 		if (mRole != null) 
 		{
 			mRole.gameObject.SafeRecycle ();

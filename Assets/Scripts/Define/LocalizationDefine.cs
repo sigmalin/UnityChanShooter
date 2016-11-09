@@ -5,6 +5,8 @@ public class LocalizationDefine
 {
 	public const string LOCALIZATION_GROUP_WEAPON = "Weapon";
 
+	public const string LOCALIZATION_GROUP_ABILITY = "Ability";
+
 	public const string LOCALIZATION_GROUP_UI = "Ui";
 
 	public const string LOCALIZATION_GROUP_CHAPTER = "Chapter";

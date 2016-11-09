@@ -28,7 +28,7 @@ public class Ragdoll : ModelBehaviour
 			.Subscribe (_ => 
 				{
 					_.isKinematic = true;
-					_.interpolation = RigidbodyInterpolation.None
+					_.interpolation = RigidbodyInterpolation.None;
 				});
 	}
 

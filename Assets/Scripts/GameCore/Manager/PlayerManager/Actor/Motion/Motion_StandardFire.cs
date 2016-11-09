@@ -53,19 +53,21 @@ public sealed class Motion_StandardFire : IMotion
 			0.2F,	// eye
 			0.5F);	// clamp
 
-		bool isAhead = _owner.transform.IsPointAhead (_owner.MotionData.LookAt);
-		bool isRightSide = _owner.transform.IsPointRightSide (_owner.MotionData.LookAt);
+
+		Vector3 aimAt = GetAimAt (_owner.MotionData);
+		bool isAhead = _owner.transform.IsPointAhead (aimAt);
+		bool isRightSide = _owner.transform.IsPointRightSide (aimAt);
 		AvatarIKGoal goal = isRightSide ? AvatarIKGoal.RightHand : AvatarIKGoal.LeftHand;
 		IArm arm = isRightSide ? _owner.Launcher.RightArm : _owner.Launcher.LeftArm;
 
-		Vector3 lookat = isAhead ? _owner.MotionData.LookAt : _owner.PlayerRole.BodyPt.Eye.position + ((isRightSide ? 1f : -1f) * _owner.transform.right);
+		Vector3 lookat = isAhead ? aimAt : _owner.PlayerRole.BodyPt.Eye.position + ((isRightSide ? 1f : -1f) * _owner.transform.right);
 
 		_owner.Actordata.Anim.SetIKPositionWeight (goal, mWeightIK);
 
-		//_owner.Actordata.Anim.SetLookAtPosition (_owner.MotionData.LookAt);
+		//_owner.Actordata.Anim.SetLookAtPosition (aimAt);
 		_owner.Actordata.Anim.SetLookAtPosition (lookat);
 
-		_owner.Actordata.Anim.SetIKPosition (goal, _owner.MotionData.LookAt);
+		_owner.Actordata.Anim.SetIKPosition (goal, aimAt);
 
 		if (mFireRemain <= 0f && 0.9f < mWeightIK) 
 		{
@@ -81,5 +83,14 @@ public sealed class Motion_StandardFire : IMotion
 	void Movement(PlayerActor _owner)
 	{
 		_owner.Actordata.Rigid.velocity = new Vector3 (_owner.MotionData.Move.x * _owner.MotionData.Speed, _owner.Actordata.Rigid.velocity.y, _owner.MotionData.Move.z * _owner.MotionData.Speed);
+	}
+
+	Vector3 GetAimAt(PlayerActor.PlayerMotionData _motionData)
+	{
+		PlayerActor actor = (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, _motionData.LockActor);
+		if (actor == null || actor.PlayerRole == null)
+			return _motionData.CameraFocusOn;
+		else
+			return actor.PlayerRole.BodyPt.AimPt.position;
 	}
 }

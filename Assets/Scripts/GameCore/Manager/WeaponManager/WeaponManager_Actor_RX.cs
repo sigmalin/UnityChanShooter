@@ -5,9 +5,9 @@ using UniRx.Triggers;
 
 public sealed partial class WeaponManager
 {
-	System.IDisposable mShootFreqDisposable = null;
-
 	System.IDisposable mReloadDisposable = null;
+
+	System.IDisposable mAbilityDisposable = null;
 
 	void InitialActorObservable()
 	{
@@ -28,20 +28,26 @@ public sealed partial class WeaponManager
 					_.ReloadTime = _.MaxReloadTime;
 					++_.AmmoCount.Value;
 				});
+
+		mAbilityDisposable = actorObserver
+			.Where(_ => _.Abilities != null)
+			.SelectMany(_ => _.Abilities.ToObservable())
+			.Where(_ => _ != null)
+			.Subscribe(_ => _.FrameMove());
 	}
 
 	void ReleaseActorObservable()
 	{
-		if (mShootFreqDisposable != null) 
-		{
-			mShootFreqDisposable.Dispose ();
-			mShootFreqDisposable = null;
-		}
-
 		if (mReloadDisposable != null) 
 		{
 			mReloadDisposable.Dispose ();
 			mReloadDisposable = null;
+		}
+
+		if (mAbilityDisposable != null) 
+		{
+			mAbilityDisposable.Dispose ();
+			mAbilityDisposable = null;
 		}
 	}
 }

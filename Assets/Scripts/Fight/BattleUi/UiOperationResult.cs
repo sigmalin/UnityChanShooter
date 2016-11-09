@@ -8,7 +8,7 @@ public sealed class UiOperationResult : MonoBehaviour, IInput, IUserInterface
 	public IInput Operator { get { return this; } }
 
 	Subject<Unit> mOnHandleInputSubject = new Subject<Unit>();
-	protected IObservable<Unit> InputStream { get { return mOnHandleInputSubject.AsObservable(); } }
+	//protected IObservable<Unit> InputStream { get { return mOnHandleInputSubject.AsObservable(); } }
 
 	[System.Serializable]
 	public struct UiText

@@ -47,7 +47,7 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 		switch (_inst) 
 		{
 		case WeaponInst.REGISTER_ACTOR:
-			RegisterActor ((uint)_params [0], (uint)_params [1], (uint)_params [2]);
+			RegisterActor ((uint)_params [0], (uint)_params [1]);
 			break;
 
 		case WeaponInst.REMOVE_ALL_ACTOR:
@@ -66,12 +66,24 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 			SetActorTeam ((uint)_params [0], (int)_params [1]);
 			break;
 
+		case WeaponInst.SET_INVINCIBLE:
+			SetActorFlag ((uint)_params [0], Flags.INVINCIBLE, (bool)_params [1]);
+			break;
+
 		case WeaponInst.ARM_FIRE:
 			AddFireRequest ((uint)_params [0], (IArm)_params [1]);
 			break;
 
 		case WeaponInst.ADD_FIRE_DAMAGE:
 			AddFireDamage ((uint)_params [0], (uint)_params [1], (uint)_params [2], (Vector3)_params [3]);
+			break;
+
+		case WeaponInst.HEAL:
+			HealActor ((uint)_params [0], (uint)_params [1]);
+			break;
+
+		case WeaponInst.USE_ABILITY:
+			UseAbility ((uint)_params [0], (uint)_params [1]);
 			break;
 
 		case WeaponInst.PUSH_MAIN_WEAPON_INTERFACE:

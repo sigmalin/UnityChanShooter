@@ -19,8 +19,8 @@ public class FlowEvent
 	public const uint CONNECT_FAILURED = 9;
 
 	public const uint MAIN_ACTOR_DEAD = 21;
-	public const uint ALL_ENEMY_DEAD = 22;
-
+	public const uint ACTOR_DEAD = 22;
+	public const uint ALL_ENEMY_DEAD = 23;
 
 	public const uint GAME_TRIGGER_EVENT_1 = 101;
 	public const uint GAME_TRIGGER_EVENT_2 = 102;

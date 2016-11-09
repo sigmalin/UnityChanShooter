@@ -33,5 +33,42 @@ public class DevelopTestCode : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		IsMousePress = new ReactiveProperty<bool> (false);
+
+		IsMousePress.Buffer (2, 1)
+			.Where (_ => _ [0] != _ [1])
+			.Select(_ => _[1])
+			.Subscribe (_ => Debug.Log(_));
+
+		IsMousePress.Value = true;
+		IsMousePress.Value = false;
+		IsMousePress.Value = false;
+		IsMousePress.Value = false;
+		IsMousePress.Value = false;
+		IsMousePress.Value = true;
+	}
+
+
+	System.IDisposable test = null;
+
+	void SetTimer()
+	{
+		if (test != null) {
+			test.Dispose ();
+			test = null;
+		}
+
+		test = Observable.Defer<long>
+		(
+			() => 
+			{
+				Debug.Log("start = " + Time.time);
+				return Observable.Timer(System.TimeSpan.FromSeconds(2f));
+			}
+		)
+			.Do(_ => Debug.Log("do = " + Time.time))
+			.SelectMany(_ => Observable.Timer(System.TimeSpan.FromSeconds(1f)))
+			.Subscribe(_ => Debug.Log("Subscribe = " + Time.time))
+			.AddTo(this.gameObject);
 	}
 }

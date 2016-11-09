@@ -19,7 +19,7 @@ public class Progress : MonoBehaviour
 			if (mRectTransPercent != null) 
 			{
 				mRectTransPercent.offsetMax = new Vector2 (
-					mRatePercent * (value - 1F),
+					mRatePercent * (1F - value),
 					mRectTransPercent.offsetMax.y);
 			}
 		} 
