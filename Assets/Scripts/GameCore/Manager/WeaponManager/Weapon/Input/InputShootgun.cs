@@ -41,6 +41,12 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 	[SerializeField]
 	Status mStatus;
 
+	[SerializeField]
+	HitCounter mHitCounter;
+
+	Subject<uint> mOnLockMainActorSubject = new Subject<uint>();
+
+	System.IDisposable mLockMainActorDisposable;
 	System.IDisposable mTrackDisposable;
 
 	// Use this for initialization
@@ -96,6 +102,27 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 			.Where (_ => MainCamera != null)
 			.Subscribe (_ => Tracking(attackRange));
 
+		// Lock Main Actor
+		mLockMainActorDisposable = mOnLockMainActorSubject.AsObservable()
+			.DistinctUntilChanged()
+			.Select (_ => 
+				{
+					return new {
+						target = (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, _), 
+						mine = (PlayerActor)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_DATA, PlayerID)
+					};
+				}
+			)
+			.Where(_ => _.target != null && _.mine != null)
+			.Subscribe(_ =>
+				{
+					Vector3 dir = _.target.transform.position - _.mine.transform.position;
+
+					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_DIRECT, 
+						(uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA), 
+						new Vector3(dir.x,0f,dir.z));
+				});
+
 		//OperatorForStanealone ();
 		OperatorForSmartphone();
 	}
@@ -106,6 +133,12 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 		{
 			mTrackDisposable.Dispose ();
 			mTrackDisposable = null;
+		}
+
+		if (mLockMainActorDisposable != null) 
+		{
+			mLockMainActorDisposable.Dispose ();
+			mLockMainActorDisposable = null;
 		}
 	}
 
@@ -140,6 +173,7 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 		{
 		case InstSet.SET_ACTOR_ID:
 			mStatus.Initial (PlayerID);
+			mHitCounter.Initial (PlayerID);
 			break;
 		}
 	}
@@ -202,25 +236,29 @@ public sealed partial class InputShootgun : WeaponUiBehavior
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_SUB_LOCK, PlayerID, targetActor [1].ActorID); 
 
 					SetCrossHair (mCrossHair [1], targetActor [1]);
-
+					/*
 					Vector3 dir = (targetActor [0].transform.position + targetActor [1].transform.position) * 0.5f - minePos;
 
 					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_DIRECT, 
 						(uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA), 
 						new Vector3(dir.x,0f,dir.z));
+					*/
 				} 
 				else 
 				{
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_SUB_LOCK, PlayerID, targetActor [0].ActorID); 
 
 					SetCrossHair (mCrossHair [1], null);
-
+					/*
 					Vector3 dir = targetActor [0].transform.position - minePos;
 
 					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.CAMERA_DIRECT, 
 						(uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA), 
 						new Vector3(dir.x,0f,dir.z));
+					*/
 				}
+
+				mOnLockMainActorSubject.OnNext (targetActor[0].ActorID);
 			}
 		}
 	}

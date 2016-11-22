@@ -10,21 +10,40 @@ public sealed partial class InputShootgun
 	{
 		// Move CrossHair
 		InputStream.Where (_ => mUsedFingerID == -1)
-			.Where (_ => Input.touchCount != 0)
-			.SelectMany (_ => Input.touches.ToObservable ()
-				.Where (_touch => GameCore.IsTouchInterface (_touch.position) == false)
-				.First ()
+			.Select (_ =>
+				{
+					for (int Indx = 0; Indx < Input.touchCount; ++Indx) 
+					{
+						Touch touch = Input.touches [Indx];
+
+						if (touch.phase == TouchPhase.Began && GameCore.IsTouchInterface (touch.position) == false) 
+						{
+							return touch.fingerId;
+						}
+					}
+					return -1;
+				}
 			)
 			.Subscribe (_ => {
-				mUsedFingerID = _.fingerId;
+				mUsedFingerID = _;
 			});
 
 		IObservable<Touch> cameraObservable = InputStream.Where (_ => mUsedFingerID != -1)
-			.SelectMany (_ => Input.touches.ToObservable ()
-				.Where (_touch => mUsedFingerID == _touch.fingerId)
-				.First ()
-			)
-			.Publish ().RefCount ();
+			.Select(_ =>
+				{
+					for (int Indx = 0; Indx < Input.touchCount; ++Indx) 
+					{
+						Touch touch = Input.touches [Indx];
+
+						if (touch.fingerId == mUsedFingerID) 
+						{
+							return touch;
+						}
+					}
+
+					return default(Touch);
+				}
+			).Publish ().RefCount ();
 
 		cameraObservable.Where(_ => _.phase != TouchPhase.Canceled && _.phase != TouchPhase.Ended)
 			.Select(_ => _.position)

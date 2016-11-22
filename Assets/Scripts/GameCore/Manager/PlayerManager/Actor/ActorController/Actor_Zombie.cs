@@ -16,7 +16,6 @@ public sealed class Actor_Zombie : ActorController
 		mFire = new Motion_ZombieFire ();
 
 		SetMotion (mStandard);
-		Owner.Actordata.Anim.SetBool (GameCore.AnimID_isSaluteID, false);
 	}
 
 	public override void OnUpdate()

@@ -8,7 +8,7 @@ public class Progress : MonoBehaviour
 	UnityEngine.UI.Text mTextTab;
 
 	[SerializeField]
-	RectTransform mRectTransPercent;
+	UnityEngine.UI.Image mImgPercent;
 
 	float mRatePercent = 0F;
 
@@ -16,11 +16,9 @@ public class Progress : MonoBehaviour
 	{ 
 		set 
 		{
-			if (mRectTransPercent != null) 
+			if (mImgPercent != null) 
 			{
-				mRectTransPercent.offsetMax = new Vector2 (
-					mRatePercent * (1F - value),
-					mRectTransPercent.offsetMax.y);
+				mImgPercent.fillAmount = value;
 			}
 		} 
 	}
@@ -32,18 +30,5 @@ public class Progress : MonoBehaviour
 			if (mTextTab != null) 
 				mTextTab.text = value;
 		} 
-	}
-	
-	protected void InitialProgress()
-	{
-		if (mRectTransPercent != null) 
-		{
-			mRectTransPercent.anchorMin = new Vector2 (0F,0F);
-			mRectTransPercent.anchorMax = new Vector2 (1F,1F);
-			mRectTransPercent.pivot = new Vector2 (0.5F, 0.5F);
-
-			mRatePercent = this.GetComponent<RectTransform> ().sizeDelta.x - mRectTransPercent.offsetMin.x;
-			Percent = 0.5f;
-		}
 	}
 }

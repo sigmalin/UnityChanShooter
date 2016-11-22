@@ -23,7 +23,7 @@ public partial class Status
 		// fire
 		mUsedItems = new GameObject[] 
 		{
-			GetItem((string)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_LOCALIZATION, LocalizationDefine.LOCALIZATION_GROUP_WEAPON, (int)_actor.RefWeaponData.WeaponID), _actor.Charge),
+			GetItem((string)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_LOCALIZATION, LocalizationDefine.LOCALIZATION_GROUP_WEAPON, (int)_actor.RefWeaponData.WeaponID), _actor.Charge, _actor.IsUsable),
 		};
 
 		// ability
@@ -31,14 +31,14 @@ public partial class Status
 		{
 			GameObject[] abilities = _actor.Abilities
 				.Where (_ => _ != null && _.IsPassive == false)
-				.Select (_ => GetItem ((string)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_LOCALIZATION, LocalizationDefine.LOCALIZATION_GROUP_ABILITY, (int)_.AbilityID), _.Charge))
+				.Select (_ => GetItem ((string)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, RepositoryParam.GET_LOCALIZATION, LocalizationDefine.LOCALIZATION_GROUP_ABILITY, (int)_.AbilityID), _.Charge, _.IsUsable))
 				.ToArray ();
 			
 			mUsedItems = mUsedItems.Concat (abilities).ToArray();
 		}
 	}
 
-	GameObject GetItem(string _title, ReadOnlyReactiveProperty<float> _reactiveProperty)
+	GameObject GetItem(string _title, ReadOnlyReactiveProperty<float> _reactiveProperty_f, ReadOnlyReactiveProperty<bool> _reactiveProperty_b)
 	{
 		if (mItemPool == null)
 			InitialItemPool();
@@ -52,7 +52,8 @@ public partial class Status
 		if (item != null) 
 		{
 			item.Initial (_title);
-			item.SetReactiveProperty (_reactiveProperty);
+			item.SetReactiveProperty (_reactiveProperty_f);
+			item.SetReactiveProperty (_reactiveProperty_b);
 		}
 
 		return itemGO;

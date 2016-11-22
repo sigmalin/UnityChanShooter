@@ -115,6 +115,14 @@ public partial class PlayerActor : MonoBehaviour, ITarget
 			SetFormChange ((bool)_params [0]);
 			break;
 
+		case PlayerInst.PLAYER_DAMAGE:
+			if (Actordata.Anim != null) 
+			{
+				Actordata.Anim.ResetTrigger(GameCore.AnimID_triggerShock);
+				Actordata.Anim.SetTrigger(GameCore.AnimID_triggerShock);
+			}
+			break;
+
 		default:
 			if (Controller != null) 
 				Controller.ExecCommand (_inst, _params);

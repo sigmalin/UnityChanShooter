@@ -10,6 +10,8 @@ public interface IAbility
 
 	ReadOnlyReactiveProperty<float> Charge { get; }
 
+	ReadOnlyReactiveProperty<bool> IsUsable { get; }
+
 	void Initial (uint _ownerID);
 
 	void FrameMove ();

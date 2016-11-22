@@ -13,6 +13,12 @@ public class Shotgun : MonoBehaviour, IArm
 	[SerializeField]
 	Transform mShootShockPt;
 
+	[SerializeField]
+	ParticleSystem mAmmo;
+
+	[SerializeField]
+	AudioSource mAudio;
+
 	public void OnFire (uint _shooterID, uint _bulletID, uint _atk, int _layer)
 	{
 		GameObject bullet = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.BULLET, _bulletID);
@@ -37,9 +43,14 @@ public class Shotgun : MonoBehaviour, IArm
 		{
 			shoot.BeamEnd = hit.point;
 
-			ITarget target = hit.collider.gameObject.GetComponent<ITarget> ();
-			if (target != null)
-				GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.ADD_FIRE_DAMAGE, target.ActorID, _shooterID, _atk, hit.point);
+			Collider[] cols = Physics.OverlapSphere (hit.point, 2.5f, _layer);
+
+			for (int Indx = 0; Indx < cols.Length; ++Indx) 
+			{
+				ITarget target = cols[Indx].gameObject.GetComponent<ITarget> ();
+				if (target != null)
+					GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.ADD_FIRE_DAMAGE, target.ActorID, _shooterID, _atk, hit.point);
+			}
 		} 
 		else 
 		{
@@ -47,13 +58,23 @@ public class Shotgun : MonoBehaviour, IArm
 		}
 	}
 
-	public void OnPullTrigger()
+	public void OnPullTrigger(int _count)
 	{
 		if (mShootShock != null && mShootShockPt != null) 
 		{
 			mShootShock.transform.position = mShootShockPt.position;
 			mShootShock.transform.rotation = mShootShockPt.rotation;
 			mShootShock.SetActive (true);
+		}
+
+		if (mAmmo != null) 
+		{
+			mAmmo.Emit (_count);
+		}
+
+		if (mAudio != null) 
+		{
+			mAudio.Play ();
 		}
 	}
 }

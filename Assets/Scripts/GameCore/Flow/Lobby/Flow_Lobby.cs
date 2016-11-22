@@ -27,7 +27,7 @@ public sealed partial class Flow_Lobby : FlowBehaviour
 
 		GameCore.SendCommand (CommandGroup.GROUP_SYSTEM,
 			SystemInst.PLAY_BGM,
-			SystemManager.BGM_LOBBY);
+			SystemManager.BGM_LOBBY, true);
 
 		//GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
 		//	RepositoryInst.lo, 

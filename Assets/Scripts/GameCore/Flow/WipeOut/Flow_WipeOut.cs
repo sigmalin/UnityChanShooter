@@ -42,11 +42,30 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 	CameraList mCameraList;
 	#endregion
 
+	[SerializeField]
+	Transform mTombPt;
+
 	const uint MAIN_PLAYER_ID = 1;
 
 	public override void Enter()
 	{
 		base.Enter ();
+
+		GameCore.SendCommand (CommandGroup.GROUP_SYSTEM, SystemInst.PLAY_BGM, "scene", true);
+
+		GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+			RepositoryInst.LOAD_SPRITE_DATA, 
+			RepositoryManager.SPRITE_DIGITS,
+			(SpriteRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_SPRITE, RepositoryManager.SPRITE_DIGITS, false));
+
+		GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+			RepositoryInst.LOAD_SPRITE_DATA, 
+			RepositoryManager.SPRITE_HITS,
+			(SpriteRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_SPRITE, RepositoryManager.SPRITE_HITS, false));
+
+		GameCore.SendCommand (CommandGroup.GROUP_REPOSITORY, 
+			RepositoryInst.LOAD_POST_EFFECT_DATA, 
+			(PostEffectRepository)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_POST_EFFECT, false));
 
 		InitialCameraMode ();
 
@@ -130,6 +149,10 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 				RegisterMainPlayer ();
 				RegisterEnemyGroup (0);
 				SetMainCameraMode ();
+
+				#if UNITY_EDITOR
+				//ResetShader();
+				#endif
 			});
 	}
 
@@ -195,4 +218,30 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 		GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.MAIN_CAMERA, mCameraList.MainCamera.CameraID);
 	}
 	#endregion
+
+	#region RagDoll
+	void PreLoadRagDoll(uint _characterID)
+	{
+		if (mTombPt == null)
+			return;
+
+		GameObject ragdollGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.RAGDOLL_MODEL, _characterID);
+		if (ragdollGO != null)
+		{
+			ragdollGO.transform.position = mTombPt.position;
+			ragdollGO.SafeRecycle ();
+		}
+	}
+	#endregion
+
+	#if UNITY_EDITOR
+	void ResetShader()
+	{
+		Renderer[] renders = GameObject.FindObjectsOfType<Renderer>();
+
+		renders.ToObservable ()
+			.SelectMany (_ => _.materials.ToObservable ())
+			.Subscribe (_ => _.shader = Shader.Find (_.shader.name));
+	}
+	#endif
 }

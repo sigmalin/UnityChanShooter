@@ -16,6 +16,25 @@ public sealed partial class WeaponManager
 			victimsActor.HitPt = _hitPt;
 			victimsActor.HP.Value = victimsActor.HP.Value < _damage ? 0u : victimsActor.HP.Value - _damage;
 		}
+
+		DamageActor (_victimsID, _murdererID);
+	}
+
+	void DamageActor(uint _victimsID, uint _murdererID)
+	{
+		WeaponActor victimsActor = GetWeaponActor (_victimsID);
+		if (victimsActor != null && 
+			(victimsActor.Flag.Value & Flags.INVINCIBLE) == Flags.NONE &&
+			victimsActor.IsDead.Value == false) 
+		{
+			WeaponActor murdererActor = GetWeaponActor (_murdererID);
+			if (murdererActor == null)
+				return;
+
+			victimsActor.Stamina.Value -= murdererActor.Impact;
+
+			murdererActor.Victims.OnNext(_victimsID);
+		}
 	}
 
 	void HealActor(uint _actorID, uint _heal)
@@ -40,7 +59,7 @@ public sealed partial class WeaponManager
 
 		if (murdererActor.IsDead.Value == false) 
 		{
-			murdererActor.Victims.Value = _victimsID;
+			murdererActor.Victims.OnNext(_victimsID);
 		}
 
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_DEAD, _victimsID, _murdererID, murdererActor.Impact, victimsActor.HitPt);

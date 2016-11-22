@@ -45,6 +45,10 @@ public class ChapterItem : MonoBehaviour, IItem
 	{
 	}
 
+	public void SetReactiveProperty (ReadOnlyReactiveProperty<bool> _reactiveProperty)
+	{
+	}
+
 	void SetItemImage()
 	{
 		mImage.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_CHAPTER_IMAGE, mChapterID, false);

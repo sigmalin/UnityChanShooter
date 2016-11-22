@@ -9,4 +9,6 @@ public interface IItem
 	void Release ();
 
 	void SetReactiveProperty (ReadOnlyReactiveProperty<float> _reactiveProperty);
+
+	void SetReactiveProperty (ReadOnlyReactiveProperty<bool> _reactiveProperty);
 }

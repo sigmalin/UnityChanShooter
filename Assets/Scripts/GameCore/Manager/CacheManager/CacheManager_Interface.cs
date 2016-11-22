@@ -35,4 +35,14 @@ public partial class CacheManager
 
 		uiLoadingProgress.Operation (LoadingProgress.InstSet.SET_PROGRESS_PERCENT, _percent);
 	}
+
+	void UpdateLoadingMessage(string _msg)
+	{
+		if (mLoadingProgress == null)
+			return;
+
+		IUserInterface uiLoadingProgress = mLoadingProgress.GetComponent<IUserInterface> ();
+
+		uiLoadingProgress.Operation (LoadingProgress.InstSet.SET_PROGRESS_MESSAGE, _msg);
+	}
 }

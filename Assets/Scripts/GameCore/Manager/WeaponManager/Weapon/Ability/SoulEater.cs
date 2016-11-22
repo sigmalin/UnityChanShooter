@@ -10,6 +10,8 @@ public class SoulEater : IAbility
 
 	public ReadOnlyReactiveProperty<float> Charge { get { return null; } }
 
+	public ReadOnlyReactiveProperty<bool> IsUsable { get { return null; } }
+
 	System.IDisposable mDisposable = null;
 
 	public void Initial (uint _ownerID)

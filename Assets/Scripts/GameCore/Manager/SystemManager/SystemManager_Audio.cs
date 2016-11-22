@@ -14,6 +14,8 @@ public partial class SystemManager
 	System.IDisposable mFadeInDisposable = null;
 	System.IDisposable mFadeOutDisposable = null;
 
+	bool mIsLoop = false;
+
 	float mMaxVolume = 0.2f;
 
 	void InitialAudio()
@@ -30,6 +32,7 @@ public partial class SystemManager
 			.Subscribe (_ => 
 			{
 				mAudio.clip = mNextAudioClip;
+				mAudio.loop = mIsLoop;
 				mAudio.Play();
 				mNextAudioClip = null;
 			});
@@ -60,7 +63,7 @@ public partial class SystemManager
 		}
 	}
 
-	void PlayBGM(string _bgm)
+	void PlayBGM(string _bgm, bool _isLoop)
 	{
 		if (mAudio == null)
 			return;
@@ -73,5 +76,7 @@ public partial class SystemManager
 			return;
 
 		mNextAudioClip = clip;
+
+		mIsLoop = _isLoop;
 	}
 }

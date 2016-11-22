@@ -64,14 +64,14 @@ public sealed partial class WeaponManager
 		WeaponActor actor = GetWeaponActor(_id);
 		if (actor == null) return;
 		if (actor.IsDead.Value == true) return;
-		if (actor.AmmoCount.Value == 0) return;
+		if (actor.IsUsable.Value == false) return;
 
 		uint bulletCount = actor.AmmoCount.Value < actor.MaxShootRayCount ? actor.AmmoCount.Value : actor.MaxShootRayCount;
 		actor.AmmoCount.Value -= bulletCount;
 
 		if (_arm == null) return;
 
-		_arm.OnPullTrigger ();
+		_arm.OnPullTrigger ((int)bulletCount);
 
 		for (int Indx = 0; Indx < bulletCount; ++Indx) 
 		{
@@ -82,6 +82,8 @@ public sealed partial class WeaponManager
 	int GetAttackLayer(WeaponActor _actor)
 	{
 		WeaponActor mainActor = GetWeaponActor (mMainActorID);
+		if (mainActor == null)
+			return GameCore.GetRaycastLayer (GameCore.LAYER_DEFAULT);
 
 		return _actor.Team == mainActor.Team ? 
 			GameCore.GetRaycastLayer (GameCore.LAYER_DEFAULT) | GameCore.GetRaycastLayer (GameCore.LAYER_ENEMY) :

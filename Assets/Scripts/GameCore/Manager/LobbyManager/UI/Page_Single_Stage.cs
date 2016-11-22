@@ -87,11 +87,19 @@ public sealed partial class Page_Single
 	{
 		string[] loadList = new string[] {
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SCENE_PATH, _stage.ScemeName/*"GamePlay"*/),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_AUDIO_PATH, _stage.ScemeAudio),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_AUDIO_PATH, SystemManager.BGM_VECTORY),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_AUDIO_PATH, SystemManager.BGM_LOSE),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_INPUT_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_INSTANT_RESOURCE_UI_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_ABILITY_PATH),
+
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SPRITE_PATH, RepositoryManager.SPRITE_DIGITS),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SPRITE_PATH, RepositoryManager.SPRITE_HITS),
+
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_POST_EFFECT_PATH),
 		};
 
 		loadList = loadList.Concat (GetCharacterDownLoadList (GameCore.UserProfile.MainCharacterID)).ToArray ();

@@ -7,6 +7,8 @@ public sealed partial class WeaponManager
 {
 	System.IDisposable mReloadDisposable = null;
 
+	System.IDisposable mStaminaDisposable = null;
+
 	System.IDisposable mAbilityDisposable = null;
 
 	void InitialActorObservable()
@@ -28,6 +30,10 @@ public sealed partial class WeaponManager
 					_.ReloadTime = _.MaxReloadTime;
 					++_.AmmoCount.Value;
 				});
+
+		mStaminaDisposable = actorObserver
+			.Where (_ => _.Stamina.Value < _.MaxStamina)
+			.Subscribe (_ => _.Stamina.Value = Mathf.Clamp (_.Stamina.Value + Time.deltaTime, 0f, _.MaxStamina));
 
 		mAbilityDisposable = actorObserver
 			.Where(_ => _.Abilities != null)

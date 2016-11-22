@@ -83,6 +83,8 @@ public class CacheParam
 	public const uint GET_STAGE_IMAGE_PATH = 21;
 	public const uint GET_ABILITY_PATH = 22;
 	public const uint GET_AUDIO_PATH = 23;
+	public const uint GET_SPRITE_PATH = 24;
+	public const uint GET_POST_EFFECT_PATH = 25;
 
 	public const uint GET_INSTANT_RESOURCE_UI_PATH = 98;
 	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 99;
@@ -100,6 +102,8 @@ public class CacheParam
 	public const uint GET_STAGE_IMAGE= 121;
 	public const uint GET_ABILITY = 122;
 	public const uint GET_AUDIO = 123;
+	public const uint GET_SPRITE = 124;
+	public const uint GET_POST_EFFECT = 125;
 
 	public const uint GET_INSTANT_RESOURCE_UI = 198;
 	public const uint GET_INSTANT_RESOURCE_INPUT = 199;
@@ -119,6 +123,10 @@ public class RepositoryParam
 	public const uint GET_ALL_CHAPTER_DATA = 22;
 
 	public const uint GET_WEAPON_DATA = 31;
+
+	public const uint GET_SPRITE_DATA = 41;
+
+	public const uint GET_POST_EFFECT_DATA = 51;
 }
 
 public class AiParam

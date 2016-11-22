@@ -56,6 +56,8 @@ public class PlayerInst
 
 	public const uint PLAYER_STUN = 50;
 	public const uint PLAYER_FORM_CHANGE = 51;
+
+	public const uint PLAYER_DAMAGE = 60;
 }
 
 public class CameraInst
@@ -71,6 +73,9 @@ public class CameraInst
 
 	public const uint SET_CAMERA_MODE = 100;
 	public const uint REMOVE_CAMERA_MODE = 101;
+
+	public const uint SET_CAMERA_POST_EFFECT = 102;
+	public const uint REMOVE_CAMERA_POST_EFFECT = 103;
 }
 
 public class ResourceInst
@@ -149,6 +154,9 @@ public class RepositoryInst
 	public const uint LOAD_CHARACTER_DATA = 11;
 	public const uint LOAD_CHAPTER_DATA = 21;
 	public const uint LOAD_WEAPON_DATA = 31;
+	public const uint LOAD_SPRITE_DATA = 41;
+	public const uint RELEASE_SPRITE_DATA = 42;
+	public const uint LOAD_POST_EFFECT_DATA = 51;
 }
 
 public class AiInst

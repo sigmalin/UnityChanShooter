@@ -8,8 +8,6 @@ BeamMan & BasicBeamShot &
 
 mooshoolabs  & FREE GUNS PACK & www.mooshoolabs.com
 
-Eri & Progress Bar Scripts &
-
 Unity Technologies & Unity Samples:UI &
 
 Unity-chan! & unity-chan! Model & http://unity-chan.com/
@@ -24,6 +22,11 @@ Area730 & Stylized Low Poly Cars Pack
 
 Gareth Wright & Butterfly with Animations
 
+ChamferZone & AMMO Types - Model & Textures
+
 【サイト名】フリー音楽素材 H/MIX GALLERY
 【管理者】　秋山裕和
 【アドレス】http://www.hmix.net/
+
+魔王魂
+http://maoudamashii.jokersounds.com/

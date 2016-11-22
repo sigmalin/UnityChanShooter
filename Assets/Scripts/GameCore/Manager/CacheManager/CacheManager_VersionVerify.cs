@@ -39,6 +39,8 @@ public partial class CacheManager
 		ScheduledNotifier<float> progressNotifier = new ScheduledNotifier<float>();
 		progressNotifier.Subscribe(_ => UpdateLoadingProgress(_));
 
+		UpdateLoadingMessage (string.Format("0/1"));
+
 		ShowLoadingProgress ();
 
 		ObservableWWW.GetWWW (SERVER_PATH + LINK_VERSION_LIST_BUNDLE + DOWNLOAD_ASSET_BUNDLE_EXTENSION, progress: progressNotifier)
@@ -206,15 +208,19 @@ public partial class CacheManager
 		ScheduledNotifier<float> progressNotifier = new ScheduledNotifier<float>();
 		progressNotifier.Subscribe(x => UpdateLoadingProgress(x));
 
+		UpdateLoadingMessage (string.Format("0/{0}",_list.Length));
+
 		ShowLoadingProgress ();
 
 		_list
 			.Select 
 			(
-				loadfile =>
+				(loadfile, Index) =>
 				{
+					string msg = string.Format("{0}/{1}", Index+1, _list.Length);
 					return Observable.Defer<byte[]> (() => ObservableWWW.GetAndGetBytes (GetDownLoadPath(loadfile.LinkPath), progress: progressNotifier))
-						.Do<byte[]>(bytes => WriteStreamAndUpdate(loadfile, bytes));
+						.Do<byte[]>(bytes => WriteStreamAndUpdate(loadfile, bytes))
+						.Do(_ => UpdateLoadingMessage (msg));
 				}
 			)
 			.Aggregate ((pre, cur) => pre.SelectMany (cur))

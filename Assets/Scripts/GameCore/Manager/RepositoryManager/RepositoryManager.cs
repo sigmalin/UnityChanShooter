@@ -21,10 +21,18 @@ public sealed partial class RepositoryManager : CommandBehaviour, IParam, IRegis
 		InitialCharacterData ();
 
 		InitialWeaponData ();
+
+		InitialSpriteData ();
+
+		InitialPostEffectData ();
 	}
 
 	public void OnUnRegister ()
 	{
+		ReleasePostEffectData ();
+
+		ReleaseSpriteData ();
+
 		ReleaseWeaponData ();
 
 		ReleasCharacterData ();
@@ -57,6 +65,18 @@ public sealed partial class RepositoryManager : CommandBehaviour, IParam, IRegis
 		case RepositoryInst.LOAD_WEAPON_DATA:
 			LoadWeaponData((WeaponDataRepository)_params [0]);
 			break;
+
+		case RepositoryInst.LOAD_SPRITE_DATA:
+			LoadSpriteData((string)_params[0], (SpriteRepository)_params [1]);
+			break;
+
+		case RepositoryInst.RELEASE_SPRITE_DATA:
+			ReleaseSpriteData((string)_params[0]);
+			break;
+
+		case RepositoryInst.LOAD_POST_EFFECT_DATA:
+			LoadPostEffectData((PostEffectRepository)_params [0]);
+			break;
 		}
 	}
 
@@ -84,6 +104,14 @@ public sealed partial class RepositoryManager : CommandBehaviour, IParam, IRegis
 
 		case RepositoryParam.GET_WEAPON_DATA:
 			output = GetWeaponData ((uint)_params[0]);
+			break;
+
+		case RepositoryParam.GET_SPRITE_DATA:
+			output = GetSpriteData ((string)_params[0], (char)_params[1]);
+			break;
+
+		case RepositoryParam.GET_POST_EFFECT_DATA:
+			output = GetPostEffectData ((uint)_params[0]);
 			break;
 		}
 

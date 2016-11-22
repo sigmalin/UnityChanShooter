@@ -33,7 +33,7 @@ public sealed partial class SystemManager : CommandBehaviour, IRegister
 			break;
 
 		case SystemInst.PLAY_BGM:
-			PlayBGM ((string)_params[0]);
+			PlayBGM ((string)_params[0], (bool)_params[1]);
 			break;
 
 		case SystemInst.SHOW_FPS:

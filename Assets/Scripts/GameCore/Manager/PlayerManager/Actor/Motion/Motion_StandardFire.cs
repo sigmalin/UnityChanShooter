@@ -82,7 +82,7 @@ public sealed class Motion_StandardFire : IMotion
 
 	void Movement(PlayerActor _owner)
 	{
-		_owner.Actordata.Rigid.velocity = new Vector3 (_owner.MotionData.Move.x * _owner.MotionData.Speed, _owner.Actordata.Rigid.velocity.y, _owner.MotionData.Move.z * _owner.MotionData.Speed);
+		_owner.Actordata.Rigid.velocity = new Vector3 (_owner.MotionData.Move.x * _owner.MotionData.Speed, _owner.Actordata.Rigid.velocity.y, _owner.MotionData.Move.z * _owner.MotionData.Speed * 0.25f);
 	}
 
 	Vector3 GetAimAt(PlayerActor.PlayerMotionData _motionData)

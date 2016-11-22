@@ -91,7 +91,10 @@ public sealed class Mode_Follow : IMode
 
 		case CameraInst.CAMERA_DIRECT:
 			Vector3 dir = (Vector3)_params [0];
-			mAngle = Vector3.Angle (Vector3.forward, dir.normalized);
+			dir = dir.normalized;
+			mAngle = Vector3.Angle (Vector3.forward, dir);
+			if (Vector3.forward.IsRightSide (dir) == false)
+				mAngle = 360f - mAngle;
 			break;
 		}
 	}

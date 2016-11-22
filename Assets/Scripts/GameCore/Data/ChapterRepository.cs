@@ -8,6 +8,8 @@ public class ChapterRepository : ScriptableObject
 	{
 		public string ScemeName;
 
+		public string ScemeAudio;
+
 		public uint[] characterIDs;
 
 		public int Difficult;

@@ -97,7 +97,7 @@ public class Motion_DualFire : IMotion
 		face = new Vector3 (face.x, 0f, face.z);
 		_owner.transform.rotation = Quaternion.LookRotation (face.normalized, Vector3.up);
 
-		_owner.Actordata.Rigid.velocity = new Vector3 (_owner.MotionData.Move.x * _owner.MotionData.Speed, _owner.Actordata.Rigid.velocity.y, _owner.MotionData.Move.z * _owner.MotionData.Speed);
+		_owner.Actordata.Rigid.velocity = new Vector3 (_owner.MotionData.Move.x * _owner.MotionData.Speed, _owner.Actordata.Rigid.velocity.y, _owner.MotionData.Move.z * _owner.MotionData.Speed * 0.25f);
 	}
 
 	Vector3 GetAimPoint(uint _actorID, Vector3 _default)

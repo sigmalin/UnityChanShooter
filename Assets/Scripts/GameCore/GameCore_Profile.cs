@@ -13,7 +13,7 @@ public partial class GameCore
 		{
 			MainCharacterID = 101u;
 
-			HoldCharacterList = new uint[] {101u, 102u, 103u};
+			HoldCharacterList = new uint[] {101u, /*102u, 103u*/};
 		}
 	}
 

@@ -19,12 +19,16 @@ public partial class Flow_GamePlay
 		SetVictoryUI ();
 		SetVictoryCameraMode ();
 
+		GameCore.SendCommand (CommandGroup.GROUP_SYSTEM, SystemInst.PLAY_BGM, SystemManager.BGM_VECTORY, true);
+
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_SALUTE, MAIN_PLAYER_ID, true);
 		GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_FACE, MAIN_PLAYER_ID, ProtraitDefine.PROTRAIT_KEY_SMILE);
 	}
 
 	void GotoFailure()
 	{
+		GameCore.SendCommand (CommandGroup.GROUP_SYSTEM, SystemInst.PLAY_BGM, SystemManager.BGM_LOSE, true);
+
 		GameCore.SendCommand (CommandGroup.GROUP_WEAPON, WeaponInst.POP_MAIN_WEAPON_INTERFACE);
 
 		SetFailureUI ();

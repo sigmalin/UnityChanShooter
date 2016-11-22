@@ -8,6 +8,7 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 	public class InstSet
 	{
 		public const uint SET_PROGRESS_PERCENT = 1;
+		public const uint SET_PROGRESS_MESSAGE = 2;
 	}
 
 	[SerializeField]
@@ -16,7 +17,6 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 	// Use this for initialization
 	void Start () 
 	{
-		InitialProgress ();	
 	}
 
 	public bool HandleInput ()
@@ -27,8 +27,19 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 	public void Show(Transform _root)
 	{
 		this.transform.SetParent(_root);
-		this.transform.localPosition = new Vector3 (0F, 0F, 0F);
-		this.transform.localScale = new Vector3 (1F, 1F, 1F);
+
+		RectTransform rectTrans = this.GetComponent<RectTransform> ();
+
+		if (rectTrans != null)
+		{
+			rectTrans.anchorMin = new Vector2 (0F,0F);
+			rectTrans.anchorMax = new Vector2 (1F,1F);
+			rectTrans.pivot = new Vector2 (0.5F, 0.5F);
+			rectTrans.offsetMax = new Vector2 (0F,0F);
+			rectTrans.offsetMin = new Vector2 (0F,0F);
+			rectTrans.localScale = new Vector3 (1F,1F,1F);
+			rectTrans.localPosition = new Vector3 (0F,0F,0F);
+		}
 
 		if (this.gameObject.activeSelf == false)
 			this.gameObject.SetActive (true);
@@ -56,7 +67,10 @@ public sealed class LoadingProgress : Progress, IInput, IUserInterface
 		{
 		case InstSet.SET_PROGRESS_PERCENT:
 			Percent = (float)_params [0];
-			Tab = string.Format ("{0}%", (int)((float)_params [0] * 100));
+			break;
+
+		case InstSet.SET_PROGRESS_MESSAGE:
+			Tab = (string)_params [0];
 			break;
 		}
 	}

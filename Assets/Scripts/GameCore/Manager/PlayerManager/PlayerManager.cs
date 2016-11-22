@@ -27,8 +27,6 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 
 		ReleaseRequestQueue ();
 
-		BroadcastCommand (PlayerInst.REMOVE_PLAYER);
-
 		ClearPlayerData ();
 
 		GameCore.UnRegisterCommand (CommandGroup.GROUP_PLAYER);
@@ -94,8 +92,9 @@ public sealed partial class PlayerManager : CommandBehaviour, IParam, IRegister
 
 	void BroadcastCommand (uint _inst, params System.Object[] _params)
 	{
-		GetAllPlayerData().ToObservable ()
-			.Where (_ => _ != null)
-			.Subscribe (_ => _.ExecCommand (_inst, _params));
+		uint[] allIDs = GetAllPlayerID ();
+
+		for (int Indx = 0; Indx < allIDs.Length; ++Indx)
+			TransCommand (allIDs [Indx], _inst, _params);
 	}
 }

@@ -16,9 +16,13 @@ public sealed partial class WeaponManager
 
 		public ReactiveProperty<uint> AmmoCount { get; set; }
 
+		public ReactiveProperty<float> Stamina { get; set; }
+
 		public ReadOnlyReactiveProperty<float> Life { get; set; }
 
 		public ReadOnlyReactiveProperty<float> Charge { get; set; }
+
+		public ReadOnlyReactiveProperty<bool> IsUsable { get; set; }
 
 		public ReadOnlyReactiveProperty<bool> IsDead { get; set; }
 
@@ -28,7 +32,7 @@ public sealed partial class WeaponManager
 
 		public ReactiveProperty<uint> Murderer { get; set; }
 
-		public ReactiveProperty<uint> Victims { get; set; }
+		public Subject<uint> Victims { get; set; }
 
 		public ReactiveProperty<int> Flag { get; set; }
 
@@ -47,6 +51,7 @@ public sealed partial class WeaponManager
 		public float MoveSpeed { get { return RefWeaponData.Speed; } }
 		public float AttackRange { get { return RefWeaponData.Range; } }
 		public float Impact { get { return RefWeaponData.Impact; } }
+		public float MaxStamina { get { return RefWeaponData.Stamina; } }
 	}
 
 	Dictionary<uint, WeaponActor> mActorTable = null;
@@ -79,11 +84,22 @@ public sealed partial class WeaponManager
 
 		if (actor.AmmoCount == null) actor.AmmoCount = new ReactiveProperty<uint> (actor.RefWeaponData.AmmoCount);
 		actor.Charge = actor.AmmoCount.Select (_ => ((float)_ / (float)actor.RefWeaponData.AmmoCount)).ToReadOnlyReactiveProperty ();
+		actor.IsUsable = actor.AmmoCount.Select(_ => _ != 0u).ToReadOnlyReactiveProperty ();
 
 		actor.ReloadTime = 0F;
 
+		actor.Stamina = new ReactiveProperty<float> (actor.MaxStamina);
+		actor.Stamina
+			.Where (_ => _ <= 0f)
+			.Subscribe (_ => 
+				{
+					actor.Stamina.Value = actor.MaxStamina;
+					GameCore.SendCommand(CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_DAMAGE, actor.ActorID);
+				}
+			);
+
 		actor.Murderer = new ReactiveProperty<uint> (0u);
-		actor.Victims = new ReactiveProperty<uint> (0u);
+		actor.Victims = new Subject<uint> ();
 
 		actor.Flag = new ReactiveProperty<int> (Flags.NONE);
 
@@ -156,8 +172,14 @@ public sealed partial class WeaponManager
 		mActorTable [_actorID].Charge.Dispose ();
 		mActorTable [_actorID].Charge = null;
 
+		mActorTable [_actorID].IsUsable.Dispose ();
+		mActorTable [_actorID].IsUsable = null;
+
 		mActorTable [_actorID].IsDead.Dispose ();
 		mActorTable [_actorID].IsDead = null;
+
+		mActorTable [_actorID].Victims.Dispose ();
+		mActorTable [_actorID].Victims = null;
 
 		ReleaseAbility (mActorTable [_actorID]);
 

@@ -111,6 +111,8 @@ public partial class PlayerActor
 
 		mActorData.Anim = roleGO.GetComponent<Animator> ();
 
+		InitStateMachineBehaviour (mActorData.Anim);
+
 		Equipment ();
 	}
 
@@ -139,6 +141,8 @@ public partial class PlayerActor
 			mRole.gameObject.SafeRecycle ();
 			mRole = null;
 		}
+
+		ReleaseStateMachineBehaviour ();
 
 		mActorData.Anim = null;
 

@@ -10,6 +10,8 @@ public class Teleport : IAbility
 
 	public ReadOnlyReactiveProperty<float> Charge { get; private set; }
 
+	public ReadOnlyReactiveProperty<bool> IsUsable { get; private set; }
+
 	public ReactiveProperty<float> ChargeTime { get; set; }
 
 	uint mOwnerID = 0u;
@@ -17,6 +19,8 @@ public class Teleport : IAbility
 	IMode mTeleportCameraMode;
 
 	System.IDisposable mTeleportDisposable = null;
+
+	Shake mShake = null;
 
 	const float ABILITY_CHARGE_TIME = 30f;
 
@@ -28,9 +32,13 @@ public class Teleport : IAbility
 
 		Charge = ChargeTime.Select (_ => _ / ABILITY_CHARGE_TIME).ToReadOnlyReactiveProperty ();
 
+		IsUsable = ChargeTime.Select (_ => _ == ABILITY_CHARGE_TIME).ToReadOnlyReactiveProperty ();
+
 		mOwnerID = _ownerID;
 
 		mTeleportCameraMode = new Mode_BlackOut ();
+
+		mShake = new Shake ();
 	}
 
 	public void FrameMove ()
@@ -62,7 +70,7 @@ public class Teleport : IAbility
 
 	public void Use ()
 	{
-		if (Charge.Value < 1f)
+		if (IsUsable.Value == false)
 			return;
 
 		uint[] enemyIDs = (uint[])GameCore.GetParameter (ParamGroup.GROUP_WEAPON, WeaponParam.GET_HOSTILITY_LIST, mOwnerID);
@@ -101,7 +109,8 @@ public class Teleport : IAbility
 				_ => 
 				{
 					uint mainCameraID = (uint)GameCore.GetParameter(ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA);
-					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.SET_CAMERA_MODE, mainCameraID, mTeleportCameraMode);
+					//GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.SET_CAMERA_MODE, mainCameraID, mTeleportCameraMode);
+					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.SET_CAMERA_POST_EFFECT, mainCameraID, mShake);
 
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_POSITION, mOwnerID, targetPos);
 					GameCore.SendCommand (CommandGroup.GROUP_PLAYER, PlayerInst.SET_POSITION, targetID, ownerPos);
@@ -111,7 +120,8 @@ public class Teleport : IAbility
 			.Subscribe(_ => 
 				{
 					uint mainCameraID = (uint)GameCore.GetParameter(ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA);
-					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.REMOVE_CAMERA_MODE, mainCameraID, mTeleportCameraMode);
+					//GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.REMOVE_CAMERA_MODE, mainCameraID, mTeleportCameraMode);
+					GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.REMOVE_CAMERA_POST_EFFECT, mainCameraID, mShake);
 
 					LockActor(mOwnerID, targetID, false);
 				})

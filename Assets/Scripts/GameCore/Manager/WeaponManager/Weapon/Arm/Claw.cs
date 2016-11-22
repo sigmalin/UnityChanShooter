@@ -5,6 +5,9 @@ public class Claw : MonoBehaviour, IArm
 {
 	public Transform Muzzle { get { return null; } }
 
+	[SerializeField]
+	AudioSource mAudio;
+
 	public void OnFire (uint _shooterID, uint _bulletID, uint _atk, int _layer)
 	{
 		Transform shooterPos = (Transform)GameCore.GetParameter (ParamGroup.GROUP_PLAYER, PlayerParam.PLAYER_TRANSFORM, _shooterID);
@@ -31,7 +34,11 @@ public class Claw : MonoBehaviour, IArm
 		}
 	}
 
-	public void OnPullTrigger()
+	public void OnPullTrigger(int _count)
 	{
+		if (mAudio != null) 
+		{
+			mAudio.Play ();
+		}
 	}
 }

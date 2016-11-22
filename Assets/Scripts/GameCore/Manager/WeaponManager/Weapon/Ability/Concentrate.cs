@@ -10,6 +10,8 @@ public class Concentrate : IAbility
 
 	public ReadOnlyReactiveProperty<float> Charge { get; private set; }
 
+	public ReadOnlyReactiveProperty<bool> IsUsable { get; private set; }
+
 	public ReactiveProperty<float> ChargeTime { get; set; }
 
 	uint mOwnerID = 0u;
@@ -29,6 +31,8 @@ public class Concentrate : IAbility
 		ChargeTime = new ReactiveProperty<float> (ABILITY_CONCENTRATE_TIME);
 
 		Charge = ChargeTime.Select (_ => _ / ABILITY_CONCENTRATE_TIME).ToReadOnlyReactiveProperty ();
+
+		IsUsable = ChargeTime.Select(_ => 0f < _).ToReadOnlyReactiveProperty ();
 
 		ChargeTime
 			.Where (_ => _ <= 0f)

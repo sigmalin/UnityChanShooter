@@ -72,6 +72,11 @@ public sealed partial class WeaponManager
 
 	void PreloadResource(WeaponActor _actor)
 	{
+		// Ragdoll
+		//GameObject ragdollGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.RAGDOLL_MODEL, _actor.CharacterID);
+		//if (ragdollGO != null)
+		//	ragdollGO.SafeRecycle ();
+		
 		// Bullet
 		GameObject bullet = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.BULLET, _actor.BulletID);
 		if (bullet != null)
