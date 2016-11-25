@@ -87,6 +87,7 @@ public class ResourceInst
 	public const uint RELEASE_BULLET = 4;
 	public const uint RELEASE_RAGDOLL_MODEL = 5;
 	public const uint RELEASE_ABILITY = 6;
+	public const uint RELEASE_EFFECT = 7;
 
 	public const uint RECYCLE_CHARACTER_MODEL = 11;
 	public const uint RECYCLE_CONTAINER = 12;
@@ -94,6 +95,7 @@ public class ResourceInst
 	public const uint RECYCLE_BULLET = 14;
 	public const uint RECYCLE_RAGDOLL_MODEL = 15;
 	public const uint RECYCLE_ABILITY = 16;
+	public const uint RECYCLE_EFFECT = 17;
 }
 
 public class WeaponInst

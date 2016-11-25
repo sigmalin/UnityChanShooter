@@ -12,6 +12,8 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 		InitialBulletData ();
 		InitialRagdollData ();
 		InitialAbilityData ();
+		InitialBulletData ();
+		InitialEffectData ();
 	}
 
 	public void OnRegister ()
@@ -67,6 +69,10 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 			ReleaseAbilityData ();
 			break;
 
+		case ResourceInst.RELEASE_EFFECT:
+			ReleaseEffectData ();
+			break;
+
 		case ResourceInst.RECYCLE_CHARACTER_MODEL:
 			RecycleCharacter ((uint)_params[0], (GameObject)_params[1]);
 			break;
@@ -89,6 +95,10 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 
 		case ResourceInst.RECYCLE_ABILITY:
 			RecycleAbility ((uint)_params[0], (GameObject)_params[1]);
+			break;
+
+		case ResourceInst.RECYCLE_EFFECT:
+			RecycleEffect ((string)_params[0], (GameObject)_params[1]);
 			break;
 		}
 	
@@ -124,6 +134,10 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 			output = GetAbility ((uint)_params[0]);
 			break;
 
+		case ResourceParam.EFFECT:
+			output = GetEffect ((string)_params[0]);
+			break;
+
 		case ResourceParam.INSTANT_RESOURCE_UI:
 			output = GetInstantResUi ((string)_params[0]);
 			break;
@@ -148,5 +162,6 @@ public sealed partial class ResourceManager : CommandBehaviour, IParam, IRegiste
 		ReleaseBulletData ();
 		ReleaseRagdollData ();
 		ReleaseAbilityData ();
+		ReleaseEffectData ();
 	}
 }

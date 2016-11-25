@@ -69,6 +69,8 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 
 		InitialCameraMode ();
 
+		PreLoad ();
+
 		RunFlowStep ();
 	}
 
@@ -219,7 +221,35 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 	}
 	#endregion
 
-	#region RagDoll
+	#region PreLoad
+	void PreLoad()
+	{
+		// Mine
+		PreLoadModel(GameCore.UserProfile.MainCharacterID);
+		PreLoadRagDoll(GameCore.UserProfile.MainCharacterID);
+
+		// Enemy
+		mEnemyGroup.ToObservable ()
+			.Select (_ => _.ServicesList)
+			.Aggregate ((_pre, _cur) => _cur = _pre.Concat (_cur).ToArray ())
+			.SelectMany (_ => _.ToObservable ())
+			.Select (_ => _.CharacterID)
+			.Distinct ()
+			.Subscribe (_ => 
+				{
+					PreLoadModel(_);
+					PreLoadRagDoll(_);
+				}
+			);
+	}
+
+	void PreLoadModel(uint _characterID)
+	{
+		GameObject roleGO = (GameObject)GameCore.GetParameter (ParamGroup.GROUP_RESOURCE, ResourceParam.CHARACTER_MODEL, _characterID);
+		if (roleGO != null)
+			roleGO.SafeRecycle ();
+	}
+
 	void PreLoadRagDoll(uint _characterID)
 	{
 		if (mTombPt == null)

@@ -20,7 +20,7 @@ public partial class CameraManager
 
 		if (mCameraTable.ContainsKey (_camera.CameraID) == true) 
 		{
-			mCameraTable [_camera.CameraID].ClearStack ();
+			mCameraTable [_camera.CameraID].Clear ();
 			mCameraTable.Remove (_camera.CameraID);
 		}
 
@@ -32,7 +32,7 @@ public partial class CameraManager
 		if (mCameraTable.ContainsKey (_cameraID) == false)
 			return;
 
-		mCameraTable [_cameraID].ClearStack ();
+		mCameraTable [_cameraID].Clear ();
 		mCameraTable.Remove (_cameraID);
 	}
 
@@ -59,7 +59,7 @@ public partial class CameraManager
 		foreach (GameCamera data in mCameraTable.Values) 
 		{
 			if (data != null)
-				data.ClearStack ();
+				data.Clear ();
 		}
 
 		mCameraTable.Clear ();

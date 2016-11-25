@@ -52,43 +52,20 @@ public class DevelopTestCode : MonoBehaviour
 
 	public Material mMat;
 
+	public Material mMat2;
+
 	float mTime = 0;
+
+	public class preList
+	{
+		public int[] IDs;
+
+	}
 
 	// Use this for initialization
 	void Start ()
-	{
-		/*
-		ReactiveProperty<int> counter = new ReactiveProperty<int> (0);
-
-		counter.Where (_ => _ == 0).Subscribe (_ => SpriteNum.SetSpriteList (string.Empty, Color.white, null));
-
-		counter.Where (_ => _ != 0).Subscribe (_ => SpriteNum.SetSpriteList (_.ToString(), Color.white, GetSprite));
-
-		int count = 1;
-
-		this.UpdateAsObservable ()
-			.Where (_ => Input.GetMouseButtonUp (0))
-			.Subscribe (_ => counter.Value += count);
-
-		Observable.Interval (System.TimeSpan.FromSeconds (1f))
-			.Where (_ => counter != null && counter.Value != 0)
-			.Select (_ => counter.Value)
-			.Buffer (2, 1)
-			.Where (_ => _ [0] == _ [1])
-			.Subscribe (_ => 
-				{					
-					count += 3;
-					counter.Value = 0;
-					Debug.Log("count = " + count);
-				});
-				*/
-
-		int[] xxx = {1,2,3,4,5,6 };
-
-		xxx.ToObservable ()
-			.Select(_ => _) 
-			.Subscribe (_ => Debug.Log (_));
-
+	{		
+		mMat2.SetFloat ("_BloodWeight", 0.3f);
 		mMat.SetVector ("_ShakeParam", new Vector4(10F,10F,0.8F,0.2F));
 		mTime = 0f;
 	}
@@ -100,14 +77,49 @@ public class DevelopTestCode : MonoBehaviour
 
 	void OnRenderImage(RenderTexture _src, RenderTexture _dest)
 	{
+		RenderTexture temporary1 = _src;
+
+		RenderTexture temporary2 = null;
+
+		for (int Indx = 0; Indx < 2; ++Indx) 
+		{
+			if (temporary2 == null)
+				temporary2 = RenderTexture.GetTemporary (Screen.width, Screen.height, 0, RenderTextureFormat.Default);
+
+			if(Indx == 0)
+				Blood (temporary1, temporary2);
+			else
+				Shake(temporary1, temporary2);
+
+			RenderTexture swap = temporary1 == _src ? null : temporary1;
+			temporary1 = temporary2;
+			temporary2 = swap;
+		}
+
+		Graphics.Blit (temporary1, _dest);
+
+		if(temporary1 != null && temporary1 != _src) RenderTexture.ReleaseTemporary (temporary1);
+		if(temporary2 != null) RenderTexture.ReleaseTemporary (temporary2);
+	}
+
+	public void Shake (RenderTexture _src, RenderTexture _dest)
+	{
 		if (mTime < 1) 
 		{
 			mTime += Time.deltaTime;
 
 			mMat.SetFloat("_ShakeTime", (1F - Mathf.Abs((mTime - 0.5F) * 2F)));
-		}
 
-		Graphics.Blit( _src, _dest, mMat);  
+			Graphics.Blit (_src, _dest, mMat);
+		}
+		else
+		{
+			Graphics.Blit (_src, _dest);
+		}
 	}
 
+	public void Blood (RenderTexture _src, RenderTexture _dest)
+	{
+		Graphics.Blit (_src, _dest, mMat2);
+	}
 }

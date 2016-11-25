@@ -45,6 +45,7 @@ public class ResourceParam
 	public const uint BULLET = 15;
 	public const uint RAGDOLL_MODEL = 16;
 	public const uint ABILITY = 17;
+	public const uint EFFECT = 18;
 
 	public const uint INSTANT_RESOURCE_UI = 98;
 	public const uint INSTANT_RESOURCE_INPUT = 99;
@@ -85,6 +86,7 @@ public class CacheParam
 	public const uint GET_AUDIO_PATH = 23;
 	public const uint GET_SPRITE_PATH = 24;
 	public const uint GET_POST_EFFECT_PATH = 25;
+	public const uint GET_EFFECT_PATH = 26;
 
 	public const uint GET_INSTANT_RESOURCE_UI_PATH = 98;
 	public const uint GET_INSTANT_RESOURCE_INPUT_PATH = 99;
@@ -104,6 +106,7 @@ public class CacheParam
 	public const uint GET_AUDIO = 123;
 	public const uint GET_SPRITE = 124;
 	public const uint GET_POST_EFFECT = 125;
+	public const uint GET_EFFECT = 126;
 
 	public const uint GET_INSTANT_RESOURCE_UI = 198;
 	public const uint GET_INSTANT_RESOURCE_INPUT = 199;

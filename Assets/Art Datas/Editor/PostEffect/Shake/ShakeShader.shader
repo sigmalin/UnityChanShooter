@@ -40,6 +40,10 @@
 				v2f o;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = v.uv;
+
+				//#if UNITY_UV_STARTS_AT_TOP
+				//o.uv.y = 1 - o.uv.y;
+				//#endif
 				
 				half2 diff = _ShakeParam.xy * _MainTex_TexelSize.xy * _ShakeTime;
 				o.tab[0] = o.uv + diff;

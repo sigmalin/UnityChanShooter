@@ -10,9 +10,25 @@ public partial class Status
 	[SerializeField]
 	Animator mAnim;
 
+	Blood mBlood;
+
+	uint mMainCameraID;
+
+	System.IDisposable mLifeDisposable;
+	System.IDisposable mDamgeDisposable;
+
 	void InitialPortrait(WeaponManager.WeaponActor _actor)
 	{
+		ReleasePortrait ();
+
 		mPortrait.texture = (Texture)GameCore.GetParameter (ParamGroup.GROUP_CACHE, CacheParam.GET_PORTRAIT, _actor.CharacterID, ProtraitDefine.PROTRAIT_KEY_NORAML, false);
+
+		if (mBlood == null) 
+		{
+			mMainCameraID = (uint)GameCore.GetParameter (ParamGroup.GROUP_CAMERA, CameraParam.MAIN_CAMERA);
+			mBlood = new Blood ();
+			GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.SET_CAMERA_POST_EFFECT, mMainCameraID, mBlood);
+		}
 
 		_actor.Life.Subscribe (_ => {
 
@@ -36,6 +52,9 @@ public partial class Status
 			}
 
 			mAnim.SetFloat(GameCore.AnimID_fLife, _); 
+
+			if (mBlood != null) 
+				mBlood.SetBloodWeight((1 - _) * (1 - _));
 		});
 
 		_actor.Life.Pairwise ()
@@ -44,5 +63,16 @@ public partial class Status
 				mAnim.ResetTrigger(GameCore.AnimID_triggerShock);
 				mAnim.SetTrigger(GameCore.AnimID_triggerShock);
 			});
+	}
+
+	void ReleasePortrait()
+	{		
+		mPortrait.texture = null;
+
+		if (mBlood != null) 
+		{
+			GameCore.SendCommand (CommandGroup.GROUP_CAMERA, CameraInst.REMOVE_CAMERA_POST_EFFECT, mMainCameraID, mBlood);
+			mBlood = null;
+		}
 	}
 }

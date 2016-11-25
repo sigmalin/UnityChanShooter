@@ -9,6 +9,8 @@ public partial class Status : MonoBehaviour
 	void OnDestroy()
 	{
 		ReleaseItemPool ();
+
+		ReleasePortrait ();
 	}
 
 	public void Initial(uint _actorID)

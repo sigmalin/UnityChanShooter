@@ -95,6 +95,7 @@ public sealed partial class Page_Single
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_CONTAINER_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_BULLET_PATH),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_ABILITY_PATH),
+			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_EFFECT_PATH),
 
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SPRITE_PATH, RepositoryManager.SPRITE_DIGITS),
 			(string)GameCore.GetParameter(ParamGroup.GROUP_CACHE, CacheParam.GET_SPRITE_PATH, RepositoryManager.SPRITE_HITS),

@@ -16,11 +16,9 @@ public partial class GameCamera
 
 	void ReleasePostEffect()
 	{
-		if (mPostEffectList != null) 
-		{
-			mPostEffectList.Clear ();
-			mPostEffectList = null;
-		}
+		ClearPostEffect ();
+
+		mPostEffectList = null;
 	}
 
 	void AddPostEffect(IPostEffect _postEffect)
@@ -50,30 +48,42 @@ public partial class GameCamera
 	{
 		if (mPostEffectList != null && mPostEffectList.Count != 0) 
 		{
-			RenderTexture temporary = RenderTexture.GetTemporary (Screen.width, Screen.height, 0, RenderTextureFormat.Default);
+			RenderTexture temporary1 = _src;
 
-			RenderTexture target = temporary;
+			RenderTexture temporary2 = null;
 
 			for (int Indx = 0; Indx < mPostEffectList.Count; ++Indx) 
 			{
 				if (mPostEffectList [Indx] == null)
 					continue;
 
-				mPostEffectList [Indx].OnPostRender (_src, target);
+				if (temporary2 == null)
+					temporary2 = RenderTexture.GetTemporary (Screen.width, Screen.height, 0, RenderTextureFormat.Default);
 
-				RenderTexture swap = _src;
-				_src = target;
-				target = swap;
+				mPostEffectList [Indx].OnPostRender (temporary1, temporary2);
+
+				RenderTexture swap = temporary1 == _src ? null : temporary1;
+				temporary1 = temporary2;
+				temporary2 = swap;
 			}
 
-			Graphics.Blit (_src, _dest);
+			Graphics.Blit (temporary1, _dest);
 
-			RenderTexture.ReleaseTemporary (temporary);
+			if(temporary1 != null && temporary1 != _src) RenderTexture.ReleaseTemporary (temporary1);
+			if(temporary2 != null) RenderTexture.ReleaseTemporary (temporary2);
 		} 
 		else
 		{
 			Graphics.Blit (_src, _dest);
 		}
 
+	}
+
+	void ClearPostEffect()
+	{
+		if (mPostEffectList != null) 
+		{
+			mPostEffectList.Clear ();
+		}
 	}
 }

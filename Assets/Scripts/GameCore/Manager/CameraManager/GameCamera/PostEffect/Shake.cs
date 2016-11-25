@@ -12,7 +12,9 @@ public class Shake : IPostEffect
 	{
 		mPostEffect = (Material)GameCore.GetParameter (ParamGroup.GROUP_REPOSITORY, 
 			RepositoryParam.GET_POST_EFFECT_DATA,
-			PostEffectRepository.PostEffectType.SHOCK);
+			PostEffectRepository.PostEffectType.SHAKE);
+
+		//mPostEffect.shader = Shader.Find (mPostEffect.shader.name);
 
 		mPostEffect.SetVector ("_ShakeParam", new Vector4(10F,10F,0.8F,0.2F));
 

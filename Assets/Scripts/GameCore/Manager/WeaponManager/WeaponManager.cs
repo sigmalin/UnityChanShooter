@@ -122,6 +122,10 @@ public sealed partial class WeaponManager : CommandBehaviour, IParam, IRegister
 			output = (System.Object)GetLastestMurdererID ((uint)_params [0]);
 			break;
 
+		case WeaponParam.GET_MAIN_ACTOR_ID:
+			output = (System.Object)MainActorID;
+			break;
+
 		case WeaponParam.GET_ALLY_LIST:
 			output = (System.Object)GetAllyList ((uint)_params [0]);
 			break;

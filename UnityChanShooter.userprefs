@@ -1,11 +1,17 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Manager\WeaponManager\WeaponManager_Fire.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Flow\WipeOut\Flow_WipeOut.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\Weapon\Arm\Claw.cs" Line="42" Column="4" />
-      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\Weapon\Arm\Shotgun.cs" Line="75" Column="3" />
-      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\WeaponManager_Fire.cs" Line="75" Column="3" />
-      <File FileName="Assets\Scripts\GameCore\Manager\WeaponManager\WeaponManager_Actor.cs" Line="87" Column="9" />
+      <File FileName="Assets\Scripts\Fight\Status\Status_Portrait.cs" Line="30" Column="4" />
+      <File FileName="Assets\Art Datas\Editor\PostEffect\Blood\Blood.shader" Line="35" Column="5" />
+      <File FileName="Assets\Art Datas\Editor\PostEffect\Shake\ShakeShader.shader" Line="43" Column="5" />
+      <File FileName="Assets\Art Datas\Editor\PostEffect\Shock\ShockShader.shader" Line="26" Column="5" />
+      <File FileName="Assets\Develop\DevelopTestCode.cs" Line="122" Column="3" />
+      <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\GameCamera_PostEffect.cs" Line="70" Column="4" />
+      <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\PostEffect\Blood.cs" Line="15" Column="5" />
+      <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\PostEffect\Shake.cs" Line="17" Column="5" />
+      <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\PostEffect\Shock.cs" Line="18" Column="3" />
+      <File FileName="Assets\Scripts\GameCore\Flow\WipeOut\Flow_WipeOut.cs" Line="268" Column="11" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

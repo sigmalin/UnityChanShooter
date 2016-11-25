@@ -74,7 +74,7 @@ public partial class GameCamera
 		return mModeStack.Peek ();
 	}
 
-	public void ClearStack()
+	void ClearStack()
 	{
 		if (GetCurrentMode () != null) 
 		{

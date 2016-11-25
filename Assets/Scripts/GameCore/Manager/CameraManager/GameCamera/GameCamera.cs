@@ -24,6 +24,13 @@ public partial class GameCamera : MonoBehaviour
 
 		ReleasePostEffect ();
 	}
+
+	public void Clear()
+	{
+		ClearStack ();
+
+		ClearPostEffect ();
+	}
 	
 	// Update is called once per frame
 	public void FrameMove () 
