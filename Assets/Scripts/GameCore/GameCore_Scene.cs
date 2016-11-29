@@ -24,18 +24,19 @@ public partial class GameCore
 			mSceneDisposable = null;
 		}
 
-		mSceneDisposable = Observable.FromCoroutine<AsyncOperation> ((observer, cancellationToken) => LoadScene ("Scene/Loading", observer, cancellationToken))
-			.Do(_ => { 				
+		mSceneDisposable = Observable.FromCoroutine<AsyncOperation> ((observer, cancellationToken) => LoadScene ("Scene/Loading", true, observer, cancellationToken))
+			.Do(_ => { 	
+				//_.allowSceneActivation = true;
+
 				ReleaseCache(mLoadList); 
 				mLoadList = _loadList; 
-				_.allowSceneActivation = true;
 			})
 			.SelectMany (_ => Observable.FromCoroutine<Unit> ((observer, cancellationToken) => MemoryManagement (observer, cancellationToken)))
 			.Do(_ => DownLoadCache(mLoadList))
 			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.DOWN_LOAD_CACHE_COMPLETED).First())
 			.Do(_ => ReadCache(mLoadList))
 			.SelectMany (FlowObservable.Where(_ => _ == FlowEvent.READ_CACHE_COMPLETED).First())
-			.SelectMany (_ => Observable.FromCoroutine<AsyncOperation> ((observer, cancellationToken) => LoadScene (_scene, observer, cancellationToken)))
+			.SelectMany (_ => Observable.FromCoroutine<AsyncOperation> ((observer, cancellationToken) => LoadScene (_scene, false, observer, cancellationToken)))
 			.Subscribe (
 				_ => 
 				{ 
@@ -54,10 +55,10 @@ public partial class GameCore
 
 	}
 
-	IEnumerator LoadScene(string _scene, IObserver<AsyncOperation> observer, CancellationToken cancellationToken)
+	IEnumerator LoadScene(string _scene, bool _isAllowSceneActivation, IObserver<AsyncOperation> observer, CancellationToken cancellationToken)
 	{
 		Debug.Log ("LoadScene = " + _scene);
-		
+
 		AsyncOperation oper = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync (_scene);
 		if (oper == null) 
 		{
@@ -65,11 +66,22 @@ public partial class GameCore
 		} 
 		else 
 		{
-			oper.allowSceneActivation = false;
+			oper.allowSceneActivation = _isAllowSceneActivation;
 
-			while (oper.progress < 0.9F && cancellationToken.IsCancellationRequested == false)
-				yield return null;
+			if (_isAllowSceneActivation) 
+			{
+				while (oper.isDone && cancellationToken.IsCancellationRequested == false)
+					yield return null;
+			} 
+			else 
+			{
+				while (oper.progress < 0.9F && cancellationToken.IsCancellationRequested == false)
+					yield return null;
+			}
 
+			//while (oper.progress < 0.9F && cancellationToken.IsCancellationRequested == false)
+			//	yield return null;
+			
 			if (cancellationToken.IsCancellationRequested) yield break;
 
 			observer.OnNext (oper);

@@ -51,8 +51,6 @@ public partial class Status
 				GameCore.SendCommand(CommandGroup.GROUP_PLAYER, PlayerInst.PLAYER_FACE, _actor.ActorID, ProtraitDefine.PROTRAIT_KEY_NORAML);
 			}
 
-			mAnim.SetFloat(GameCore.AnimID_fLife, _); 
-
 			if (mBlood != null) 
 				mBlood.SetBloodWeight((1 - _) * (1 - _));
 		});

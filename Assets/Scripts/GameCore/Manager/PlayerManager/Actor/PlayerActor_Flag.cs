@@ -32,6 +32,9 @@ public partial class PlayerActor
 
 	void SetStun(bool _enable)
 	{
+		if (mActorData.Agent != null) 
+			mActorData.Agent.enabled = !_enable;
+		
 		mMotionData.LockActor = 0u;
 		SetFlag (Flags.STUN, _enable);
 	}

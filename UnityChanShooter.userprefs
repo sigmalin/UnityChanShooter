@@ -1,17 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Flow\WipeOut\Flow_WipeOut.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameCore\Flow\WipeOut\Flow_WipeOut_Ui.cs">
     <Files>
-      <File FileName="Assets\Scripts\Fight\Status\Status_Portrait.cs" Line="30" Column="4" />
-      <File FileName="Assets\Art Datas\Editor\PostEffect\Blood\Blood.shader" Line="35" Column="5" />
-      <File FileName="Assets\Art Datas\Editor\PostEffect\Shake\ShakeShader.shader" Line="43" Column="5" />
-      <File FileName="Assets\Art Datas\Editor\PostEffect\Shock\ShockShader.shader" Line="26" Column="5" />
-      <File FileName="Assets\Develop\DevelopTestCode.cs" Line="122" Column="3" />
-      <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\GameCamera_PostEffect.cs" Line="70" Column="4" />
+      <File FileName="Assets\Scripts\GameCore\GameCore_Scene.cs" Line="43" Column="6" />
+      <File FileName="Assets\Scripts\GameCore\GameCore_Flow.cs" Line="57" Column="3" />
+      <File FileName="Assets\Scripts\GameCore\Flow\Lobby\Flow_Lobby.cs" Line="12" Column="56" />
+      <File FileName="Assets\Scripts\GameCore\Flow\WipeOut\Flow_WipeOut.cs" Line="156" Column="7" />
       <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\PostEffect\Blood.cs" Line="15" Column="5" />
       <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\PostEffect\Shake.cs" Line="17" Column="5" />
-      <File FileName="Assets\Scripts\GameCore\Manager\CameraManager\GameCamera\PostEffect\Shock.cs" Line="18" Column="3" />
-      <File FileName="Assets\Scripts\GameCore\Flow\WipeOut\Flow_WipeOut.cs" Line="268" Column="11" />
+      <File FileName="Assets\Scripts\GameCore\Flow\WipeOut\Flow_WipeOut_Ui.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

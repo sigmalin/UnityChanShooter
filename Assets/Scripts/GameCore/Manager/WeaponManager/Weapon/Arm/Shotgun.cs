@@ -77,4 +77,12 @@ public class Shotgun : MonoBehaviour, IArm
 			mAudio.Play ();
 		}
 	}
+
+	public void PreLoad ()
+	{
+		if (mAmmo != null) 
+		{
+			mAmmo.Emit (1);
+		}
+	}
 }

@@ -41,4 +41,8 @@ public class Claw : MonoBehaviour, IArm
 			mAudio.Play ();
 		}
 	}
+
+	public void PreLoad ()
+	{
+	}
 }

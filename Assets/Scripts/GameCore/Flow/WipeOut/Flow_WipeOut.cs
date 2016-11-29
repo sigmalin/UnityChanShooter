@@ -146,10 +146,10 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 		InitialInput ();
 
 		Observable.NextFrame (FrameCountType.Update)
+			.Do (_ => RegisterList ())
+			.DelayFrame(1, FrameCountType.Update)
 			.Subscribe (_ => {
-				RegisterCamera ();
-				RegisterMainPlayer ();
-				RegisterEnemyGroup (0);
+				
 				SetMainCameraMode ();
 
 				#if UNITY_EDITOR
@@ -261,6 +261,15 @@ public sealed partial class Flow_WipeOut : FlowBehaviour, IInput, IUserInterface
 			ragdollGO.transform.position = mTombPt.position;
 			ragdollGO.SafeRecycle ();
 		}
+	}
+	#endregion
+
+	#region Register
+	void RegisterList()
+	{
+		RegisterCamera ();
+		RegisterMainPlayer ();
+		RegisterEnemyGroup (0);
 	}
 	#endregion
 

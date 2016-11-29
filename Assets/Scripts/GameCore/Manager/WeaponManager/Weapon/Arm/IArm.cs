@@ -8,4 +8,6 @@ public interface IArm
 	void OnFire (uint _shooterID, uint _bulletID, uint _atk, int _layer);
 
 	void OnPullTrigger (int _count);
+
+	void PreLoad ();
 }

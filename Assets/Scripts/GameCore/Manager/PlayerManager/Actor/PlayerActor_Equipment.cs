@@ -188,6 +188,9 @@ public partial class PlayerActor
 			mLauncher.RightHand.transform.parent = mRole.BodyPt.RightHand;
 			mLauncher.RightHand.transform.localPosition = Vector3.zero;
 			mLauncher.RightHand.transform.localRotation = Quaternion.identity;
+
+			if (mLauncher.RightArm != null)
+				mLauncher.RightArm.PreLoad ();
 		}
 
 		if (mLauncher.LeftHand != null) 
@@ -195,6 +198,9 @@ public partial class PlayerActor
 			mLauncher.LeftHand.transform.parent = mRole.BodyPt.LeftHand;
 			mLauncher.LeftHand.transform.localPosition = Vector3.zero;
 			mLauncher.LeftHand.transform.localRotation = Quaternion.identity;
+
+			if (mLauncher.LeftArm != null)
+				mLauncher.LeftArm.PreLoad ();
 		}
 	}
 }
