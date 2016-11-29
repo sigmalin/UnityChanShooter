@@ -63,6 +63,6 @@ public class Ragdoll : ModelBehaviour
 			.Where (_ => _ != null)
 			.First ()
 			//.Subscribe (_ => _.AddExplosionForce(20f, _hitPt, 1f, 20f));
-			.Subscribe (_ => _.AddForce(new Vector3(_.position.x - _hitPt.x, 5f, _.position.z - _hitPt.z) * _impact, ForceMode.Impulse));
+			.Subscribe (_ => _.AddForce(new Vector3(_.position.x - _hitPt.x, 5f, _.position.z - _hitPt.z) * Mathf.Clamp(_impact, 0f, 30f), ForceMode.Impulse));
 	}
 }
